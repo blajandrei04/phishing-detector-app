@@ -10,7 +10,7 @@ class Settings(BaseSettings):
     app_port: int = 8000
     cors_origins: list[str] = ["http://localhost:4200"]
     database_url: str = "postgresql+psycopg2://postgres:postgres@localhost:5432/phishing_detector"
-    model_path: str = "./artifacts/phishing_model.joblib"
+    model_path: str = "./artifacts/xgb_opt.pkl"
     model_config = SettingsConfigDict(env_file=".env", extra="ignore")
 
 settings=Settings()

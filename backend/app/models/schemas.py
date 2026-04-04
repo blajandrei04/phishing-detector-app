@@ -16,7 +16,7 @@ class AnalyzeResponse(BaseModel):
 
 class HealthResponse(BaseModel):
     status: str
-    app: float
+    app: str
     version: str
 
 class HistoryCreateRequest(BaseModel):
