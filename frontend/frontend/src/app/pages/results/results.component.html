@@ -1,0 +1,11 @@
+<!-- results.component.html -->
+<section class="card" *ngIf="result; else noData">
+  <h2>Analysis Result</h2>
+  <p><strong>Score:</strong> {{ result.score }}</p>
+  <p><strong>Verdict:</strong> {{ result.verdict }}</p>
+  <p><strong>Confidence:</strong> {{ result.confidence }}%</p>
+</section>
+
+<ng-template #noData>
+  <p>No result yet. Analyze a URL first.</p>
+</ng-template>

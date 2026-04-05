@@ -1,0 +1,17 @@
+<section class="card">
+  <h2>URL Analyzer</h2>
+
+  <label for="urlInput">Website URL</label>
+  <input
+    id="urlInput"
+    type="url"
+    [(ngModel)]="url"
+    placeholder="https://example.com"
+  />
+
+  <button (click)="submit()" [disabled]="loading">
+    {{ loading ? 'Analyzing...' : 'Analyze URL' }}
+  </button>
+
+  <p class="error" *ngIf="error">{{ error }}</p>
+</section>
