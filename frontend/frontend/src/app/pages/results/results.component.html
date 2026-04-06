@@ -1,11 +1,50 @@
-<!-- results.component.html -->
-<section class="card" *ngIf="result; else noData">
-  <h2>Analysis Result</h2>
-  <p><strong>Score:</strong> {{ result.score }}</p>
-  <p><strong>Verdict:</strong> {{ result.verdict }}</p>
-  <p><strong>Confidence:</strong> {{ result.confidence }}%</p>
-</section>
+<div class="row justify-content-center">
+  <div class="col-md-8 col-lg-6">
+    <div class="card shadow-lg border-0 rounded-4 mt-5" *ngIf="result; else noData">
+      <div class="card-body p-5">
+        <h2 class="card-title text-center mb-4 fw-bold">Analysis Result</h2>
+        
+        <div class="text-center mb-4">
+          <div class="p-3 mb-3 rounded-3" 
+               [ngClass]="{
+                 'bg-danger text-white': result.verdict === 'phishing',
+                 'bg-warning text-dark': result.verdict === 'suspicious',
+                 'bg-success text-white': result.verdict === 'legitimate'
+               }">
+            <h3 class="fw-bold mb-0 text-uppercase">{{ result.verdict }}</h3>
+          </div>
+        </div>
 
-<ng-template #noData>
-  <p>No result yet. Analyze a URL first.</p>
-</ng-template>
+        <ul class="list-group list-group-flush mb-4">
+          <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+            <span class="text-muted fw-semibold">URL Analyzed</span>
+            <span class="text-truncate ms-3" style="max-width: 250px;" title="{{ result.url }}">{{ result.url || 'N/A' }}</span>
+          </li>
+          <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+            <span class="text-muted fw-semibold">Phishing Score</span>
+            <span class="badge bg-secondary rounded-pill fs-6">{{ (result.score * 100).toFixed(1) }}%</span>
+          </li>
+          <li class="list-group-item d-flex justify-content-between align-items-center px-0 border-bottom">
+            <span class="text-muted fw-semibold">Confidence</span>
+            <span class="badge bg-info rounded-pill fs-6">{{ (result.confidence * 100).toFixed(1) }}%</span>
+          </li>
+        </ul>
+
+        <div class="d-grid">
+          <a routerLink="/analyzer" class="btn btn-outline-primary btn-lg rounded-pill shadow-sm">
+            Analyze Another URL
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <ng-template #noData>
+      <div class="card shadow-sm border-0 rounded-4 mt-5 bg-light">
+        <div class="card-body p-5 text-center text-muted">
+          <p class="fs-5 mb-4">No analysis result available yet.</p>
+          <a routerLink="/analyzer" class="btn btn-primary rounded-pill">Go to Analyzer</a>
+        </div>
+      </div>
+    </ng-template>
+  </div>
+</div>

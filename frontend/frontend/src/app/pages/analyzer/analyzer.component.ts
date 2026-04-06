@@ -1,5 +1,5 @@
-import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, PLATFORM_ID, Inject } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { PhishingService } from '../../core/services/phishing.service';
@@ -19,7 +19,8 @@ export class AnalyzerComponent {
 
   constructor(
     private phishingService: PhishingService,
-    private router: Router
+    private router: Router,
+    @Inject(PLATFORM_ID) private platformId: Object
   ) {}
 
   submit(): void {
@@ -33,7 +34,9 @@ export class AnalyzerComponent {
     this.phishingService.analyzeUrl({ url: this.url.trim() }).subscribe({
       next: (result: AnalyzeResponse) => {
         this.loading = false;
-        localStorage.setItem('lastResult', JSON.stringify(result));
+        if (isPlatformBrowser(this.platformId)) {
+          localStorage.setItem('lastResult', JSON.stringify(result));
+        }
         this.router.navigate(['/results']);
       },
       error: () => {

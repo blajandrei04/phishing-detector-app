@@ -1,17 +1,32 @@
-<header class="topbar">
-  <h1>Phishing Detector</h1>
-  <nav>
-    <a routerLink="/analyzer" routerLinkActive="active">Analyzer</a>
-    <a routerLink="/dashboard" routerLinkActive="active">Dashboard</a>
-    <a routerLink="/history" routerLinkActive="active">History</a>
-    <a routerLink="/settings" routerLinkActive="active">Settings</a>
-  </nav>
-</header>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <div class="container">
+    <a class="navbar-brand" routerLink="/">Phishing Detector</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav me-auto">
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/analyzer" routerLinkActive="active">Analyzer</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/dashboard" routerLinkActive="active">Dashboard</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/history" routerLinkActive="active">History</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/settings" routerLinkActive="active">Settings</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
 
-<main class="container">
+<main class="container my-5">
   <router-outlet></router-outlet>
 </main>
 
-<footer class="footer">
-  <small>Thesis MVP • 2026</small>
+<footer class="footer text-muted text-center py-4">
+  <small>&copy; Thesis MVP • 2026</small>
 </footer>
