@@ -1,0 +1,66 @@
+.app-container {
+  display: flex;
+  min-height: 100vh;
+  background-color: #f7f8fc;
+}
+
+.sidebar {
+  width: 260px;
+  min-height: 100vh;
+  padding: 24px 16px;
+  background-color: #4a3aff;
+  color: #fff;
+}
+
+.logo {
+  margin-bottom: 32px;
+  padding-left: 12px;
+}
+
+.logo a {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: #fff;
+  text-decoration: none;
+  font-size: 1.125rem;
+  font-weight: 600;
+}
+
+.nav {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.nav li {
+  margin-bottom: 8px;
+}
+
+.nav a {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 12px;
+  border-radius: 8px;
+  color: #d8d5ff;
+  text-decoration: none;
+  font-weight: 500;
+  transition: all 0.2s ease-in-out;
+}
+
+.nav a:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+
+.nav a.active {
+  background-color: #fff;
+  color: #4a3aff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.main-content {
+  flex-grow: 1;
+  padding: 32px;
+}
