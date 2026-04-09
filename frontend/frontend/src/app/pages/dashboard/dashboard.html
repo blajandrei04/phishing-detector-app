@@ -6,13 +6,18 @@
 <div class="summary-cards">
   <div *ngFor="let card of summaryCards" class="card summary-card card-{{ card.color }}">
     <div class="card-body">
-      <div class="card-icon">
-        <i class="bi {{ card.icon }}"></i>
-      </div>
-      <div class="card-content">
+      <div class="card-top">
         <h5 class="card-title">{{ card.title }}</h5>
+        <div class="card-icon">
+          <i class="bi {{ card.icon }}"></i>
+        </div>
+      </div>
+      <div class="card-bottom">
         <p class="card-value">{{ card.value }}</p>
-        <p class="card-change" [ngClass]="'text-' + card.changeType">{{ card.change }}</p>
+        <p class="card-change" [ngClass]="'text-' + card.changeType">
+          <i *ngIf="card.changeType === 'increase' && card.title === 'Total Scans'" class="bi bi-graph-up-arrow"></i>
+          {{ card.change }}
+        </p>
       </div>
     </div>
   </div>
@@ -25,8 +30,68 @@
       Enter a website URL below to test if it's safe or a phishing attempt
     </p>
     <div class="input-group">
-      <input type="text" class="form-control" placeholder="https://example.com" />
-      <button class="btn btn-primary">Analyze URL</button>
+      <input 
+        type="text" 
+        class="form-control" 
+        placeholder="https://example.com" 
+        [(ngModel)]="urlToAnalyze" 
+        (keyup.enter)="submitUrl()"
+        [disabled]="isAnalyzing"
+      />
+      <button class="btn btn-primary" (click)="submitUrl()" [disabled]="isAnalyzing">
+        <span *ngIf="!isAnalyzing">Analyze URL</span>
+        <span *ngIf="isAnalyzing" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+      </button>
+    </div>
+    
+    <div *ngIf="analysisError" class="alert alert-danger mt-3 mb-0" role="alert">
+      {{ analysisError }}
+    </div>
+    
+    <div *ngIf="analysisResult" class="result-details card mt-4 border-0 shadow-sm" style="animation: slideDown 0.4s ease-out;">
+      <div class="card-body p-4 rounded-3" [ngClass]="{'bg-success-subtle border border-success': analysisResult.verdict === 'legitimate', 'bg-danger-subtle border border-danger': analysisResult.verdict === 'phishing', 'bg-warning-subtle border border-warning': analysisResult.verdict === 'suspicious'}" style="background-color: rgba(255,255,255,0.7);">
+        <h6 class="mb-4 d-flex align-items-center gap-2 fw-bold text-uppercase" [ngClass]="{'text-success': analysisResult.verdict === 'legitimate', 'text-danger': analysisResult.verdict === 'phishing', 'text-warning': analysisResult.verdict === 'suspicious'}">
+          <i class="bi" [ngClass]="{'bi-check-circle-fill': analysisResult.verdict === 'legitimate', 'bi-exclamation-octagon-fill': analysisResult.verdict === 'phishing', 'bi-exclamation-triangle-fill': analysisResult.verdict === 'suspicious'}"></i>
+          Analysis Complete
+        </h6>
+        
+        <div class="row g-4">
+          <div class="col-md-6 border-end">
+            <p class="mb-1 text-muted small fw-bold">URL SCANNED</p>
+            <p class="mb-4 fw-medium text-break text-dark">{{ analysisResult.url }}</p>
+            
+            <p class="mb-1 text-muted small fw-bold">THREAT VERDICT</p>
+            <h3 class="mb-0 text-capitalize fw-bold" [ngClass]="{'text-success': analysisResult.verdict === 'legitimate', 'text-danger': analysisResult.verdict === 'phishing', 'text-warning': analysisResult.verdict === 'suspicious'}">
+              {{ analysisResult.verdict }}
+            </h3>
+          </div>
+          
+          <div class="col-md-6 ps-md-4">
+            <p class="mb-1 text-muted small fw-bold">RISK SCORE</p>
+            <div class="d-flex align-items-center gap-3 mb-4">
+              <h3 class="mb-0 fw-bold text-dark">{{ (analysisResult.score * 100) | number:'1.0-1' }}<small class="text-muted fs-6 fw-normal">/100</small></h3>
+              <div class="progress flex-grow-1" style="height: 10px; border-radius: 6px;">
+                <div class="progress-bar" [ngClass]="{'bg-success': analysisResult.score < 0.4, 'bg-warning': analysisResult.score >= 0.4 && analysisResult.score < 0.7, 'bg-danger': analysisResult.score >= 0.7}" [style.width.%]="analysisResult.score * 100"></div>
+              </div>
+            </div>
+            
+            <p class="mb-1 text-muted small fw-bold">MODEL CONFIDENCE</p>
+            <p class="fw-medium mb-0 text-dark">{{ (analysisResult.confidence * 100) | number:'1.0-1' }}%</p>
+          </div>
+        </div>
+        
+        <div class="extracted-features mt-4 pt-3 border-top" *ngIf="analysisResult.extracted_features">
+          <p class="mb-2 text-muted small fw-bold">KEY EXTRACTED FEATURES</p>
+          <div class="d-flex flex-wrap gap-2">
+            <span class="badge border text-dark bg-white" *ngIf="analysisResult.extracted_features.has_https"><i class="bi bi-lock-fill text-success me-1"></i> HTTPS Secured</span>
+            <span class="badge border text-danger bg-white" *ngIf="!analysisResult.extracted_features.has_https"><i class="bi bi-unlock-fill me-1"></i> No HTTPS</span>
+            <span class="badge border text-dark bg-white">Length: {{analysisResult.extracted_features.url_length}} chars</span>
+            <span class="badge border text-dark bg-white" *ngIf="analysisResult.extracted_features.is_shortener"><i class="bi bi-link-45deg me-1"></i> URL Shortener</span>
+            <span class="badge border text-danger bg-white" *ngIf="analysisResult.extracted_features.uses_ip_as_host"><i class="bi bi-hdd-network-fill me-1"></i> IP Host Detected</span>
+            <span class="badge border text-dark bg-white" *ngIf="analysisResult.extracted_features.subdomain_count > 1">Subdomains: {{analysisResult.extracted_features.subdomain_count}}</span>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </div>

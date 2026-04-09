@@ -2,9 +2,14 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.core.config import settings
 from app.core.logging_config import setup_logging
+from app.db.database import engine, Base
+from app.db import models
 from app.api import health, analyze, history, stats
 
 setup_logging()
+
+# Generate database schema
+Base.metadata.create_all(bind=engine)
 
 app = FastAPI(
     title=settings.app_name,

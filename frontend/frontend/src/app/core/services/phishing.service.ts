@@ -10,9 +10,17 @@ import { AnalyzeResponse } from '../../models/analyze-response.model';
 })
 export class PhishingService {
   private http = inject(HttpClient);
-  private apiUrl = `${environment.apiBaseUrl}/api/analyze`;
+  private apiUrl = `${environment.apiBaseUrl}/api`;
 
   analyzeUrl(request: AnalyzeRequest): Observable<AnalyzeResponse> {
-    return this.http.post<AnalyzeResponse>(this.apiUrl, request);
+    return this.http.post<AnalyzeResponse>(`${this.apiUrl}/analyze`, request);
+  }
+
+  getStats(): Observable<any> {
+    return this.http.get(`${this.apiUrl}/stats`);
+  }
+
+  getHistory(): Observable<any> {
+    return this.http.get(`${this.apiUrl}/history`);
   }
 }
