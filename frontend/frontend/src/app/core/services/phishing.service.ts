@@ -20,7 +20,14 @@ export class PhishingService {
     return this.http.get(`${this.apiUrl}/stats`);
   }
 
-  getHistory(): Observable<any> {
-    return this.http.get(`${this.apiUrl}/history`);
+  getHistory(skip: number = 0, limit: number = 10, verdict: string = '', search: string = ''): Observable<any> {
+    let url = `${this.apiUrl}/history?skip=${skip}&limit=${limit}`;
+    if (verdict && verdict !== 'all') {
+      url += `&verdict=${verdict}`;
+    }
+    if (search) {
+      url += `&search=${encodeURIComponent(search)}`;
+    }
+    return this.http.get(url);
   }
 }

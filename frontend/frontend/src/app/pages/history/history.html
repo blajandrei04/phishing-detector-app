@@ -1,1 +1,109 @@
-<p>history works!</p>
+<div class="history-container">
+  <div class="history-header">
+    <div>
+      <h2 class="display-6 fs-3">Scan History</h2>
+      <p class="text-muted mb-0">View all past URLs evaluated by the ML model.</p>
+    </div>
+  </div>
+
+  <div class="filters-card">
+    <div class="row g-3">
+      <div class="col-md-8">
+        <label class="form-label text-muted small fw-bold">SEARCH URL</label>
+        <div class="input-group border border-1 border-gray rounded-3 overflow-hidden">
+          <span class="input-group-text bg-white border-0 text-muted"><i class="bi bi-search"></i></span>
+          <input type="text" class="form-control border-0 shadow-none ps-0" placeholder="Search for google.com, paypal, etc..." 
+                 [(ngModel)]="searchQuery" (keyup.enter)="onSearch()">
+          <button class="btn btn-light border-start" (click)="onSearch()">Search</button>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <label class="form-label text-muted small fw-bold">FILTER BY THREAT</label>
+        <select class="form-select shadow-none border border-1 border-gray py-2" [(ngModel)]="selectedVerdict" (change)="onFilterChange()">
+          <option value="all">All Results</option>
+          <option value="phishing">Phishing (High Threat)</option>
+          <option value="suspicious">Suspicious (Medium Threat)</option>
+          <option value="legitimate">Legitimate (Safe)</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <div class="table-card">
+    <div class="table-responsive">
+      <table class="table table-hover border-0 align-middle mb-0">
+        <thead>
+          <tr>
+            <th class="ps-4">URL Analyzed</th>
+            <th>Threat Verdict</th>
+            <th>Risk Score</th>
+            <th>Scan Date</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngIf="scans.length === 0">
+            <td colspan="4" class="text-center py-5">
+              <i class="bi bi-inboxes text-muted fs-1 d-block mb-2"></i>
+              <p class="text-muted mb-0 fw-medium">No scan records found matching your query.</p>
+            </td>
+          </tr>
+          <tr *ngFor="let scan of scans">
+            <td class="url-cell ps-4">
+              <a [href]="scan.url.startsWith('http') ? scan.url : 'http://' + scan.url" target="_blank" class="text-decoration-none text-dark d-inline-block text-truncate" style="max-width: 350px;" title="{{scan.url}}">
+                {{scan.url}}
+              </a>
+            </td>
+            <td>
+              <span class="badge rounded-pill border px-3 py-2 fw-semibold shadow-sm" 
+                    [ngClass]="{
+                      'bg-danger-subtle text-danger border-danger': scan.verdict === 'phishing',
+                      'bg-warning-subtle text-warning border-warning': scan.verdict === 'suspicious',
+                      'bg-success-subtle text-success border-success': scan.verdict === 'legitimate'
+                    }">
+                <i class="bi me-1" 
+                   [ngClass]="{
+                     'bi-x-octagon-fill': scan.verdict === 'phishing',
+                     'bi-exclamation-triangle-fill': scan.verdict === 'suspicious',
+                     'bi-check-circle-fill': scan.verdict === 'legitimate'
+                   }"></i>
+                {{scan.verdict | titlecase}}
+              </span>
+            </td>
+            <td class="score-cell fs-6">
+              <span class="fw-bold" [ngClass]="{
+                  'text-danger': scan.score >= 0.7,
+                  'text-warning': scan.score >= 0.4 && scan.score < 0.7,
+                  'text-success': scan.score < 0.4
+                }">
+                {{ (scan.score * 100) | number:'1.0-1' }}
+              </span>
+              <span class="text-muted small">/ 100</span>
+            </td>
+            <td class="text-muted small">
+              <i class="bi bi-clock me-1"></i> {{ scan.created_at | date:'short' }}
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    
+    <div class="pagination-controls">
+      <div class="page-info">
+        Showing <strong class="text-dark">{{ totalScans === 0 ? 0 : (currentPage - 1) * pageSize + 1 }}</strong> to 
+        <strong class="text-dark">{{ (currentPage * pageSize) > totalScans ? totalScans : (currentPage * pageSize) }}</strong> 
+        of <strong class="text-dark">{{ totalScans }}</strong> results
+      </div>
+      <div class="btn-group shadow-sm">
+        <button class="btn btn-white border px-3" [disabled]="currentPage === 1" (click)="prevPage()">
+          <i class="bi bi-chevron-left fs-6"></i>
+        </button>
+        <button class="btn btn-white border px-3" disabled>
+           Page {{ currentPage }} of {{ totalPages === 0 ? 1 : totalPages }}
+        </button>
+        <button class="btn btn-white border px-3" [disabled]="currentPage === totalPages || totalPages === 0" (click)="nextPage()">
+          <i class="bi bi-chevron-right fs-6"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
