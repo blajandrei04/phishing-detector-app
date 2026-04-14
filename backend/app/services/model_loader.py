@@ -36,7 +36,6 @@ class ModelLoader:
             "hostname_length",
             "path_length",
             "query_length",
-            "has_https",
             "has_at_symbol",
             "has_double_slash_redirect",
             "has_hyphen_in_domain",
@@ -45,6 +44,10 @@ class ModelLoader:
             "special_char_count",
             "is_shortener",
             "uses_ip_as_host",
+            "num_directories",
+            "num_parameters",
+            "url_entropy",
+            "has_suspicious_warning_words"
         ]
         x = [[features.get(name, 0) for name in feature_order]]
 

@@ -16,7 +16,7 @@ model_loader.load()
 def _verdict_from_score(score: float) -> str:
     if score >= 0.70:
         return "phishing"
-    if score >= 0.40:
+    if score >= 0.50:
         return "suspicious"
     return "legitimate"
 

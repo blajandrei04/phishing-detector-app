@@ -1,6 +1,12 @@
-<div class="app-container">
-  <app-sidebar></app-sidebar>
-  <main class="main-content">
-    <router-outlet></router-outlet>
-  </main>
-</div>
+<ng-container *ngIf="authFacade.isAuthenticated$ | async; else loginLayout">
+  <div class="app-container">
+    <app-sidebar></app-sidebar>
+    <main class="main-content">
+      <router-outlet></router-outlet>
+    </main>
+  </div>
+</ng-container>
+
+<ng-template #loginLayout>
+  <router-outlet></router-outlet>
+</ng-template>

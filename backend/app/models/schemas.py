@@ -2,6 +2,23 @@ from pydantic import BaseModel, HttpUrl, Field
 from typing import Optional, Dict, Any
 from datetime import datetime
 
+class Token(BaseModel):
+    access_token: str
+    token_type: str
+
+class LoginRequest(BaseModel):
+    username: str
+    password: str
+
+class UserResponse(BaseModel):
+    id: int
+    username: str
+    email: str
+    
+    class Config:
+        from_attributes = True
+
+
 class AnalyzeRequest(BaseModel):
     url: HttpUrl
     user_id: Optional[str]= None

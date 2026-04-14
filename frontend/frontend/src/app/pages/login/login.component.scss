@@ -1,0 +1,279 @@
+.login-wrapper {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-color, #f3f4f6);
+  position: relative;
+  overflow: hidden;
+  font-family: var(--font-family, 'Inter', sans-serif);
+  
+  .blob {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    z-index: 1;
+    opacity: 0.8;
+    animation: float 10s infinite ease-in-out alternate;
+  }
+
+  .blob-1 {
+    top: 5%;
+    left: 15%;
+    width: 450px;
+    height: 450px;
+    background: radial-gradient(circle, rgba(37,99,235,0.2) 0%, rgba(37,99,235,0) 70%);
+  }
+  
+  .blob-2 {
+    bottom: -5%;
+    right: 15%;
+    width: 500px;
+    height: 500px;
+    background: radial-gradient(circle, rgba(96,165,250,0.25) 0%, rgba(243,244,246,0) 70%);
+    animation-delay: -5s;
+  }
+}
+
+.glass-card {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  max-width: 400px;
+  background: white;
+  border: 1px solid rgba(229, 231, 235, 0.8);
+  border-radius: 20px;
+  padding: 40px 32px;
+  box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.05), 0 10px 15px -3px rgba(0, 0, 0, 0.02);
+  animation: slideUpFade 0.6s cubic-bezier(0.16, 1, 0.3, 1) calc(0.1s);
+
+  .card-header {
+    text-align: center;
+    margin-bottom: 28px;
+
+    .logo {
+      width: 52px;
+      height: 52px;
+      margin: 0 auto 16px;
+      background: var(--sidebar-bg, #2563eb);
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      box-shadow: 0 8px 16px rgba(37, 99, 235, 0.25);
+    }
+
+    h2 {
+      margin: 0;
+      color: var(--text-primary, #111827);
+      font-size: 24px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+    }
+
+    p {
+      margin: 6px 0 0;
+      color: var(--text-secondary, #6b7280);
+      font-size: 14px;
+    }
+  }
+
+  .alert {
+    padding: 12px 16px;
+    border-radius: 12px;
+    margin-bottom: 24px;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    font-weight: 500;
+    
+    &.alert-danger {
+      background: #fef2f2;
+      border: 1px solid #fecaca;
+      color: #ef4444;
+    }
+  }
+
+  .form-field {
+    margin-bottom: 20px;
+    text-align: left; /* Ensure label aligns correctly */
+
+    label {
+      display: block;
+      color: var(--text-primary, #111827);
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 6px;
+      margin-left: 2px;
+    }
+    
+    .forgot-wrapper {
+      text-align: right;
+      margin-top: 8px;
+      
+      .forgot-link {
+        font-size: 13px;
+        color: var(--sidebar-bg, #2563eb);
+        text-decoration: none;
+        font-weight: 600;
+        transition: color 0.2s ease;
+        
+        &:hover {
+          color: #1d4ed8;
+          text-decoration: underline;
+        }
+      }
+    }
+
+    .input-wrapper {
+      position: relative;
+      display: flex;
+      align-items: center;
+      width: 100%;
+
+      svg {
+        position: absolute;
+        left: 14px;
+        color: #94a3b8;
+        transition: color 0.3s ease;
+        pointer-events: none; /* Prevent icon from eating clicks */
+      }
+
+      .custom-input {
+        width: 100%;
+        box-sizing: border-box; /* Ensure padding doesn't affect width */
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 10px;
+        padding: 12px 14px 12px 40px;
+        color: var(--text-primary, #111827);
+        font-size: 14px;
+        transition: all 0.3s ease;
+        margin: 0; /* Reset any global form margins */
+
+        &:focus {
+          outline: none;
+          background: white;
+          border-color: var(--sidebar-bg, #2563eb);
+          box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+          
+          & + svg,
+          ~ svg {
+            color: var(--sidebar-bg, #2563eb);
+          }
+        }
+
+        &::placeholder {
+          color: #94a3b8;
+          font-weight: 400;
+        }
+
+        &.is-invalid {
+          border-color: #ef4444;
+          &:focus {
+            box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+          }
+        }
+      }
+    }
+  }
+
+  .actions {
+    margin-top: 28px;
+
+    .submit-btn {
+      width: 100%;
+      background: var(--sidebar-bg, #2563eb);
+      color: white;
+      border: none;
+      padding: 12px;
+      border-radius: 10px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      transition: all 0.2s ease;
+      position: relative;
+      overflow: hidden;
+
+      &:hover:not(:disabled) {
+        transform: translateY(-1px);
+        background: #1d4ed8;
+        box-shadow: 0 6px 12px rgba(37, 99, 235, 0.2);
+      }
+      
+      &:active:not(:disabled) {
+        transform: translateY(0);
+      }
+
+      &:disabled {
+        opacity: 0.7;
+        cursor: not-allowed;
+      }
+
+      .spinner {
+        width: 18px;
+        height: 18px;
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        border-radius: 50%;
+        border-top-color: white;
+        animation: spin 0.8s linear infinite;
+      }
+    }
+  }
+
+  .auth-footer {
+    margin-top: 28px;
+    text-align: center;
+    border-top: 1px solid #e2e8f0;
+    padding-top: 24px;
+    
+    p {
+      margin: 0;
+      font-size: 14px;
+      color: var(--text-secondary, #6b7280);
+      
+      .register-link {
+        color: var(--sidebar-bg, #2563eb);
+        font-weight: 600;
+        text-decoration: none;
+        transition: color 0.2s ease;
+        margin-left: 4px;
+        
+        &:hover {
+          color: #1d4ed8;
+          text-decoration: underline;
+        }
+      }
+    }
+  }
+  
+  .hints {
+      text-align: center;
+      margin-top: 16px;
+      font-size: 12px;
+      color: #94a3b8;
+      
+      strong {
+        color: var(--text-primary, #111827);
+      }
+  }
+}
+
+@keyframes float {
+  0% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(20px, -20px) scale(1.05); }
+  100% { transform: translate(-20px, 20px) scale(0.95); }
+}
+
+@keyframes slideUpFade {
+  0% { opacity: 0; transform: translateY(20px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
