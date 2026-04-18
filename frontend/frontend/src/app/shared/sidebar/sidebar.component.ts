@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
+import { AuthFacade } from '../../core/facades/auth.facade';
 
 @Component({
   selector: 'app-sidebar',
@@ -8,4 +9,10 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
   standalone: true,
   imports: [RouterLink, RouterLinkActive],
 })
-export class SidebarComponent {}
+export class SidebarComponent {
+  authFacade = inject(AuthFacade);
+
+  onLogout(): void {
+    this.authFacade.logout();
+  }
+}

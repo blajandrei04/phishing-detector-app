@@ -3,7 +3,9 @@ from sqlalchemy.orm import Session
 from sqlalchemy import or_
 from app.db.database import get_db
 from app.db.models import ScanHistory
+from app.db.models import User
 from app.models.schemas import HistoryCreateRequest
+from app.api.auth import get_current_user
 
 router = APIRouter()
 
@@ -17,10 +19,10 @@ def get_history(
     limit: int = Query(50, ge=1, le=100),
     verdict: str | None = None,
     search: str | None = None,
-    user_id: str | None = None,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
 ):
-    query = db.query(ScanHistory)
+    query = db.query(ScanHistory).filter(ScanHistory.user_id == current_user.id)
     
     # Apply filtering
     if verdict and verdict.lower() != "all":

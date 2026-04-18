@@ -126,6 +126,12 @@
   padding-left: 16px;
 }
 
+.quick-analysis .form-control:focus {
+  z-index: 1;
+  box-shadow: none;
+  border-color: #2563eb;
+}
+
 .quick-analysis .btn-primary {
   border-top-right-radius: 12px;
   border-bottom-right-radius: 12px;
@@ -169,12 +175,16 @@
 
 .recent-scans .scan-details {
   flex-grow: 1;
+  min-width: 0;
 }
 
 .recent-scans .scan-url {
   font-weight: 500;
   color: #1e293b;
   margin-bottom: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .recent-scans .scan-time {

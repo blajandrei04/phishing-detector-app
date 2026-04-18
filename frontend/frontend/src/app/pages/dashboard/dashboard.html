@@ -102,11 +102,18 @@
       <div class="card-body">
         <h5 class="card-title">Scan Activity</h5>
         <p class="card-subtitle">Daily scan volume over the past week</p>
-        <img
-          src="/assets/chart-placeholder.png"
-          alt="Scan activity chart"
-          class="chart-placeholder"
-        />
+        <div class="d-flex align-items-end justify-content-between mt-4" style="height: 180px; padding: 20px 10px 0; border-bottom: 2px solid #f1f5f9;">
+          <div class="bg-primary rounded-top" style="width: 10%; height: 35%; opacity: 0.6; transition: height 0.5s ease" title="Mon: 12 scans"></div>
+          <div class="bg-primary rounded-top" style="width: 10%; height: 55%; opacity: 0.8; transition: height 0.5s ease" title="Tue: 25 scans"></div>
+          <div class="bg-primary rounded-top" style="width: 10%; height: 40%; opacity: 0.7; transition: height 0.5s ease" title="Wed: 18 scans"></div>
+          <div class="bg-primary rounded-top" style="width: 10%; height: 85%; opacity: 0.9; transition: height 0.5s ease" title="Thu: 42 scans"></div>
+          <div class="bg-primary rounded-top" style="width: 10%; height: 60%; opacity: 0.8; transition: height 0.5s ease" title="Fri: 28 scans"></div>
+          <div class="bg-primary rounded-top" style="width: 10%; height: 95%; opacity: 1.0; transition: height 0.5s ease" title="Sat: 48 scans"></div>
+          <div class="bg-primary rounded-top" style="width: 10%; height: 50%; opacity: 0.7; transition: height 0.5s ease" title="Sun: 22 scans"></div>
+        </div>
+        <div class="d-flex justify-content-between mt-2 text-muted small px-2 fw-medium">
+          <span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span>
+        </div>
       </div>
     </div>
   </div>

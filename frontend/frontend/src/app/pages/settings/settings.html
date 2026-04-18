@@ -1,1 +1,180 @@
-<p>settings works!</p>
+<div class="settings-container">
+  <div class="settings-header">
+    <h2 class="display-6 fs-3">Settings</h2>
+    <p class="text-muted mb-0">Manage your account and security preferences</p>
+  </div>
+
+  <div class="settings-grid">
+    <!-- Profile Section -->
+    <div class="settings-card">
+      <div class="card-icon-header">
+        <div class="icon-circle blue">
+          <i class="bi bi-person-fill"></i>
+        </div>
+        <div>
+          <h5 class="mb-0 fw-bold">Profile Information</h5>
+          <p class="text-muted small mb-0">Update your account details</p>
+        </div>
+      </div>
+
+      <div *ngIf="profileMessage" class="alert alert-success">
+        <i class="bi bi-check-circle-fill me-2"></i>{{ profileMessage }}
+      </div>
+      <div *ngIf="profileError" class="alert alert-danger">
+        <i class="bi bi-exclamation-triangle-fill me-2"></i>{{ profileError }}
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Username</label>
+        <div class="input-icon-wrapper">
+          <i class="bi bi-at"></i>
+          <input type="text" class="form-control" [(ngModel)]="profileUsername" placeholder="Enter username">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Email Address</label>
+        <div class="input-icon-wrapper">
+          <i class="bi bi-envelope"></i>
+          <input type="email" class="form-control" [(ngModel)]="profileEmail" placeholder="Enter email">
+        </div>
+      </div>
+
+      <div class="form-group mb-0">
+        <label class="form-label">Role</label>
+        <div class="input-icon-wrapper">
+          <i class="bi bi-shield-check"></i>
+          <input type="text" class="form-control" value="User" disabled>
+        </div>
+      </div>
+
+      <div class="card-actions">
+        <button class="btn btn-primary" (click)="saveProfile()" [disabled]="profileSaving">
+          <span *ngIf="!profileSaving">
+            <i class="bi bi-check2 me-1"></i>Save Changes
+          </span>
+          <span *ngIf="profileSaving">
+            <span class="spinner-border spinner-border-sm me-1"></span>Saving...
+          </span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Password Section -->
+    <div class="settings-card">
+      <div class="card-icon-header">
+        <div class="icon-circle red">
+          <i class="bi bi-lock-fill"></i>
+        </div>
+        <div>
+          <h5 class="mb-0 fw-bold">Change Password</h5>
+          <p class="text-muted small mb-0">Keep your account secure</p>
+        </div>
+      </div>
+
+      <div *ngIf="passwordMessage" class="alert alert-success">
+        <i class="bi bi-check-circle-fill me-2"></i>{{ passwordMessage }}
+      </div>
+      <div *ngIf="passwordError" class="alert alert-danger">
+        <i class="bi bi-exclamation-triangle-fill me-2"></i>{{ passwordError }}
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Current Password</label>
+        <div class="input-icon-wrapper">
+          <i class="bi bi-key"></i>
+          <input type="password" class="form-control" [(ngModel)]="currentPassword" placeholder="Enter current password">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">New Password</label>
+        <div class="input-icon-wrapper">
+          <i class="bi bi-lock"></i>
+          <input type="password" class="form-control" [(ngModel)]="newPassword" placeholder="Enter new password">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Confirm New Password</label>
+        <div class="input-icon-wrapper">
+          <i class="bi bi-lock-fill"></i>
+          <input type="password" class="form-control" [(ngModel)]="confirmPassword" placeholder="Re-enter new password">
+        </div>
+      </div>
+
+      <div class="password-requirements">
+        <p class="small text-muted fw-semibold mb-2">
+          <i class="bi bi-info-circle me-1"></i>Password Requirements
+        </p>
+        <ul class="requirements-list">
+          <li [class.met]="newPassword.length >= 6">Minimum 6 characters</li>
+          <li [class.met]="newPassword === confirmPassword && newPassword.length > 0">Passwords match</li>
+        </ul>
+      </div>
+
+      <div class="card-actions">
+        <button class="btn btn-danger" (click)="changePassword()" [disabled]="passwordSaving">
+          <span *ngIf="!passwordSaving">
+            <i class="bi bi-shield-lock me-1"></i>Update Password
+          </span>
+          <span *ngIf="passwordSaving">
+            <span class="spinner-border spinner-border-sm me-1"></span>Updating...
+          </span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Account Info Section -->
+    <div class="settings-card info-card">
+      <div class="card-icon-header">
+        <div class="icon-circle green">
+          <i class="bi bi-info-circle-fill"></i>
+        </div>
+        <div>
+          <h5 class="mb-0 fw-bold">Account Overview</h5>
+          <p class="text-muted small mb-0">Your account at a glance</p>
+        </div>
+      </div>
+
+      <div class="info-items">
+        <div class="info-item">
+          <div class="info-icon">
+            <i class="bi bi-person-badge"></i>
+          </div>
+          <div>
+            <p class="info-label">Account ID</p>
+            <p class="info-value">#{{ user?.id }}</p>
+          </div>
+        </div>
+        <div class="info-item">
+          <div class="info-icon">
+            <i class="bi bi-shield-check"></i>
+          </div>
+          <div>
+            <p class="info-label">Authentication</p>
+            <p class="info-value">JWT / Session</p>
+          </div>
+        </div>
+        <div class="info-item">
+          <div class="info-icon">
+            <i class="bi bi-database"></i>
+          </div>
+          <div>
+            <p class="info-label">Hashing Algorithm</p>
+            <p class="info-value">bcrypt</p>
+          </div>
+        </div>
+        <div class="info-item">
+          <div class="info-icon">
+            <i class="bi bi-cpu"></i>
+          </div>
+          <div>
+            <p class="info-label">ML Model</p>
+            <p class="info-value">XGBoost v1.0</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
