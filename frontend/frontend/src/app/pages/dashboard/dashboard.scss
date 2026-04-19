@@ -198,3 +198,86 @@
   padding: 4px 8px;
   color: #fff;
 }
+
+/* ─── SHAP Explainability Chart ─── */
+.shap-explanation {
+  animation: fadeIn 0.4s ease-out;
+}
+
+.shap-chart {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.shap-bar-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 4px 0;
+}
+
+.shap-label {
+  width: 160px;
+  min-width: 160px;
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: #475569;
+  text-align: right;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.shap-bar-container {
+  flex-grow: 1;
+}
+
+.shap-bar-track {
+  position: relative;
+  height: 20px;
+  background: #f1f5f9;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.shap-center-line {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: #94a3b8;
+  z-index: 2;
+}
+
+.shap-bar {
+  position: absolute;
+  top: 2px;
+  bottom: 2px;
+  border-radius: 3px;
+  transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 1;
+}
+
+.shap-risk {
+  background: linear-gradient(90deg, #fca5a5, #ef4444);
+}
+
+.shap-safe {
+  background: linear-gradient(270deg, #86efac, #22c55e);
+}
+
+.shap-value-label {
+  width: 60px;
+  min-width: 60px;
+  text-align: right;
+  font-size: 0.75rem;
+  font-weight: 600;
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}

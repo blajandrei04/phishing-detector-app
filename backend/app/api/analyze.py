@@ -4,6 +4,7 @@ from sqlalchemy.orm import Session
 from app.models.schemas import AnalyzeRequest, AnalyzeResponse
 from app.services.feature_extractor import extract_features
 from app.services.model_loader import ModelLoader
+from app.services.shap_explainer import ShapExplainer
 from app.core.config import settings
 from app.db.database import get_db
 from app.db.models import ScanHistory
@@ -14,6 +15,10 @@ router = APIRouter()
 
 model_loader = ModelLoader(settings.model_path)
 model_loader.load()
+
+# Initialize SHAP explainer with the loaded model
+shap_explainer = ShapExplainer()
+shap_explainer.initialize(model_loader.model)
 
 def _verdict_from_score(score: float) -> str:
     if score >= 0.70:
@@ -32,6 +37,9 @@ def analyze_url(payload: AnalyzeRequest, db: Session = Depends(get_db), current_
     # Simple confidence heuristic for now
     confidence = max(0.5, abs(score - 0.5) * 2)
 
+    # Generate SHAP explanation for this prediction
+    shap_explanation = shap_explainer.explain(features)
+
     # Save to database
     db_scan = ScanHistory(
         url=str(payload.url),
@@ -48,5 +56,6 @@ def analyze_url(payload: AnalyzeRequest, db: Session = Depends(get_db), current_
         verdict=verdict,
         confidence=confidence,
         extracted_features=features,
+        shap_explanation=shap_explanation,
         timestamp=datetime.now(timezone.utc),
     )

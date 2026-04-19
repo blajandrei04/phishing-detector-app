@@ -91,6 +91,38 @@
             <span class="badge border text-dark bg-white" *ngIf="analysisResult.extracted_features.subdomain_count > 1">Subdomains: {{analysisResult.extracted_features.subdomain_count}}</span>
           </div>
         </div>
+
+        <!-- SHAP Explainability Section -->
+        <div class="shap-explanation mt-4 pt-3 border-top" *ngIf="analysisResult.shap_explanation?.shap_values?.length">
+          <p class="mb-1 text-muted small fw-bold">
+            <i class="bi bi-lightbulb-fill text-warning me-1"></i>EXPLAINABLE AI — WHY THIS VERDICT?
+          </p>
+          <p class="text-muted small mb-3">SHAP analysis shows which URL features most influenced the model's prediction.</p>
+
+          <div class="shap-chart">
+            <div class="shap-bar-row" *ngFor="let item of analysisResult.shap_explanation.shap_values.slice(0, 8)">
+              <div class="shap-label">{{ item.label }}</div>
+              <div class="shap-bar-container">
+                <div class="shap-bar-track">
+                  <div class="shap-bar"
+                    [style.width.%]="getShapBarWidth(item.shap_value)"
+                    [style.marginLeft]="item.shap_value < 0 ? (50 - getShapBarWidth(item.shap_value)) + '%' : '50%'"
+                    [ngClass]="{'shap-risk': item.shap_value > 0, 'shap-safe': item.shap_value <= 0}">
+                  </div>
+                  <div class="shap-center-line"></div>
+                </div>
+              </div>
+              <div class="shap-value-label" [ngClass]="{'text-danger': item.shap_value > 0, 'text-success': item.shap_value <= 0}">
+                {{ item.shap_value > 0 ? '+' : '' }}{{ item.shap_value | number:'1.0-3' }}
+              </div>
+            </div>
+          </div>
+
+          <div class="d-flex justify-content-center gap-4 mt-3">
+            <span class="small text-muted"><i class="bi bi-square-fill text-danger me-1" style="font-size: 0.6rem;"></i>Increases risk</span>
+            <span class="small text-muted"><i class="bi bi-square-fill text-success me-1" style="font-size: 0.6rem;"></i>Decreases risk</span>
+          </div>
+        </div>
       </div>
     </div>
   </div>

@@ -165,4 +165,17 @@ export class DashboardComponent implements OnInit {
       riskColor: 'green',
     },
   ];
+
+  /**
+   * Converts a SHAP value into a percentage width for the bar chart.
+   * Normalizes against the max absolute SHAP value in the current result.
+   */
+  getShapBarWidth(shapValue: number): number {
+    if (!this.analysisResult?.shap_explanation?.shap_values?.length) return 0;
+    const maxAbs = Math.max(
+      ...this.analysisResult.shap_explanation.shap_values.map((s: any) => Math.abs(s.shap_value))
+    );
+    if (maxAbs === 0) return 0;
+    return (Math.abs(shapValue) / maxAbs) * 45; // 45% max width (half the track)
+  }
 }

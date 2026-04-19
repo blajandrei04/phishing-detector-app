@@ -1,5 +1,5 @@
 from pydantic import BaseModel, HttpUrl, Field
-from typing import Optional, Dict, Any
+from typing import Optional, Dict, Any, List
 from datetime import datetime
 
 class Token(BaseModel):
@@ -49,6 +49,7 @@ class AnalyzeResponse(BaseModel):
     verdict: str
     confidence: float = Field(ge=0.0, le=1.0)
     extracted_features: Optional[Dict[str, Any]] = None
+    shap_explanation: Optional[Dict[str, Any]] = None
     timestamp: datetime
 
 class HealthResponse(BaseModel):
