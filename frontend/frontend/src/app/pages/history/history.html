@@ -30,7 +30,19 @@
   </div>
 
   <div class="table-card">
-    <div class="table-responsive">
+    <!-- Error state -->
+    <div *ngIf="loadError" class="alert alert-danger m-3">
+      <i class="bi bi-exclamation-triangle-fill me-2"></i>{{ loadError }}
+    </div>
+
+    <!-- Loading state -->
+    <div *ngIf="isLoading" class="text-center py-5">
+      <div class="spinner-border text-primary" role="status"></div>
+      <p class="text-muted mt-3 mb-0">Loading scan history...</p>
+    </div>
+
+    <!-- Table -->
+    <div class="table-responsive" *ngIf="!isLoading && !loadError">
       <table class="table table-hover border-0 align-middle mb-0">
         <thead>
           <tr>
@@ -44,7 +56,7 @@
           <tr *ngIf="scans.length === 0">
             <td colspan="4" class="text-center py-5">
               <i class="bi bi-inboxes text-muted fs-1 d-block mb-2"></i>
-              <p class="text-muted mb-0 fw-medium">No scan records found matching your query.</p>
+              <p class="text-muted mb-0 fw-medium">No scan records found. Analyze some URLs to build your history!</p>
             </td>
           </tr>
           <tr *ngFor="let scan of scans">
@@ -87,7 +99,7 @@
       </table>
     </div>
     
-    <div class="pagination-controls">
+    <div class="pagination-controls" *ngIf="!isLoading && !loadError">
       <div class="page-info">
         Showing <strong class="text-dark">{{ totalScans === 0 ? 0 : (currentPage - 1) * pageSize + 1 }}</strong> to 
         <strong class="text-dark">{{ (currentPage * pageSize) > totalScans ? totalScans : (currentPage * pageSize) }}</strong> 

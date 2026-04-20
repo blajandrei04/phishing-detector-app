@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { PhishingService } from '../../core/services/phishing.service';
@@ -12,9 +12,12 @@ import { PhishingService } from '../../core/services/phishing.service';
 })
 export class HistoryComponent implements OnInit {
   private phishingService = inject(PhishingService);
+  private cdr = inject(ChangeDetectorRef);
 
   scans: any[] = [];
   totalScans: number = 0;
+  isLoading: boolean = true;
+  loadError: string | null = null;
   
   // Pagination
   currentPage: number = 1;
@@ -29,6 +32,8 @@ export class HistoryComponent implements OnInit {
   }
 
   loadHistory() {
+    this.isLoading = true;
+    this.loadError = null;
     const skip = (this.currentPage - 1) * this.pageSize;
     
     this.phishingService.getHistory(skip, this.pageSize, this.selectedVerdict, this.searchQuery)
@@ -36,9 +41,14 @@ export class HistoryComponent implements OnInit {
         next: (response) => {
           this.scans = response.items;
           this.totalScans = response.total;
+          this.isLoading = false;
+          this.cdr.detectChanges();
         },
         error: (err) => {
           console.error("Failed to fetch history:", err);
+          this.loadError = 'Failed to load scan history. Please try again.';
+          this.isLoading = false;
+          this.cdr.detectChanges();
         }
       });
   }

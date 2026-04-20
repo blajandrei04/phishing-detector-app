@@ -30,8 +30,35 @@ export class AnalyzerComponent {
       return;
     }
 
+    let url = this.url.trim();
+
+    // Length check
+    if (url.length > 2048) {
+      this.error = 'URL is too long (max 2048 characters).';
+      return;
+    }
+
+    // Auto-prepend https://
+    if (!url.startsWith('http://') && !url.startsWith('https://')) {
+      url = 'https://' + url;
+    }
+
+    // Basic format validation
+    try {
+      const parsed = new URL(url);
+      if (!parsed.hostname || !parsed.hostname.includes('.')) {
+        if (!/^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/.test(parsed.hostname)) {
+          this.error = 'Please enter a valid URL (e.g. google.com).';
+          return;
+        }
+      }
+    } catch {
+      this.error = 'Invalid URL format. Please enter a valid web address.';
+      return;
+    }
+
     this.loading = true;
-    this.phishingService.analyzeUrl({ url: this.url.trim() }).subscribe({
+    this.phishingService.analyzeUrl({ url: url }).subscribe({
       next: (result: AnalyzeResponse) => {
         this.loading = false;
         if (isPlatformBrowser(this.platformId)) {
@@ -39,9 +66,14 @@ export class AnalyzerComponent {
         }
         this.router.navigate(['/results']);
       },
-      error: () => {
+      error: (err) => {
         this.loading = false;
-        this.error = 'Failed to analyze URL. Check backend and try again.';
+        if (err.status === 422 && err.error?.detail) {
+          const detail = err.error.detail;
+          this.error = Array.isArray(detail) ? detail.map((d: any) => d.msg).join('. ') : String(detail);
+        } else {
+          this.error = 'Failed to analyze URL. Check backend and try again.';
+        }
       },
     });
   }

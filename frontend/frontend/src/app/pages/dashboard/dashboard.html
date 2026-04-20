@@ -133,41 +133,82 @@
     <div class="scan-activity card">
       <div class="card-body">
         <h5 class="card-title">Scan Activity</h5>
-        <p class="card-subtitle">Daily scan volume over the past week</p>
-        <div class="d-flex align-items-end justify-content-between mt-4" style="height: 180px; padding: 20px 10px 0; border-bottom: 2px solid #f1f5f9;">
-          <div class="bg-primary rounded-top" style="width: 10%; height: 35%; opacity: 0.6; transition: height 0.5s ease" title="Mon: 12 scans"></div>
-          <div class="bg-primary rounded-top" style="width: 10%; height: 55%; opacity: 0.8; transition: height 0.5s ease" title="Tue: 25 scans"></div>
-          <div class="bg-primary rounded-top" style="width: 10%; height: 40%; opacity: 0.7; transition: height 0.5s ease" title="Wed: 18 scans"></div>
-          <div class="bg-primary rounded-top" style="width: 10%; height: 85%; opacity: 0.9; transition: height 0.5s ease" title="Thu: 42 scans"></div>
-          <div class="bg-primary rounded-top" style="width: 10%; height: 60%; opacity: 0.8; transition: height 0.5s ease" title="Fri: 28 scans"></div>
-          <div class="bg-primary rounded-top" style="width: 10%; height: 95%; opacity: 1.0; transition: height 0.5s ease" title="Sat: 48 scans"></div>
-          <div class="bg-primary rounded-top" style="width: 10%; height: 50%; opacity: 0.7; transition: height 0.5s ease" title="Sun: 22 scans"></div>
+        <p class="card-subtitle">Daily scan volume over the past 7 days</p>
+        
+        <!-- Dynamic bar chart -->
+        <div class="activity-chart" *ngIf="activityDays.length > 0">
+          <div class="chart-bars">
+            <div class="chart-bar-wrapper" *ngFor="let day of activityDays">
+              <div class="chart-bar-stack">
+                <div class="chart-bar-tooltip" *ngIf="day.total > 0">{{ day.total }} scans</div>
+                <div class="chart-bar chart-bar-phishing"
+                     *ngIf="day.phishing > 0"
+                     [style.height.%]="(day.phishing / activityMax) * 100"></div>
+                <div class="chart-bar chart-bar-suspicious"
+                     *ngIf="day.suspicious > 0"
+                     [style.height.%]="(day.suspicious / activityMax) * 100"></div>
+                <div class="chart-bar chart-bar-legitimate"
+                     *ngIf="day.legitimate > 0"
+                     [style.height.%]="(day.legitimate / activityMax) * 100"></div>
+                <!-- Empty day placeholder bar -->
+                <div class="chart-bar chart-bar-empty"
+                     *ngIf="day.total === 0"
+                     style="height: 3%;"></div>
+              </div>
+              <span class="chart-day-label">{{ getDayLabel(day.date) }}</span>
+            </div>
+          </div>
+          <div class="chart-legend">
+            <span><i class="bi bi-square-fill" style="color: #22c55e; font-size: 0.55rem;"></i> Legitimate</span>
+            <span><i class="bi bi-square-fill" style="color: #f59e0b; font-size: 0.55rem;"></i> Suspicious</span>
+            <span><i class="bi bi-square-fill" style="color: #ef4444; font-size: 0.55rem;"></i> Phishing</span>
+          </div>
         </div>
-        <div class="d-flex justify-content-between mt-2 text-muted small px-2 fw-medium">
-          <span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span>
+
+        <!-- Empty state only when API hasn't returned data -->
+        <div class="empty-state" *ngIf="activityLoaded && activityDays.length === 0">
+          <i class="bi bi-bar-chart-line"></i>
+          <p>No scan activity yet. Analyze some URLs to see your chart!</p>
+        </div>
+
+        <!-- Loading state -->
+        <div class="empty-state" *ngIf="!activityLoaded">
+          <div class="spinner-border spinner-border-sm text-muted" role="status"></div>
+          <p class="mt-2">Loading activity data...</p>
         </div>
       </div>
     </div>
   </div>
+
   <div class="col-lg-5">
     <div class="recent-scans card">
       <div class="card-body">
         <h5 class="card-title">Recent Scans</h5>
         <p class="card-subtitle">Latest URL analysis results</p>
-        <ul class="list-group list-group-flush">
+
+        <ul class="list-group list-group-flush" *ngIf="recentScans.length > 0">
           <li *ngFor="let scan of recentScans" class="list-group-item">
             <div class="scan-icon">
               <i class="bi {{ scan.icon }}" [style.color]="scan.riskColor"></i>
             </div>
             <div class="scan-details">
               <p class="scan-url">{{ scan.url }}</p>
-              <p class="scan-time">{{ scan.time }}</p>
+              <p class="scan-time">
+                {{ scan.time }}
+                <span class="scan-score">{{ (scan.score * 100) | number:'1.0-0' }}% risk</span>
+              </p>
             </div>
             <div class="scan-risk">
               <span class="badge" [style.backgroundColor]="scan.riskColor">{{ scan.risk }}</span>
             </div>
           </li>
         </ul>
+
+        <!-- Empty state -->
+        <div class="empty-state" *ngIf="recentScans.length === 0">
+          <i class="bi bi-clock-history"></i>
+          <p>No scans yet. Use the Quick Analysis above to get started!</p>
+        </div>
       </div>
     </div>
   </div>

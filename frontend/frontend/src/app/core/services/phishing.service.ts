@@ -30,4 +30,8 @@ export class PhishingService {
     }
     return this.http.get(url);
   }
+
+  getActivity(days: number = 7): Observable<any> {
+    return this.http.get(`${this.apiUrl}/stats/activity?days=${days}`);
+  }
 }
