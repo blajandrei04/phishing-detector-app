@@ -1,5 +1,122 @@
 .card {
   background: #fff;
-  padding: 20px;
   border-radius: 12px;
+}
+
+/* Print Styles */
+@media print {
+  body {
+    background-color: white !important;
+  }
+  .btn, .no-print, nav, header, footer {
+    display: none !important;
+  }
+  .card {
+    border: none !important;
+    box-shadow: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+  .container, .row, .col-md-10 {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+  .shadow-lg {
+    box-shadow: none !important;
+  }
+}
+
+/* ─── SHAP Explainability Chart ─── */
+.shap-explanation {
+  animation: fadeIn 0.4s ease-out;
+}
+
+.shap-chart {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.shap-bar-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 6px 0;
+}
+
+.shap-label {
+  width: 180px;
+  min-width: 180px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: #475569;
+  text-align: right;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.shap-bar-container {
+  flex-grow: 1;
+}
+
+.shap-bar-track {
+  position: relative;
+  height: 24px;
+  background: #f1f5f9;
+  border-radius: 4px;
+  overflow: hidden;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+.shap-center-line {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: #94a3b8;
+  z-index: 2;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+.shap-bar {
+  position: absolute;
+  top: 3px;
+  bottom: 3px;
+  border-radius: 3px;
+  transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 1;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+.shap-risk {
+  background: linear-gradient(90deg, #fca5a5, #ef4444) !important;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+.shap-safe {
+  background: linear-gradient(270deg, #86efac, #22c55e) !important;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+.shap-value-label {
+  width: 70px;
+  min-width: 70px;
+  text-align: right;
+  font-size: 0.85rem;
+  font-weight: 600;
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
 }

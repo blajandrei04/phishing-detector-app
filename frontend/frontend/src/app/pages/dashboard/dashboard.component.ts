@@ -1,7 +1,9 @@
-import { Component, OnInit, inject, ChangeDetectorRef } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, OnInit, inject, ChangeDetectorRef, PLATFORM_ID } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 import { PhishingService } from '../../core/services/phishing.service';
+import { UrlValidatorService } from '../../core/services/url-validator.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -13,6 +15,9 @@ import { PhishingService } from '../../core/services/phishing.service';
 export class DashboardComponent implements OnInit {
   private phishingService = inject(PhishingService);
   private cdr = inject(ChangeDetectorRef);
+  private router = inject(Router);
+  private platformId = inject(PLATFORM_ID);
+  private urlValidator = inject(UrlValidatorService);
 
   urlToAnalyze: string = '';
   isAnalyzing: boolean = false;
@@ -72,11 +77,11 @@ export class DashboardComponent implements OnInit {
           risk: item.verdict === 'phishing' ? 'High' : (item.verdict === 'suspicious' ? 'Medium' : 'Safe'),
           time: this.formatTimeAgo(new Date(item.created_at)),
           icon: item.verdict === 'phishing' ? 'bi-exclamation-octagon-fill'
-              : item.verdict === 'suspicious' ? 'bi-exclamation-triangle-fill'
+            : item.verdict === 'suspicious' ? 'bi-exclamation-triangle-fill'
               : 'bi-check-circle-fill',
           riskColor: item.verdict === 'phishing' ? '#ef4444'
-                   : item.verdict === 'suspicious' ? '#f59e0b'
-                   : '#22c55e',
+            : item.verdict === 'suspicious' ? '#f59e0b'
+              : '#22c55e',
           score: item.score
         }));
         this.isLoading = false;
@@ -103,42 +108,14 @@ export class DashboardComponent implements OnInit {
   }
 
   submitUrl() {
-    if (!this.urlToAnalyze || this.urlToAnalyze.trim() === '') {
-      this.analysisError = 'Please enter a URL to analyze.';
+    const validation = this.urlValidator.validate(this.urlToAnalyze);
+    if (!validation.isValid) {
+      this.analysisError = validation.errorMessage;
       this.cdr.detectChanges();
       return;
     }
 
-    let url = this.urlToAnalyze.trim();
-
-    // Length check
-    if (url.length > 2048) {
-      this.analysisError = 'URL is too long (max 2048 characters).';
-      this.cdr.detectChanges();
-      return;
-    }
-
-    // Auto-prepend https:// if no protocol
-    if (!url.startsWith('http://') && !url.startsWith('https://')) {
-      url = 'https://' + url;
-    }
-
-    // Basic URL format validation
-    try {
-      const parsed = new URL(url);
-      if (!parsed.hostname || !parsed.hostname.includes('.')) {
-        // Allow IP addresses too
-        if (!/^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/.test(parsed.hostname)) {
-          this.analysisError = 'Please enter a valid URL (e.g. google.com or 192.168.1.1).';
-          this.cdr.detectChanges();
-          return;
-        }
-      }
-    } catch {
-      this.analysisError = 'Invalid URL format. Please enter a valid web address.';
-      this.cdr.detectChanges();
-      return;
-    }
+    let url = validation.formattedUrl;
 
     this.isAnalyzing = true;
     this.analysisError = null;
@@ -183,13 +160,11 @@ export class DashboardComponent implements OnInit {
     return `${days}d ago`;
   }
 
-  /** Get bar height as a percentage for the activity chart */
   getBarHeight(total: number): number {
     if (this.activityMax === 0) return 0;
-    return Math.max(4, (total / this.activityMax) * 100); // min 4% so empty days still have a sliver
+    return Math.max(4, (total / this.activityMax) * 100);
   }
 
-  /** Get day-of-week label from a date string */
   getDayLabel(dateStr: string): string {
     const date = new Date(dateStr + 'T12:00:00');
     return date.toLocaleDateString('en-US', { weekday: 'short' });
@@ -232,16 +207,11 @@ export class DashboardComponent implements OnInit {
 
   recentScans: any[] = [];
 
-  /**
-   * Converts a SHAP value into a percentage width for the bar chart.
-   * Normalizes against the max absolute SHAP value in the current result.
-   */
-  getShapBarWidth(shapValue: number): number {
-    if (!this.analysisResult?.shap_explanation?.shap_values?.length) return 0;
-    const maxAbs = Math.max(
-      ...this.analysisResult.shap_explanation.shap_values.map((s: any) => Math.abs(s.shap_value))
-    );
-    if (maxAbs === 0) return 0;
-    return (Math.abs(shapValue) / maxAbs) * 45;
+  /** Navigate to full report screen */
+  viewFullReport() {
+    if (this.analysisResult && isPlatformBrowser(this.platformId)) {
+      localStorage.setItem('lastResult', JSON.stringify(this.analysisResult));
+      this.router.navigate(['/results']);
+    }
   }
 }

@@ -2,151 +2,295 @@
   <!-- Interactive animated background blobs -->
   <div class="blob blob-1"></div>
   <div class="blob blob-2"></div>
-  
+
   <div class="glass-card">
     <div class="card-header">
       <div class="logo">
-        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-shield">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="30"
+          height="30"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          class="feather feather-shield"
+        >
           <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
         </svg>
       </div>
       <h2>
-        <ng-container *ngIf="mode === 'login'">Welcome Back</ng-container>
-        <ng-container *ngIf="mode === 'register'">Create Account</ng-container>
-        <ng-container *ngIf="mode === 'forgot'">Reset Password</ng-container>
-        <ng-container *ngIf="mode === 'reset'">New Password</ng-container>
+        @if (mode === 'login') {
+          Welcome Back
+        }
+        @if (mode === 'register') {
+          Create Account
+        }
+        @if (mode === 'forgot') {
+          Reset Password
+        }
+        @if (mode === 'reset') {
+          New Password
+        }
       </h2>
       <p>
-        <ng-container *ngIf="mode === 'login'">Sign in to access your dashboard</ng-container>
-        <ng-container *ngIf="mode === 'register'">Sign up to start scanning</ng-container>
-        <ng-container *ngIf="mode === 'forgot'">Enter email to receive reset link</ng-container>
-        <ng-container *ngIf="mode === 'reset'">Choose a new password for your account</ng-container>
+        @if (mode === 'login') {
+          Sign in to access your dashboard
+        }
+        @if (mode === 'register') {
+          Sign up to start scanning
+        }
+        @if (mode === 'forgot') {
+          Enter email to receive reset link
+        }
+        @if (mode === 'reset') {
+          Choose a new password for your account
+        }
       </p>
     </div>
 
     <!-- Error Message Alert -->
-    <div class="alert alert-danger" *ngIf="authFacade.error$ | async as error">
-      {{ error }}
-    </div>
-    
-    <div class="alert alert-info" *ngIf="message" style="margin-bottom: 20px; text-align: center; color: var(--text-primary); font-size: 0.9rem; padding: 10px; border-radius: 8px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);">
-      {{ message }}
-    </div>
+    @if (authFacade.error$ | async; as error) {
+      <div class="alert alert-danger">
+        {{ error }}
+      </div>
+    }
+
+    @if (message) {
+      <div
+        class="alert alert-info"
+        style="
+          margin-bottom: 20px;
+          text-align: center;
+          color: var(--text-primary);
+          font-size: 0.9rem;
+          padding: 10px;
+          border-radius: 8px;
+          background: rgba(255, 255, 255, 0.05);
+          border: 1px solid rgba(255, 255, 255, 0.1);
+        "
+      >
+        {{ message }}
+      </div>
+    }
 
     <!-- LOGIN FORM -->
-    <form *ngIf="mode === 'login'" [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-      
-      <div class="form-field">
-        <label for="username">Username</label>
-        <div class="input-wrapper">
-          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-            <circle cx="12" cy="7" r="4"></circle>
-          </svg>
-          <input 
-            type="text" 
-            id="username" 
-            class="custom-input"
-            formControlName="username" 
-            placeholder="Enter your username"
-            [class.is-invalid]="loginForm.get('username')?.invalid && loginForm.get('username')?.touched">
+    @if (mode === 'login') {
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+        <div class="form-field">
+          <label for="username">Username</label>
+          <div class="input-wrapper">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+              <circle cx="12" cy="7" r="4"></circle>
+            </svg>
+            <input
+              type="text"
+              id="username"
+              class="custom-input"
+              formControlName="username"
+              placeholder="Enter your username"
+              [class.is-invalid]="
+                loginForm.get('username')?.invalid && loginForm.get('username')?.touched
+              "
+            />
+          </div>
         </div>
-      </div>
-
-      <div class="form-field">
-        <label for="password">Password</label>
-        <div class="input-wrapper">
-          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
-            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
-          </svg>
-          <input 
-            type="password" 
-            id="password" 
-            class="custom-input"
-            formControlName="password" 
-            placeholder="Enter your password"
-            [class.is-invalid]="loginForm.get('password')?.invalid && loginForm.get('password')?.touched">
+        <div class="form-field">
+          <label for="password">Password</label>
+          <div class="input-wrapper">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+              <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+            </svg>
+            <input
+              type="password"
+              id="password"
+              class="custom-input"
+              formControlName="password"
+              placeholder="Enter your password"
+              [class.is-invalid]="
+                loginForm.get('password')?.invalid && loginForm.get('password')?.touched
+              "
+            />
+          </div>
+          <div class="forgot-wrapper">
+            <a href="#" class="forgot-link" (click)="$event.preventDefault(); setMode('forgot')"
+              >Forgot password?</a
+            >
+          </div>
         </div>
-        <div class="forgot-wrapper">
-          <a href="#" class="forgot-link" (click)="$event.preventDefault(); setMode('forgot')">Forgot password?</a>
+        <div class="actions">
+          <button type="submit" class="submit-btn" [disabled]="authFacade.isLoading$ | async">
+            @if (!(authFacade.isLoading$ | async)) {
+              <span>Login securely</span>
+            }
+            @if (authFacade.isLoading$ | async) {
+              <div class="spinner"></div>
+            }
+          </button>
         </div>
-      </div>
-
-      <div class="actions">
-        <button 
-          type="submit" 
-          class="submit-btn" 
-          [disabled]="(authFacade.isLoading$ | async)">
-          <span *ngIf="!(authFacade.isLoading$ | async)">Login securely</span>
-          <div class="spinner" *ngIf="authFacade.isLoading$ | async"></div>
-        </button>
-      </div>
-    </form>
+      </form>
+    }
 
     <!-- REGISTER FORM -->
-    <form *ngIf="mode === 'register'" [formGroup]="registerForm" (ngSubmit)="onSubmit()">
-      <div class="form-field">
-        <label for="reg-username">Username</label>
-        <div class="input-wrapper">
-          <input type="text" id="reg-username" class="custom-input" formControlName="username" placeholder="Choose username" [class.is-invalid]="registerForm.get('username')?.invalid && registerForm.get('username')?.touched">
+    @if (mode === 'register') {
+      <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+        <div class="form-field">
+          <label for="reg-username">Username</label>
+          <div class="input-wrapper">
+            <input
+              type="text"
+              id="reg-username"
+              class="custom-input"
+              formControlName="username"
+              placeholder="Choose username"
+              [class.is-invalid]="
+                registerForm.get('username')?.invalid && registerForm.get('username')?.touched
+              "
+            />
+          </div>
         </div>
-      </div>
-      <div class="form-field">
-        <label for="reg-email">Email</label>
-        <div class="input-wrapper">
-          <input type="email" id="reg-email" class="custom-input" formControlName="email" placeholder="Enter email" [class.is-invalid]="registerForm.get('email')?.invalid && registerForm.get('email')?.touched">
+        <div class="form-field">
+          <label for="reg-email">Email</label>
+          <div class="input-wrapper">
+            <input
+              type="email"
+              id="reg-email"
+              class="custom-input"
+              formControlName="email"
+              placeholder="Enter email"
+              [class.is-invalid]="
+                registerForm.get('email')?.invalid && registerForm.get('email')?.touched
+              "
+            />
+          </div>
         </div>
-      </div>
-      <div class="form-field">
-        <label for="reg-password">Password</label>
-        <div class="input-wrapper">
-           <input type="password" id="reg-password" class="custom-input" formControlName="password" placeholder="Choose password" [class.is-invalid]="registerForm.get('password')?.invalid && registerForm.get('password')?.touched">
+        <div class="form-field">
+          <label for="reg-password">Password</label>
+          <div class="input-wrapper">
+            <input
+              type="password"
+              id="reg-password"
+              class="custom-input"
+              formControlName="password"
+              placeholder="Choose password"
+              [class.is-invalid]="
+                registerForm.get('password')?.invalid && registerForm.get('password')?.touched
+              "
+            />
+          </div>
         </div>
-      </div>
-      <div class="actions">
-        <button type="submit" class="submit-btn">Sign up</button>
-      </div>
-    </form>
+        <div class="actions">
+          <button type="submit" class="submit-btn">Sign up</button>
+        </div>
+      </form>
+    }
 
     <!-- FORGOT PASS FORM -->
-    <form *ngIf="mode === 'forgot'" [formGroup]="forgotForm" (ngSubmit)="onSubmit()">
-      <div class="form-field">
-        <label for="forgot-email">Email</label>
-        <div class="input-wrapper">
-          <input type="email" id="forgot-email" class="custom-input" formControlName="email" placeholder="Enter account email" [class.is-invalid]="forgotForm.get('email')?.invalid && forgotForm.get('email')?.touched">
+    @if (mode === 'forgot') {
+      <form [formGroup]="forgotForm" (ngSubmit)="onSubmit()">
+        <div class="form-field">
+          <label for="forgot-email">Email</label>
+          <div class="input-wrapper">
+            <input
+              type="email"
+              id="forgot-email"
+              class="custom-input"
+              formControlName="email"
+              placeholder="Enter account email"
+              [class.is-invalid]="
+                forgotForm.get('email')?.invalid && forgotForm.get('email')?.touched
+              "
+            />
+          </div>
         </div>
-      </div>
-      <div class="actions">
-        <button type="submit" class="submit-btn">Send Reset Link</button>
-      </div>
-    </form>
+        <div class="actions">
+          <button type="submit" class="submit-btn">Send Reset Link</button>
+        </div>
+      </form>
+    }
 
     <!-- RESET PASSWORD FORM -->
-    <form *ngIf="mode === 'reset'" [formGroup]="resetForm" (ngSubmit)="onSubmit()">
-      <div class="form-field">
-        <label for="reset-password">New Password</label>
-        <div class="input-wrapper">
-          <input type="password" id="reset-password" class="custom-input" formControlName="new_password" placeholder="Enter new password" [class.is-invalid]="resetForm.get('new_password')?.invalid && resetForm.get('new_password')?.touched">
+    @if (mode === 'reset') {
+      <form [formGroup]="resetForm" (ngSubmit)="onSubmit()">
+        <div class="form-field">
+          <label for="reset-password">New Password</label>
+          <div class="input-wrapper">
+            <input
+              type="password"
+              id="reset-password"
+              class="custom-input"
+              formControlName="new_password"
+              placeholder="Enter new password"
+              [class.is-invalid]="
+                resetForm.get('new_password')?.invalid && resetForm.get('new_password')?.touched
+              "
+            />
+          </div>
         </div>
-      </div>
-      <div class="form-field">
-        <label for="reset-confirm">Confirm New Password</label>
-        <div class="input-wrapper">
-          <input type="password" id="reset-confirm" class="custom-input" formControlName="confirm_password" placeholder="Re-enter new password" [class.is-invalid]="resetForm.get('confirm_password')?.invalid && resetForm.get('confirm_password')?.touched">
+        <div class="form-field">
+          <label for="reset-confirm">Confirm New Password</label>
+          <div class="input-wrapper">
+            <input
+              type="password"
+              id="reset-confirm"
+              class="custom-input"
+              formControlName="confirm_password"
+              placeholder="Re-enter new password"
+              [class.is-invalid]="
+                resetForm.get('confirm_password')?.invalid &&
+                resetForm.get('confirm_password')?.touched
+              "
+            />
+          </div>
         </div>
+        <div class="actions">
+          <button type="submit" class="submit-btn">Reset Password</button>
+        </div>
+      </form>
+    }
+
+    @if (mode === 'login') {
+      <div class="auth-footer">
+        <p>
+          Don't have an account?
+          <a href="#" class="register-link" (click)="$event.preventDefault(); setMode('register')"
+            >Sign up</a
+          >
+        </p>
       </div>
-      <div class="actions">
-        <button type="submit" class="submit-btn">Reset Password</button>
+    }
+    @if (mode !== 'login') {
+      <div class="auth-footer">
+        <p>
+          <a href="#" class="register-link" (click)="$event.preventDefault(); setMode('login')"
+            >Cancel & Back to Login</a
+          >
+        </p>
       </div>
-    </form>
-    
-    <div class="auth-footer" *ngIf="mode === 'login'">
-      <p>Don't have an account? <a href="#" class="register-link" (click)="$event.preventDefault(); setMode('register')">Sign up</a></p>
-    </div>
-    <div class="auth-footer" *ngIf="mode !== 'login'">
-      <p><a href="#" class="register-link" (click)="$event.preventDefault(); setMode('login')">Cancel & Back to Login</a></p>
-    </div>
-    
+    }
   </div>
 </div>

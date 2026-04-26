@@ -13,7 +13,6 @@ export const authGuard: CanActivateFn = (route, state) => {
       if (isAuthenticated) {
         return true;
       }
-      // Redirect to login if user attempts to access secure route
       return router.createUrlTree(['/login']);
     })
   );

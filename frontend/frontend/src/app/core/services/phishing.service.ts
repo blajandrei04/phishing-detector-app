@@ -34,4 +34,8 @@ export class PhishingService {
   getActivity(days: number = 7): Observable<any> {
     return this.http.get(`${this.apiUrl}/stats/activity?days=${days}`);
   }
+
+  submitFeedback(payload: { url: string, original_verdict: string, user_reported_verdict: string, comments?: string }): Observable<any> {
+    return this.http.post(`${this.apiUrl}/feedback`, payload);
+  }
 }

@@ -20,3 +20,14 @@ class ScanHistory(Base):
     verdict = Column(String, nullable=False)
     user_id = Column(Integer, ForeignKey("users.id"), nullable=True) # Optional for MVP
     scanned_at = Column(DateTime(timezone=True), server_default=func.now())
+
+class Feedback(Base):
+    __tablename__ = "feedback"
+    
+    id = Column(Integer, primary_key=True, index=True)
+    url = Column(String, nullable=False)
+    original_verdict = Column(String, nullable=False)
+    user_reported_verdict = Column(String, nullable=False)
+    comments = Column(String, nullable=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=True)
+    reported_at = Column(DateTime(timezone=True), server_default=func.now())

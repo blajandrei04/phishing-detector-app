@@ -1,5 +1,5 @@
 import { Component, OnInit, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../core/services/auth.service';
 import { AuthFacade } from '../../core/facades/auth.facade';
@@ -8,7 +8,7 @@ import { User } from '../../models/auth.models';
 @Component({
   selector: 'app-settings',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [FormsModule],
   templateUrl: './settings.html',
   styleUrl: './settings.scss',
 })
@@ -36,7 +36,7 @@ export class SettingsComponent implements OnInit {
   memberSince = '';
 
   ngOnInit(): void {
-    this.authFacade.user$.subscribe(user => {
+    this.authFacade.user$.subscribe((user) => {
       if (user) {
         this.user = user;
         this.profileUsername = user.username;
@@ -55,22 +55,24 @@ export class SettingsComponent implements OnInit {
     }
 
     this.profileSaving = true;
-    this.authService.updateProfile({
-      username: this.profileUsername,
-      email: this.profileEmail
-    }).subscribe({
-      next: (updatedUser) => {
-        this.profileSaving = false;
-        this.profileMessage = 'Profile updated successfully!';
-        // Re-login to refresh the token with the new username
-        this.user = updatedUser;
-        setTimeout(() => this.profileMessage = '', 4000);
-      },
-      error: (err) => {
-        this.profileSaving = false;
-        this.profileError = err.error?.detail || 'Failed to update profile.';
-      }
-    });
+    this.authService
+      .updateProfile({
+        username: this.profileUsername,
+        email: this.profileEmail,
+      })
+      .subscribe({
+        next: (updatedUser) => {
+          this.profileSaving = false;
+          this.profileMessage = 'Profile updated successfully!';
+          // Re-login to refresh the token with the new username
+          this.user = updatedUser;
+          setTimeout(() => (this.profileMessage = ''), 4000);
+        },
+        error: (err) => {
+          this.profileSaving = false;
+          this.profileError = err.error?.detail || 'Failed to update profile.';
+        },
+      });
   }
 
   changePassword(): void {
@@ -100,12 +102,12 @@ export class SettingsComponent implements OnInit {
         this.currentPassword = '';
         this.newPassword = '';
         this.confirmPassword = '';
-        setTimeout(() => this.passwordMessage = '', 4000);
+        setTimeout(() => (this.passwordMessage = ''), 4000);
       },
       error: (err) => {
         this.passwordSaving = false;
         this.passwordError = err.error?.detail || 'Failed to change password.';
-      }
+      },
     });
   }
 }

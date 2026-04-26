@@ -1,12 +1,10 @@
-<ng-container *ngIf="authFacade.isAuthenticated$ | async; else loginLayout">
+@if (authFacade.isAuthenticated$ | async) {
   <div class="app-container">
     <app-sidebar></app-sidebar>
     <main class="main-content">
       <router-outlet></router-outlet>
     </main>
   </div>
-</ng-container>
-
-<ng-template #loginLayout>
+} @else {
   <router-outlet></router-outlet>
-</ng-template>
+}

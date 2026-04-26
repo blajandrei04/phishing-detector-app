@@ -17,18 +17,27 @@
         </div>
       </div>
 
-      <div *ngIf="profileMessage" class="alert alert-success">
-        <i class="bi bi-check-circle-fill me-2"></i>{{ profileMessage }}
-      </div>
-      <div *ngIf="profileError" class="alert alert-danger">
-        <i class="bi bi-exclamation-triangle-fill me-2"></i>{{ profileError }}
-      </div>
+      @if (profileMessage) {
+        <div class="alert alert-success">
+          <i class="bi bi-check-circle-fill me-2"></i>{{ profileMessage }}
+        </div>
+      }
+      @if (profileError) {
+        <div class="alert alert-danger">
+          <i class="bi bi-exclamation-triangle-fill me-2"></i>{{ profileError }}
+        </div>
+      }
 
       <div class="form-group">
         <label class="form-label">Username</label>
         <div class="input-icon-wrapper">
           <i class="bi bi-at"></i>
-          <input type="text" class="form-control" [(ngModel)]="profileUsername" placeholder="Enter username">
+          <input
+            type="text"
+            class="form-control"
+            [(ngModel)]="profileUsername"
+            placeholder="Enter username"
+          />
         </div>
       </div>
 
@@ -36,7 +45,12 @@
         <label class="form-label">Email Address</label>
         <div class="input-icon-wrapper">
           <i class="bi bi-envelope"></i>
-          <input type="email" class="form-control" [(ngModel)]="profileEmail" placeholder="Enter email">
+          <input
+            type="email"
+            class="form-control"
+            [(ngModel)]="profileEmail"
+            placeholder="Enter email"
+          />
         </div>
       </div>
 
@@ -44,18 +58,18 @@
         <label class="form-label">Role</label>
         <div class="input-icon-wrapper">
           <i class="bi bi-shield-check"></i>
-          <input type="text" class="form-control" value="User" disabled>
+          <input type="text" class="form-control" value="User" disabled />
         </div>
       </div>
 
       <div class="card-actions">
         <button class="btn btn-primary" (click)="saveProfile()" [disabled]="profileSaving">
-          <span *ngIf="!profileSaving">
-            <i class="bi bi-check2 me-1"></i>Save Changes
-          </span>
-          <span *ngIf="profileSaving">
-            <span class="spinner-border spinner-border-sm me-1"></span>Saving...
-          </span>
+          @if (!profileSaving) {
+            <span> <i class="bi bi-check2 me-1"></i>Save Changes </span>
+          }
+          @if (profileSaving) {
+            <span> <span class="spinner-border spinner-border-sm me-1"></span>Saving... </span>
+          }
         </button>
       </div>
     </div>
@@ -72,18 +86,27 @@
         </div>
       </div>
 
-      <div *ngIf="passwordMessage" class="alert alert-success">
-        <i class="bi bi-check-circle-fill me-2"></i>{{ passwordMessage }}
-      </div>
-      <div *ngIf="passwordError" class="alert alert-danger">
-        <i class="bi bi-exclamation-triangle-fill me-2"></i>{{ passwordError }}
-      </div>
+      @if (passwordMessage) {
+        <div class="alert alert-success">
+          <i class="bi bi-check-circle-fill me-2"></i>{{ passwordMessage }}
+        </div>
+      }
+      @if (passwordError) {
+        <div class="alert alert-danger">
+          <i class="bi bi-exclamation-triangle-fill me-2"></i>{{ passwordError }}
+        </div>
+      }
 
       <div class="form-group">
         <label class="form-label">Current Password</label>
         <div class="input-icon-wrapper">
           <i class="bi bi-key"></i>
-          <input type="password" class="form-control" [(ngModel)]="currentPassword" placeholder="Enter current password">
+          <input
+            type="password"
+            class="form-control"
+            [(ngModel)]="currentPassword"
+            placeholder="Enter current password"
+          />
         </div>
       </div>
 
@@ -91,7 +114,12 @@
         <label class="form-label">New Password</label>
         <div class="input-icon-wrapper">
           <i class="bi bi-lock"></i>
-          <input type="password" class="form-control" [(ngModel)]="newPassword" placeholder="Enter new password">
+          <input
+            type="password"
+            class="form-control"
+            [(ngModel)]="newPassword"
+            placeholder="Enter new password"
+          />
         </div>
       </div>
 
@@ -99,7 +127,12 @@
         <label class="form-label">Confirm New Password</label>
         <div class="input-icon-wrapper">
           <i class="bi bi-lock-fill"></i>
-          <input type="password" class="form-control" [(ngModel)]="confirmPassword" placeholder="Re-enter new password">
+          <input
+            type="password"
+            class="form-control"
+            [(ngModel)]="confirmPassword"
+            placeholder="Re-enter new password"
+          />
         </div>
       </div>
 
@@ -109,18 +142,20 @@
         </p>
         <ul class="requirements-list">
           <li [class.met]="newPassword.length >= 6">Minimum 6 characters</li>
-          <li [class.met]="newPassword === confirmPassword && newPassword.length > 0">Passwords match</li>
+          <li [class.met]="newPassword === confirmPassword && newPassword.length > 0">
+            Passwords match
+          </li>
         </ul>
       </div>
 
       <div class="card-actions">
         <button class="btn btn-danger" (click)="changePassword()" [disabled]="passwordSaving">
-          <span *ngIf="!passwordSaving">
-            <i class="bi bi-shield-lock me-1"></i>Update Password
-          </span>
-          <span *ngIf="passwordSaving">
-            <span class="spinner-border spinner-border-sm me-1"></span>Updating...
-          </span>
+          @if (!passwordSaving) {
+            <span> <i class="bi bi-shield-lock me-1"></i>Update Password </span>
+          }
+          @if (passwordSaving) {
+            <span> <span class="spinner-border spinner-border-sm me-1"></span>Updating... </span>
+          }
         </button>
       </div>
     </div>

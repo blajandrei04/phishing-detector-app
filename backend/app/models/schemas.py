@@ -166,4 +166,11 @@ class StatsResponse(BaseModel):
     phishing_count: int
     legitimate_count: int
     suspicious_count: int
+
+class FeedbackCreate(BaseModel):
+    url: HttpUrl
+    original_verdict: str
+    user_reported_verdict: str
+    comments: Optional[str] = None
+    user_id: Optional[str] = None
     

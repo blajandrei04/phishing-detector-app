@@ -2,12 +2,26 @@ from fastapi import APIRouter, Depends, Query
 from sqlalchemy.orm import Session
 from sqlalchemy import or_
 from app.db.database import get_db
-from app.db.models import ScanHistory
+from app.db.models import ScanHistory, Feedback
 from app.db.models import User
-from app.models.schemas import HistoryCreateRequest
+from app.models.schemas import HistoryCreateRequest, FeedbackCreate
 from app.api.auth import get_current_user
 
 router = APIRouter()
+
+@router.post("/feedback")
+def submit_feedback(payload: FeedbackCreate, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
+    db_feedback = Feedback(
+        url=str(payload.url),
+        original_verdict=payload.original_verdict,
+        user_reported_verdict=payload.user_reported_verdict,
+        comments=payload.comments,
+        user_id=current_user.id
+    )
+    db.add(db_feedback)
+    db.commit()
+    db.refresh(db_feedback)
+    return {"message": "Feedback submitted successfully", "id": db_feedback.id}
 
 @router.post("/history")
 def create_history(payload: HistoryCreateRequest, db: Session = Depends(get_db)):
