@@ -1,1 +1,268 @@
-<p>dashboard works!</p>
+<div class="dashboard-header">
+  <h1>Dashboard</h1>
+  <p>Monitor and analyze URLs for phishing threats</p>
+</div>
+
+<div class="summary-cards">
+  @for (card of summaryCards; track card) {
+    <div class="card summary-card card-{{ card.color }}">
+      <div class="card-body">
+        <div class="card-top">
+          <h5 class="card-title">{{ card.title }}</h5>
+          <div class="card-icon">
+            <i class="bi {{ card.icon }}"></i>
+          </div>
+        </div>
+        <div class="card-bottom">
+          <p class="card-value">{{ card.value }}</p>
+          <p class="card-change" [ngClass]="'text-' + card.changeType">
+            @if (card.changeType === 'increase' && card.title === 'Total Scans') {
+              <i class="bi bi-graph-up-arrow"></i>
+            }
+            {{ card.change }}
+          </p>
+        </div>
+      </div>
+    </div>
+  }
+</div>
+
+<div class="quick-analysis card">
+  <div class="card-body">
+    <h5 class="card-title">Quick URL Analysis</h5>
+    <p class="card-subtitle">
+      Enter a website URL below to test if it's safe or a phishing attempt
+    </p>
+    <div class="input-group">
+      <input
+        type="text"
+        class="form-control"
+        placeholder="https://example.com"
+        [(ngModel)]="urlToAnalyze"
+        (keyup.enter)="submitUrl()"
+        [disabled]="isAnalyzing"
+      />
+      <button class="btn btn-primary" (click)="submitUrl()" [disabled]="isAnalyzing">
+        @if (!isAnalyzing) {
+          <span>Analyze URL</span>
+        }
+        @if (isAnalyzing) {
+          <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+        }
+      </button>
+    </div>
+
+    @if (analysisError) {
+      <div class="alert alert-danger mt-3 mb-0" role="alert">
+        {{ analysisError }}
+      </div>
+    }
+
+    @if (analysisResult) {
+      <div
+        class="result-details card mt-4 border-0 shadow-sm"
+        style="animation: slideDown 0.4s ease-out"
+      >
+        <div
+          class="card-body p-4 rounded-3"
+          [ngClass]="{
+            'bg-success-subtle border border-success': analysisResult.verdict === 'legitimate',
+            'bg-danger-subtle border border-danger': analysisResult.verdict === 'phishing',
+            'bg-warning-subtle border border-warning': analysisResult.verdict === 'suspicious',
+          }"
+          style="background-color: rgba(255, 255, 255, 0.7)"
+        >
+          <h6
+            class="mb-4 d-flex align-items-center gap-2 fw-bold text-uppercase"
+            [ngClass]="{
+              'text-success': analysisResult.verdict === 'legitimate',
+              'text-danger': analysisResult.verdict === 'phishing',
+              'text-warning': analysisResult.verdict === 'suspicious',
+            }"
+          >
+            <i
+              class="bi"
+              [ngClass]="{
+                'bi-check-circle-fill': analysisResult.verdict === 'legitimate',
+                'bi-exclamation-octagon-fill': analysisResult.verdict === 'phishing',
+                'bi-exclamation-triangle-fill': analysisResult.verdict === 'suspicious',
+              }"
+            ></i>
+            Analysis Complete
+          </h6>
+          <div class="row g-4">
+            <div class="col-md-6 border-end">
+              <p class="mb-1 text-muted small fw-bold">URL SCANNED</p>
+              <p class="mb-4 fw-medium text-break text-dark">{{ analysisResult.url }}</p>
+              <p class="mb-1 text-muted small fw-bold">THREAT VERDICT</p>
+              <h3
+                class="mb-0 text-capitalize fw-bold"
+                [ngClass]="{
+                  'text-success': analysisResult.verdict === 'legitimate',
+                  'text-danger': analysisResult.verdict === 'phishing',
+                  'text-warning': analysisResult.verdict === 'suspicious',
+                }"
+              >
+                {{ analysisResult.verdict }}
+              </h3>
+            </div>
+            <div class="col-md-6 ps-md-4">
+              <p class="mb-1 text-muted small fw-bold">RISK SCORE</p>
+              <div class="d-flex align-items-center gap-3 mb-4">
+                <h3 class="mb-0 fw-bold text-dark">
+                  {{ analysisResult.score * 100 | number: '1.0-1'
+                  }}<small class="text-muted fs-6 fw-normal">/100</small>
+                </h3>
+                <div class="progress flex-grow-1" style="height: 10px; border-radius: 6px">
+                  <div
+                    class="progress-bar"
+                    [ngClass]="{
+                      'bg-success': analysisResult.score < 0.4,
+                      'bg-warning': analysisResult.score >= 0.4 && analysisResult.score < 0.7,
+                      'bg-danger': analysisResult.score >= 0.7,
+                    }"
+                    [style.width.%]="analysisResult.score * 100"
+                  ></div>
+                </div>
+              </div>
+              <p class="mb-1 text-muted small fw-bold">MODEL CONFIDENCE</p>
+              <p class="fw-medium mb-0 text-dark">
+                {{ analysisResult.confidence * 100 | number: '1.0-1' }}%
+              </p>
+            </div>
+          </div>
+          <div class="d-grid mt-4 pt-3 border-top">
+            <button
+              class="btn btn-outline-primary d-flex justify-content-center align-items-center gap-2 rounded-3 shadow-sm py-2 fw-medium"
+              (click)="viewFullReport()"
+            >
+              <i class="bi bi-file-earmark-text"></i> View Full Detailed Report
+            </button>
+          </div>
+        </div>
+      </div>
+    }
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-lg-7">
+    <div class="scan-activity card">
+      <div class="card-body">
+        <h5 class="card-title">Scan Activity</h5>
+        <p class="card-subtitle">Daily scan volume over the past 7 days</p>
+
+        <!-- Dynamic bar chart -->
+        @if (activityDays.length > 0) {
+          <div class="activity-chart">
+            <div class="chart-bars">
+              @for (day of activityDays; track day) {
+                <div class="chart-bar-wrapper">
+                  <div class="chart-bar-stack">
+                    @if (day.total > 0) {
+                      <div class="chart-bar-tooltip">{{ day.total }} scans</div>
+                    }
+                    @if (day.phishing > 0) {
+                      <div
+                        class="chart-bar chart-bar-phishing"
+                        [style.height.%]="(day.phishing / activityMax) * 100"
+                      ></div>
+                    }
+                    @if (day.suspicious > 0) {
+                      <div
+                        class="chart-bar chart-bar-suspicious"
+                        [style.height.%]="(day.suspicious / activityMax) * 100"
+                      ></div>
+                    }
+                    @if (day.legitimate > 0) {
+                      <div
+                        class="chart-bar chart-bar-legitimate"
+                        [style.height.%]="(day.legitimate / activityMax) * 100"
+                      ></div>
+                    }
+                    <!-- Empty day placeholder bar -->
+                    @if (day.total === 0) {
+                      <div class="chart-bar chart-bar-empty" style="height: 3%"></div>
+                    }
+                  </div>
+                  <span class="chart-day-label">{{ getDayLabel(day.date) }}</span>
+                </div>
+              }
+            </div>
+            <div class="chart-legend">
+              <span
+                ><i class="bi bi-square-fill" style="color: #22c55e; font-size: 0.55rem"></i>
+                Legitimate</span
+              >
+              <span
+                ><i class="bi bi-square-fill" style="color: #f59e0b; font-size: 0.55rem"></i>
+                Suspicious</span
+              >
+              <span
+                ><i class="bi bi-square-fill" style="color: #ef4444; font-size: 0.55rem"></i>
+                Phishing</span
+              >
+            </div>
+          </div>
+        }
+
+        <!-- Empty state only when API hasn't returned data -->
+        @if (activityLoaded && activityDays.length === 0) {
+          <div class="empty-state">
+            <i class="bi bi-bar-chart-line"></i>
+            <p>No scan activity yet. Analyze some URLs to see your chart!</p>
+          </div>
+        }
+
+        <!-- Loading state -->
+        @if (!activityLoaded) {
+          <div class="empty-state">
+            <div class="spinner-border spinner-border-sm text-muted" role="status"></div>
+            <p class="mt-2">Loading activity data...</p>
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-5">
+    <div class="recent-scans card">
+      <div class="card-body">
+        <h5 class="card-title">Recent Scans</h5>
+        <p class="card-subtitle">Latest URL analysis results</p>
+
+        @if (recentScans.length > 0) {
+          <ul class="list-group list-group-flush">
+            @for (scan of recentScans; track scan) {
+              <li class="list-group-item">
+                <div class="scan-icon">
+                  <i class="bi {{ scan.icon }}" [style.color]="scan.riskColor"></i>
+                </div>
+                <div class="scan-details">
+                  <p class="scan-url">{{ scan.url }}</p>
+                  <p class="scan-time">
+                    {{ scan.time }}
+                    <span class="scan-score">{{ scan.score * 100 | number: '1.0-0' }}% risk</span>
+                  </p>
+                </div>
+                <div class="scan-risk">
+                  <span class="badge" [style.backgroundColor]="scan.riskColor">{{
+                    scan.risk
+                  }}</span>
+                </div>
+              </li>
+            }
+          </ul>
+        }
+
+        <!-- Empty state -->
+        @if (recentScans.length === 0) {
+          <div class="empty-state">
+            <i class="bi bi-clock-history"></i>
+            <p>No scans yet. Use the Quick Analysis above to get started!</p>
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+</div>

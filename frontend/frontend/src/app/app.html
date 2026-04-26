@@ -1,17 +1,10 @@
-<header class="topbar">
-  <h1>Phishing Detector</h1>
-  <nav>
-    <a routerLink="/analyzer" routerLinkActive="active">Analyzer</a>
-    <a routerLink="/dashboard" routerLinkActive="active">Dashboard</a>
-    <a routerLink="/history" routerLinkActive="active">History</a>
-    <a routerLink="/settings" routerLinkActive="active">Settings</a>
-  </nav>
-</header>
-
-<main class="container">
+@if (authFacade.isAuthenticated$ | async) {
+  <div class="app-container">
+    <app-sidebar></app-sidebar>
+    <main class="main-content">
+      <router-outlet></router-outlet>
+    </main>
+  </div>
+} @else {
   <router-outlet></router-outlet>
-</main>
-
-<footer class="footer">
-  <small>Thesis MVP • 2026</small>
-</footer>
+}

@@ -1,0 +1,121 @@
+.sidebar {
+  width: 80px; /* Collapsed width */
+  min-height: 100vh;
+  padding: 20px 0;
+  background-color: #1a56db; /* Exact blue hue from screenshot */
+  color: #ffffff;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow-x: hidden;
+}
+
+.sidebar:hover {
+  width: 240px; /* Expanded width */
+}
+
+.logo {
+  margin-bottom: 32px;
+  padding: 0 16px;
+}
+
+.logo a {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: #ffffff;
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 1.05rem;
+  line-height: 1.2;
+}
+
+.logo-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 40px;
+  height: 40px;
+  font-size: 1.2rem;
+  border-radius: 10px;
+  background-color: rgba(255, 255, 255, 0.15); /* Light translucent box behind the shield */
+}
+
+.logo-text {
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  white-space: nowrap;
+}
+
+.sidebar:hover .logo-text {
+  opacity: 1;
+  transition-delay: 0.1s;
+}
+
+.nav {
+  display: flex;
+  flex-direction: column;
+  gap: 8px; /* Tighter gap between items */
+  justify-content: flex-start; /* Ensure items stay at the top */
+  list-style: none;
+  padding: 0 12px;
+  margin: 0;
+}
+
+.nav li {
+  margin-bottom: 2px; /* Much less space between buttons */
+}
+
+.nav a {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  padding: 10px 14px;
+  border-radius: 8px; /* Tighter border radius */
+  color: #ffffff; /* White text for all */
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 0.95rem;
+  transition: background-color 0.2s ease;
+  white-space: nowrap;
+}
+
+.nav a i {
+  font-size: 1.15rem;
+  min-width: 28px;
+  display: flex;
+  justify-content: center;
+  margin-right: 12px; /* Tighter space between icon and text */
+}
+
+.nav-text {
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.sidebar:hover .nav-text {
+  opacity: 1;
+  transition-delay: 0.1s;
+}
+
+.nav a:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.nav a.active {
+  background-color: rgba(255, 255, 255, 0.2); /* Exactly like the active Dashboard state */
+}
+
+.logout-action {
+  margin-top: auto; /* Push to bottom */
+  margin-bottom: 20px;
+}
+
+.logout-action a:hover {
+  background-color: rgba(220, 53, 69, 0.3); /* Reddish hover for logout */
+  color: #ffcccc;
+}

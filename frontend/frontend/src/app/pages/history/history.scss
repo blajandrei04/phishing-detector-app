@@ -1,0 +1,104 @@
+.history-container {
+  padding: 2rem 3rem;
+  background-color: #f8fafc;
+  min-height: 100vh;
+  
+  .history-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    
+    h2 {
+      margin: 0;
+      font-weight: 800;
+      color: #0f172a;
+      letter-spacing: -0.02em;
+    }
+  }
+
+  .filters-card {
+    background: white;
+    border-radius: 12px;
+    padding: 1.5rem 2rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05);
+    border: 1px solid #e2e8f0;
+  }
+
+  .table-card {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05);
+    border: 1px solid #e2e8f0;
+    overflow: hidden;
+    
+    table {
+      margin: 0;
+      
+      th {
+        background-color: #f1f5f9;
+        color: #64748b;
+        font-weight: 700;
+        text-transform: uppercase;
+        font-size: 0.75rem;
+        letter-spacing: 0.05em;
+        padding: 1rem 1.5rem;
+        border-bottom: 1px solid #e2e8f0;
+      }
+      
+      td {
+        padding: 1rem 1.5rem;
+        vertical-align: middle;
+        color: #334155;
+        border-bottom: 1px solid #e2e8f0;
+      }
+      
+      tbody tr {
+        transition: background-color 0.15s ease;
+      }
+      
+      tbody tr:hover {
+        background-color: #f8fafc;
+      }
+      
+      .url-cell a {
+        transition: color 0.15s ease;
+        &:hover {
+          color: #2563eb !important;
+          text-decoration: underline !important;
+        }
+      }
+    }
+  }
+
+  .pagination-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.25rem 2rem;
+    background-color: #f8fafc;
+    border-top: 1px solid #e2e8f0;
+    border-bottom-left-radius: 12px;
+    border-bottom-right-radius: 12px;
+    
+    .page-info {
+      color: #64748b;
+      font-size: 0.875rem;
+    }
+    
+    .btn-white {
+      background-color: white;
+      color: #334155;
+      
+      &:hover:not(:disabled) {
+        background-color: #f1f5f9;
+      }
+      
+      &:disabled {
+        background-color: #f8fafc;
+        color: #94a3b8;
+      }
+    }
+  }
+}

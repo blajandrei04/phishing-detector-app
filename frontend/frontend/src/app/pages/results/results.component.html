@@ -1,11 +1,290 @@
-<!-- results.component.html -->
-<section class="card" *ngIf="result; else noData">
-  <h2>Analysis Result</h2>
-  <p><strong>Score:</strong> {{ result.score }}</p>
-  <p><strong>Verdict:</strong> {{ result.verdict }}</p>
-  <p><strong>Confidence:</strong> {{ result.confidence }}%</p>
-</section>
+@if (result) {
+  <div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4 no-print">
+      <div>
+        <h2 class="fw-bold mb-0 text-dark">URL Threat Report</h2>
+        <p class="text-muted mb-0">Detailed analysis of the scanned web address.</p>
+      </div>
+      <div class="d-flex gap-2">
+        <button
+          class="btn btn-primary d-flex align-items-center gap-2 shadow-sm px-4"
+          (click)="downloadPdf()"
+        >
+          <i class="bi bi-file-earmark-pdf-fill"></i> Download PDF
+        </button>
+        <a
+          routerLink="/analyzer"
+          class="btn btn-outline-secondary d-flex align-items-center gap-2 shadow-sm px-4"
+        >
+          <i class="bi bi-arrow-left"></i> New Scan
+        </a>
+      </div>
+    </div>
+    <div class="card border-0 shadow-lg" style="border-radius: 16px; overflow: hidden">
+      <!-- Top colored bar indicating verdict -->
+      <div
+        style="height: 12px; width: 100%"
+        [ngClass]="{
+          'bg-danger': result.verdict === 'phishing',
+          'bg-warning': result.verdict === 'suspicious',
+          'bg-success': result.verdict === 'legitimate',
+        }"
+      ></div>
+      <!-- Header section -->
+      <div class="card-body p-4 p-md-5 bg-white">
+        <div class="row align-items-center mb-5">
+          <div class="col-md-8">
+            <p class="text-muted small fw-bold mb-1 letter-spacing-1">
+              SCANNED UNIFORM RESOURCE LOCATOR
+            </p>
+            <div class="d-flex align-items-center gap-2">
+              <h4 class="mb-0 fw-bold text-dark text-break">{{ result.url }}</h4>
+              <a
+                [href]="result.url.startsWith('http') ? result.url : 'http://' + result.url"
+                target="_blank"
+                class="no-print btn btn-sm btn-light text-muted"
+              >
+                <i class="bi bi-box-arrow-up-right"></i>
+              </a>
+            </div>
+            <p class="text-muted mt-2 mb-0">
+              <i class="bi bi-calendar3 me-2"></i>Scanned on:
+              {{ result.timestamp | date: 'medium' }}
+            </p>
+          </div>
+          <div class="col-md-4 text-md-end mt-4 mt-md-0">
+            <div
+              class="d-inline-block px-4 py-3 rounded-4"
+              [ngClass]="{
+                'bg-danger text-white shadow-sm': result.verdict === 'phishing',
+                'bg-warning text-dark shadow-sm': result.verdict === 'suspicious',
+                'bg-success text-white shadow-sm': result.verdict === 'legitimate',
+              }"
+            >
+              <p
+                class="small fw-bold mb-1 text-uppercase opacity-75"
+                [ngClass]="{ 'text-dark': result.verdict === 'suspicious' }"
+              >
+                FINAL THREAT VERDICT
+              </p>
+              <h2
+                class="mb-0 fw-bold d-flex align-items-center justify-content-center gap-2 text-uppercase"
+              >
+                <i
+                  class="bi"
+                  [ngClass]="{
+                    'bi-x-octagon-fill': result.verdict === 'phishing',
+                    'bi-exclamation-triangle-fill': result.verdict === 'suspicious',
+                    'bi-check-circle-fill': result.verdict === 'legitimate',
+                  }"
+                ></i>
+                {{ result.verdict }}
+              </h2>
+            </div>
+          </div>
+        </div>
+        <hr class="text-muted opacity-25" />
+        <!-- Metrics Section -->
+        <div class="row g-4 my-4">
+          <!-- Score Column -->
+          <div class="col-md-4 border-end-md">
+            <div class="p-3 bg-light rounded-4 h-100 border border-1">
+              <h6 class="text-muted fw-bold mb-3 d-flex align-items-center">
+                <i class="bi bi-speedometer2 me-2"></i> MODEL RISK SCORE
+              </h6>
+              <div class="d-flex align-items-end gap-2 mb-2">
+                <h1 class="display-5 fw-bold mb-0 text-dark lh-1">
+                  {{ result.score * 100 | number: '1.0-1' }}
+                </h1>
+                <span class="fs-4 text-muted pb-1">/ 100</span>
+              </div>
+              <div class="progress mt-3 bg-white border" style="height: 12px; border-radius: 6px">
+                <div
+                  class="progress-bar"
+                  [ngClass]="{
+                    'bg-success': result.score < 0.4,
+                    'bg-warning': result.score >= 0.4 && result.score < 0.7,
+                    'bg-danger': result.score >= 0.7,
+                  }"
+                  [style.width.%]="result.score * 100"
+                ></div>
+              </div>
+              <p class="text-muted small mt-2 mb-0">
+                The probability calculated by the Machine Learning model.
+              </p>
+            </div>
+          </div>
+          <!-- Confidence Column -->
+          <div class="col-md-4 border-end-md">
+            <div class="p-3 bg-light rounded-4 h-100 border border-1">
+              <h6 class="text-muted fw-bold mb-3 d-flex align-items-center">
+                <i class="bi bi-bar-chart-fill me-2"></i> PREDICTION CONFIDENCE
+              </h6>
+              <div class="d-flex align-items-end gap-2 mb-2">
+                <h1 class="display-5 fw-bold mb-0 text-dark lh-1">
+                  {{ result.confidence * 100 | number: '1.0-1' }}
+                </h1>
+                <span class="fs-4 text-muted pb-1">%</span>
+              </div>
+              <div class="progress mt-3 bg-white border" style="height: 12px; border-radius: 6px">
+                <div class="progress-bar bg-info" [style.width.%]="result.confidence * 100"></div>
+              </div>
+              <p class="text-muted small mt-2 mb-0">
+                Model's certainty based on training data distance.
+              </p>
+            </div>
+          </div>
+          <!-- Features Quick Look -->
+          <div class="col-md-4">
+            <div class="p-3 bg-light rounded-4 h-100 border border-1">
+              <h6 class="text-muted fw-bold mb-3 d-flex align-items-center">
+                <i class="bi bi-puzzle-fill me-2"></i> KEY HEURISTICS
+              </h6>
+              @if (result.extracted_features) {
+                <ul class="list-unstyled mb-0 d-flex flex-column gap-2">
+                  <li
+                    class="d-flex justify-content-between align-items-center p-2 bg-white rounded border"
+                  >
+                    <span class="small fw-semibold text-dark">Has HTTPS</span>
+                    @if (result.extracted_features['has_https']) {
+                      <i class="bi bi-check-circle-fill text-success"></i>
+                    }
+                    @if (!result.extracted_features['has_https']) {
+                      <i class="bi bi-x-circle-fill text-danger"></i>
+                    }
+                  </li>
+                  <li
+                    class="d-flex justify-content-between align-items-center p-2 bg-white rounded border"
+                  >
+                    <span class="small fw-semibold text-dark">URL Shortener Used</span>
+                    @if (result.extracted_features['is_shortener']) {
+                      <i class="bi bi-exclamation-triangle-fill text-warning"></i>
+                    }
+                    @if (!result.extracted_features['is_shortener']) {
+                      <i class="bi bi-check-circle-fill text-success"></i>
+                    }
+                  </li>
+                  <li
+                    class="d-flex justify-content-between align-items-center p-2 bg-white rounded border"
+                  >
+                    <span class="small fw-semibold text-dark">Total Length</span>
+                    <span class="badge bg-secondary"
+                      >{{ result.extracted_features['url_length'] }} chars</span
+                    >
+                  </li>
+                </ul>
+              }
+            </div>
+          </div>
+        </div>
+        <!-- SHAP Explainability -->
+        @if (result.shap_explanation?.shap_values?.length) {
+          <div class="mt-5">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+              <h4 class="fw-bold text-dark mb-0 d-flex align-items-center">
+                <i class="bi bi-cpu-fill text-primary me-2"></i> Model Insight (Explainable AI)
+              </h4>
+              <div class="d-flex align-items-center gap-3">
+                <span class="small text-muted"
+                  ><i class="bi bi-square-fill text-danger me-1"></i>Increases Risk (+score)</span
+                >
+                <span class="small text-muted"
+                  ><i class="bi bi-square-fill text-success me-1"></i>Decreases Risk (-score)</span
+                >
+              </div>
+            </div>
+            <div class="bg-white border rounded-4 p-4 shadow-sm">
+              <p class="text-muted mb-4">
+                This chart uses SHAP (SHapley Additive exPlanations) values to explain exactly which
+                extracted URL features drove the model to its final verdict. Longer bars indicate a
+                stronger influence.
+              </p>
+              <div class="shap-chart">
+                <!-- Iterate over the top 10 impactful features -->
+                @for (item of result.shap_explanation?.shap_values?.slice(0, 10); track item) {
+                  <div class="shap-bar-row">
+                    <div class="shap-label" title="{{ item.label }}">{{ item.label }}</div>
+                    <div class="shap-bar-container">
+                      <div class="shap-bar-track">
+                        <div
+                          class="shap-bar"
+                          [style.width.%]="getShapBarWidth(item.shap_value)"
+                          [style.marginLeft]="
+                            item.shap_value < 0
+                              ? 50 - getShapBarWidth(item.shap_value) + '%'
+                              : '50%'
+                          "
+                          [ngClass]="{
+                            'shap-risk': item.shap_value > 0,
+                            'shap-safe': item.shap_value <= 0,
+                          }"
+                        ></div>
+                        <div class="shap-center-line"></div>
+                      </div>
+                    </div>
+                    <div
+                      class="shap-value-label"
+                      [ngClass]="{
+                        'text-danger': item.shap_value > 0,
+                        'text-success': item.shap_value <= 0,
+                      }"
+                    >
+                      {{ item.shap_value > 0 ? '+' : '' }}{{ item.shap_value | number: '1.0-3' }}
+                    </div>
+                  </div>
+                }
+              </div>
+            </div>
+          </div>
+        }
+        <!-- Feedback Section -->
+        <div class="mt-5 pt-4 border-top no-print">
+          <h5 class="fw-bold mb-2">Is this verdict incorrect?</h5>
+          <p class="text-muted small mb-3">Help improve our machine learning model by reporting false positives or missed threats. Your feedback is recorded for future dataset retraining.</p>
+          
+          @if (reportSuccess) {
+            <div class="alert alert-success d-flex align-items-center py-2">
+              <i class="bi bi-check-circle-fill me-2"></i> Thank you! Your feedback has been securely submitted.
+            </div>
+          }
+          @if (reportError) {
+            <div class="alert alert-danger d-flex align-items-center py-2">
+              <i class="bi bi-exclamation-triangle-fill me-2"></i> {{ reportError }}
+            </div>
+          }
 
-<ng-template #noData>
-  <p>No result yet. Analyze a URL first.</p>
-</ng-template>
+          <div class="d-flex flex-wrap gap-2 mt-3">
+            @if (result.verdict !== 'legitimate') {
+              <button class="btn btn-outline-success btn-sm rounded-pill px-3 fw-medium" (click)="reportIncorrectVerdict('legitimate')" [disabled]="isReporting">
+                <i class="bi bi-shield-check me-1"></i> Report as Legitimate
+              </button>
+            }
+            @if (result.verdict !== 'suspicious') {
+              <button class="btn btn-outline-warning text-dark btn-sm rounded-pill px-3 fw-medium" (click)="reportIncorrectVerdict('suspicious')" [disabled]="isReporting">
+                <i class="bi bi-shield-exclamation me-1"></i> Report as Suspicious
+              </button>
+            }
+            @if (result.verdict !== 'phishing') {
+              <button class="btn btn-outline-danger btn-sm rounded-pill px-3 fw-medium" (click)="reportIncorrectVerdict('phishing')" [disabled]="isReporting">
+                <i class="bi bi-shield-x me-1"></i> Report as Phishing
+              </button>
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+} @else {
+  <div class="container py-5 d-flex justify-content-center">
+    <div class="card border-0 shadow-sm rounded-4 text-center p-5 col-md-8 bg-light">
+      <i class="bi bi-clipboard-x text-muted mb-4" style="font-size: 3rem"></i>
+      <h3 class="fw-bold">No Analysis Found</h3>
+      <p class="text-muted mb-4">
+        You have not analyzed a URL yet, or your last result has expired.
+      </p>
+      <a routerLink="/analyzer" class="btn btn-primary px-4 py-2 mt-2 rounded-pill shadow-sm"
+        >Go to Analyzer to scan a URL</a
+      >
+    </div>
+  </div>
+}

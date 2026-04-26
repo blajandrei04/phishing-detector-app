@@ -1,17 +1,51 @@
-<section class="card">
-  <h2>URL Analyzer</h2>
+<div class="row justify-content-center">
+  <div class="col-md-8 col-lg-6">
+    <div class="card shadow-lg border-0 rounded-4 mt-5">
+      <div class="card-body p-5">
+        <h2 class="card-title text-center mb-4 fw-bold text-primary">Phishing URL Analyzer</h2>
+        <p class="text-center text-muted mb-4">
+          Enter a website URL below to test if it's safe or a phishing attempt.
+        </p>
 
-  <label for="urlInput">Website URL</label>
-  <input
-    id="urlInput"
-    type="url"
-    [(ngModel)]="url"
-    placeholder="https://example.com"
-  />
+        <div class="mb-4">
+          <label for="urlInput" class="form-label fw-semibold">Website URL</label>
+          <div class="input-group input-group-lg">
+            <span class="input-group-text bg-light border-end-0"><i class="bi bi-globe"></i></span>
+            <input
+              id="urlInput"
+              type="url"
+              class="form-control border-start-0 ps-0"
+              [(ngModel)]="url"
+              placeholder="https://example.com"
+              (keyup.enter)="submit()"
+            />
+          </div>
+        </div>
 
-  <button (click)="submit()" [disabled]="loading">
-    {{ loading ? 'Analyzing...' : 'Analyze URL' }}
-  </button>
+        <div class="d-grid gap-2">
+          <button
+            class="btn btn-primary btn-lg rounded-pill shadow-sm"
+            (click)="submit()"
+            [disabled]="loading || !url.trim()"
+          >
+            @if (loading) {
+              <span
+                class="spinner-border spinner-border-sm me-2"
+                role="status"
+                aria-hidden="true"
+              ></span>
+            }
+            {{ loading ? 'Analyzing...' : 'Analyze URL' }}
+          </button>
+        </div>
 
-  <p class="error" *ngIf="error">{{ error }}</p>
-</section>
+        @if (error) {
+          <div class="alert alert-danger mt-4 d-flex align-items-center" role="alert">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+            <div>{{ error }}</div>
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+</div>

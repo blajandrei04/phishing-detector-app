@@ -1,14 +1,15 @@
-import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, PLATFORM_ID, Inject } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { PhishingService } from '../../core/services/phishing.service';
+import { UrlValidatorService } from '../../core/services/url-validator.service';
 import { AnalyzeResponse } from '../../models/analyze-response.model';
 
 @Component({
   selector: 'app-analyzer',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [FormsModule],
   templateUrl: './analyzer.component.html',
   styleUrl: './analyzer.component.scss',
 })
@@ -19,26 +20,39 @@ export class AnalyzerComponent {
 
   constructor(
     private phishingService: PhishingService,
-    private router: Router
+    private router: Router,
+    @Inject(PLATFORM_ID) private platformId: Object,
+    private urlValidator: UrlValidatorService
   ) {}
 
   submit(): void {
-    this.error = '';
-    if (!this.url.trim()) {
-      this.error = 'Please enter a URL.';
+    const validation = this.urlValidator.validate(this.url);
+    if (!validation.isValid) {
+      this.error = validation.errorMessage || 'Invalid URL';
       return;
     }
+    
+    let url = validation.formattedUrl;
 
     this.loading = true;
-    this.phishingService.analyzeUrl({ url: this.url.trim() }).subscribe({
+    this.phishingService.analyzeUrl({ url: url }).subscribe({
       next: (result: AnalyzeResponse) => {
         this.loading = false;
-        localStorage.setItem('lastResult', JSON.stringify(result));
+        if (isPlatformBrowser(this.platformId)) {
+          localStorage.setItem('lastResult', JSON.stringify(result));
+        }
         this.router.navigate(['/results']);
       },
-      error: () => {
+      error: (err) => {
         this.loading = false;
-        this.error = 'Failed to analyze URL. Check backend and try again.';
+        if (err.status === 422 && err.error?.detail) {
+          const detail = err.error.detail;
+          this.error = Array.isArray(detail)
+            ? detail.map((d: any) => d.msg).join('. ')
+            : String(detail);
+        } else {
+          this.error = 'Failed to analyze URL. Check backend and try again.';
+        }
       },
     });
   }

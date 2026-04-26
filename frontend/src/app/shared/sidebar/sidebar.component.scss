@@ -1,0 +1,42 @@
+.sidebar {
+  background-color: #007bff;
+  color: white;
+  height: 100vh;
+  padding: 20px;
+
+  .logo {
+    margin-bottom: 30px;
+    a {
+      color: white;
+      font-size: 24px;
+      text-decoration: none;
+    }
+  }
+
+  .nav {
+    list-style: none;
+    padding: 0;
+
+    li {
+      margin-bottom: 15px;
+
+      a {
+        color: white;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        padding: 10px;
+        border-radius: 5px;
+
+        &.active,
+        &:hover {
+          background-color: #0056b3;
+        }
+
+        i {
+          margin-right: 10px;
+        }
+      }
+    }
+  }
+}
