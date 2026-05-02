@@ -4,7 +4,7 @@ from sqlalchemy import or_
 from app.db.database import get_db
 from app.db.models import ScanHistory, Feedback
 from app.db.models import User
-from app.models.schemas import HistoryCreateRequest, FeedbackCreate
+from app.models.schemas import HistoryCreateRequest, FeedbackCreate, FeedbackResponse
 from app.api.auth import get_current_user
 
 router = APIRouter()
@@ -22,6 +22,25 @@ def submit_feedback(payload: FeedbackCreate, db: Session = Depends(get_db), curr
     db.commit()
     db.refresh(db_feedback)
     return {"message": "Feedback submitted successfully", "id": db_feedback.id}
+
+@router.get("/feedback", response_model=list[FeedbackResponse])
+def get_all_feedback(db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
+    from fastapi import HTTPException
+    if current_user.username != "admin":
+        raise HTTPException(status_code=403, detail="Admin privileges required")
+    return db.query(Feedback).order_by(Feedback.reported_at.desc()).all()
+
+@router.delete("/feedback/{feedback_id}")
+def delete_feedback(feedback_id: int, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
+    from fastapi import HTTPException
+    if current_user.username != "admin":
+        raise HTTPException(status_code=403, detail="Admin privileges required")
+    fb = db.query(Feedback).filter(Feedback.id == feedback_id).first()
+    if not fb:
+        raise HTTPException(status_code=404, detail="Feedback not found")
+    db.delete(fb)
+    db.commit()
+    return {"message": "Feedback deleted successfully"}
 
 @router.post("/history")
 def create_history(payload: HistoryCreateRequest, db: Session = Depends(get_db)):

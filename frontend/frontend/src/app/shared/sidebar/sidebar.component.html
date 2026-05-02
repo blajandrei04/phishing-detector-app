@@ -27,6 +27,14 @@
         <span class="nav-text">History</span>
       </a>
     </li>
+    @if ((authFacade.user$ | async)?.username === 'admin') {
+      <li>
+        <a routerLink="/admin-review" routerLinkActive="active">
+          <i class="bi bi-shield-lock"></i>
+          <span class="nav-text">Threat Intel</span>
+        </a>
+      </li>
+    }
     <li>
       <a routerLink="/settings" routerLinkActive="active">
         <i class="bi bi-gear"></i>

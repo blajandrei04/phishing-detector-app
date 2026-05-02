@@ -1,0 +1,88 @@
+<div class="container py-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+      <h2 class="fw-bold mb-0 text-dark">Threat Intelligence Review</h2>
+      <p class="text-muted mb-0">Review false positives and feedback reported by users.</p>
+    </div>
+    <div class="d-flex gap-2">
+      <button class="btn btn-outline-primary shadow-sm" (click)="loadFeedback()">
+        <i class="bi bi-arrow-clockwise"></i> Refresh
+      </button>
+    </div>
+  </div>
+
+  <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+    <div class="card-body p-0">
+      <div class="table-responsive">
+        <table class="table table-hover mb-0 align-middle">
+          <thead class="table-light">
+            <tr>
+              <th scope="col" class="ps-4">Reported URL</th>
+              <th scope="col">Model Verdict</th>
+              <th scope="col">User Suggestion</th>
+              <th scope="col">Date</th>
+              <th scope="col" class="text-end pe-4">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (item of feedbackList; track item.id) {
+              <tr>
+                <td class="ps-4">
+                  <span class="d-block text-truncate text-dark fw-medium" style="max-width: 300px;" title="{{item.url}}">
+                    {{ item.url }}
+                  </span>
+                </td>
+                <td>
+                  <span class="badge" 
+                    [ngClass]="{
+                      'bg-danger': item.original_verdict === 'phishing',
+                      'bg-warning text-dark': item.original_verdict === 'suspicious',
+                      'bg-success': item.original_verdict === 'legitimate'
+                    }">
+                    {{ item.original_verdict | uppercase }}
+                  </span>
+                </td>
+                <td>
+                  <span class="badge border" 
+                    [ngClass]="{
+                      'border-danger text-danger': item.user_reported_verdict === 'phishing',
+                      'border-warning text-warning': item.user_reported_verdict === 'suspicious',
+                      'border-success text-success': item.user_reported_verdict === 'legitimate'
+                    }">
+                    Should be: {{ item.user_reported_verdict | uppercase }}
+                  </span>
+                </td>
+                <td class="text-muted small">
+                  {{ item.reported_at | date:'short' }}
+                </td>
+                <td class="text-end pe-4">
+                  <button class="btn btn-sm btn-outline-success rounded-pill me-2" (click)="dismissReport(item.id)">
+                    <i class="bi bi-check-lg"></i> Acknowledge
+                  </button>
+                  <button class="btn btn-sm btn-outline-danger rounded-pill" (click)="dismissReport(item.id)">
+                    <i class="bi bi-trash"></i> Dismiss
+                  </button>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+
+      @if (isLoading) {
+        <div class="text-center py-5">
+          <div class="spinner-border text-primary" role="status"></div>
+          <p class="text-muted mt-2">Loading feedback reports...</p>
+        </div>
+      }
+
+      @if (!isLoading && feedbackList.length === 0) {
+        <div class="text-center py-5">
+          <i class="bi bi-shield-check text-muted mb-3" style="font-size: 3rem;"></i>
+          <h5 class="fw-bold text-dark">No Pending Reports</h5>
+          <p class="text-muted">The threat intelligence queue is completely clear.</p>
+        </div>
+      }
+    </div>
+  </div>
+</div>

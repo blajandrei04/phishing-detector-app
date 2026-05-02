@@ -38,4 +38,12 @@ export class PhishingService {
   submitFeedback(payload: { url: string, original_verdict: string, user_reported_verdict: string, comments?: string }): Observable<any> {
     return this.http.post(`${this.apiUrl}/feedback`, payload);
   }
+
+  getFeedback(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/feedback`);
+  }
+
+  deleteFeedback(id: number): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/feedback/${id}`);
+  }
 }

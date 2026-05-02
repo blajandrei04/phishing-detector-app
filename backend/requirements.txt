@@ -12,5 +12,7 @@ alembic==1.13.0
 pytest==7.4.3
 httpx==0.25.2
 python-multipart==0.0.6
-xgboost
-shap
+xgboost==2.0.3
+shap==0.44.0
+flake8==7.0.0
+black==24.4.2
