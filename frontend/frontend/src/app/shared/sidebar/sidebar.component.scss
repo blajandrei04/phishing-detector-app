@@ -2,8 +2,12 @@
   width: 80px; /* Collapsed width */
   min-height: 100vh;
   padding: 20px 0;
-  background-color: #1a56db; /* Exact blue hue from screenshot */
-  color: #ffffff;
+  background-color: var(--sidebar-bg);
+  backdrop-filter: var(--glass-blur, none);
+  -webkit-backdrop-filter: var(--glass-blur, none);
+  border-right: 1px solid var(--border-color);
+  box-shadow: 4px 0 15px -3px var(--shadow-color-1);
+  color: var(--text-secondary);
   position: fixed;
   top: 0;
   left: 0;
@@ -27,9 +31,9 @@
   display: flex;
   align-items: center;
   gap: 12px;
-  color: #ffffff;
+  color: var(--text-primary);
   text-decoration: none;
-  font-weight: 700;
+  font-weight: 800;
   font-size: 1.05rem;
   line-height: 1.2;
 }
@@ -41,8 +45,10 @@
   min-width: 40px;
   height: 40px;
   font-size: 1.2rem;
-  border-radius: 10px;
-  background-color: rgba(255, 255, 255, 0.15); /* Light translucent box behind the shield */
+  border-radius: var(--radius-sm);
+  background: var(--brand-primary);
+  color: #ffffff;
+  box-shadow: var(--shadow-sm);
 }
 
 .logo-text {
@@ -75,12 +81,12 @@
   align-items: center;
   gap: 0;
   padding: 10px 14px;
-  border-radius: 8px; /* Tighter border radius */
-  color: #ffffff; /* White text for all */
+  border-radius: var(--radius-sm);
+  color: var(--text-secondary);
   text-decoration: none;
-  font-weight: 500;
+  font-weight: 600;
   font-size: 0.95rem;
-  transition: background-color 0.2s ease;
+  transition: all 0.2s ease;
   white-space: nowrap;
 }
 
@@ -103,19 +109,70 @@
 }
 
 .nav a:hover {
-  background-color: rgba(255, 255, 255, 0.1);
+  background-color: var(--surface-hover);
+  color: var(--text-primary);
 }
 
 .nav a.active {
-  background-color: rgba(255, 255, 255, 0.2); /* Exactly like the active Dashboard state */
+  background-color: var(--surface-hover);
+  color: var(--brand-primary);
+  box-shadow: inset 3px 0 0 var(--brand-primary);
+}
+
+.user-profile-section {
+  margin-top: auto;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 20px;
+  border-top: 1px solid var(--border-color);
+  margin-bottom: 8px;
+  min-width: 240px;
+}
+
+.user-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: var(--hover-bg);
+  border: 1px solid var(--border-color-solid);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  color: var(--text-primary);
+  font-size: 0.95rem;
+  flex-shrink: 0;
+}
+
+.user-info {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.user-name {
+  font-weight: 600;
+  font-size: 0.85rem;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.user-email {
+  font-size: 0.7rem;
+  color: var(--text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .logout-action {
-  margin-top: auto; /* Push to bottom */
   margin-bottom: 20px;
 }
 
 .logout-action a:hover {
-  background-color: rgba(220, 53, 69, 0.3); /* Reddish hover for logout */
-  color: #ffcccc;
+  background-color: #fef2f2;
+  color: #ef4444;
 }

@@ -15,8 +15,8 @@ class LoginRequest(BaseModel):
     @classmethod
     def username_alphanumeric(cls, v: str) -> str:
         v = v.strip()
-        if not re.match(r'^[a-zA-Z0-9_]+$', v):
-            raise ValueError('Username must contain only letters, numbers, and underscores')
+        if not re.match(r'^[a-zA-Z0-9_@.]+$', v):
+            raise ValueError('Invalid characters in username or email')
         return v
 
 class RegisterRequest(BaseModel):
@@ -173,4 +173,14 @@ class FeedbackCreate(BaseModel):
     user_reported_verdict: str
     comments: Optional[str] = None
     user_id: Optional[str] = None
+
+class FeedbackResponse(BaseModel):
+    id: int
+    url: str
+    original_verdict: str
+    user_reported_verdict: str
+    comments: Optional[str] = None
+    reported_at: datetime
     
+    class Config:
+        from_attributes = True

@@ -6,7 +6,7 @@
 
   <div class="settings-grid">
     <!-- Profile Section -->
-    <div class="settings-card">
+    <div class="settings-card animate-slide-up delay-1">
       <div class="card-icon-header">
         <div class="icon-circle blue">
           <i class="bi bi-person-fill"></i>
@@ -27,6 +27,35 @@
           <i class="bi bi-exclamation-triangle-fill me-2"></i>{{ profileError }}
         </div>
       }
+
+      <div class="row gx-3">
+        <div class="col-6">
+          <div class="form-group">
+            <label class="form-label">First Name</label>
+            <div class="input-icon-wrapper">
+              <i class="bi bi-person"></i>
+              <input type="text" class="form-control" value="Andrei" placeholder="First Name" />
+            </div>
+          </div>
+        </div>
+        <div class="col-6">
+          <div class="form-group">
+            <label class="form-label">Last Name</label>
+            <div class="input-icon-wrapper">
+              <i class="bi bi-person"></i>
+              <input type="text" class="form-control" value="Blaj" placeholder="Last Name" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Organization / Company</label>
+        <div class="input-icon-wrapper">
+          <i class="bi bi-building"></i>
+          <input type="text" class="form-control" value="Technical University" placeholder="Organization" />
+        </div>
+      </div>
 
       <div class="form-group">
         <label class="form-label">Username</label>
@@ -75,7 +104,7 @@
     </div>
 
     <!-- Password Section -->
-    <div class="settings-card">
+    <div class="settings-card animate-slide-up delay-2">
       <div class="card-icon-header">
         <div class="icon-circle red">
           <i class="bi bi-lock-fill"></i>
@@ -160,56 +189,39 @@
       </div>
     </div>
 
-    <!-- Account Info Section -->
-    <div class="settings-card info-card">
+    <!-- Appearance Section -->
+    <div class="settings-card animate-slide-up delay-3">
       <div class="card-icon-header">
-        <div class="icon-circle green">
-          <i class="bi bi-info-circle-fill"></i>
+        <div class="icon-circle purple">
+          <i class="bi bi-palette-fill"></i>
         </div>
         <div>
-          <h5 class="mb-0 fw-bold">Account Overview</h5>
-          <p class="text-muted small mb-0">Your account at a glance</p>
+          <h5 class="mb-0 fw-bold">Appearance</h5>
+          <p class="text-muted small mb-0">Customize your interface</p>
         </div>
       </div>
 
-      <div class="info-items">
-        <div class="info-item">
-          <div class="info-icon">
-            <i class="bi bi-person-badge"></i>
-          </div>
+      <div class="theme-toggle-container">
+        <div class="d-flex align-items-center justify-content-between">
           <div>
-            <p class="info-label">Account ID</p>
-            <p class="info-value">#{{ user?.id }}</p>
+            <h6 class="mb-1 fw-semibold text-dark" [style.color]="'var(--text-primary)'">Dark Theme</h6>
+            <p class="text-muted small mb-0">Switch to a darker interface</p>
           </div>
-        </div>
-        <div class="info-item">
-          <div class="info-icon">
-            <i class="bi bi-shield-check"></i>
-          </div>
-          <div>
-            <p class="info-label">Authentication</p>
-            <p class="info-value">JWT / Session</p>
-          </div>
-        </div>
-        <div class="info-item">
-          <div class="info-icon">
-            <i class="bi bi-database"></i>
-          </div>
-          <div>
-            <p class="info-label">Hashing Algorithm</p>
-            <p class="info-value">bcrypt</p>
-          </div>
-        </div>
-        <div class="info-item">
-          <div class="info-icon">
-            <i class="bi bi-cpu"></i>
-          </div>
-          <div>
-            <p class="info-label">ML Model</p>
-            <p class="info-value">XGBoost v1.0</p>
+          <div class="form-check form-switch fs-4 m-0">
+            <input 
+              class="form-check-input shadow-none" 
+              type="checkbox" 
+              role="switch" 
+              id="darkThemeSwitch" 
+              style="cursor: pointer;"
+              [checked]="themeService.isDarkMode()"
+              (change)="themeService.toggleTheme()"
+            >
           </div>
         </div>
       </div>
     </div>
+
+
   </div>
 </div>

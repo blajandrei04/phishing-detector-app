@@ -48,4 +48,32 @@ export class AuthEffects {
       )
     )
   );
+
+  checkAuth$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(AuthActions.checkAuth),
+      switchMap(() => {
+        if (typeof window !== 'undefined' && sessionStorage.getItem('token')) {
+          return this.authService.getMe().pipe(
+            map(user => AuthActions.checkAuthSuccess({ user })),
+            catchError(() => of(AuthActions.checkAuthFailure()))
+          );
+        }
+        return of(AuthActions.checkAuthFailure());
+      })
+    )
+  );
+
+  checkAuthSuccessRedirect$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(AuthActions.checkAuthSuccess),
+        map(() => {
+          if (this.router.url === '/login' || this.router.url === '/') {
+            this.router.navigate(['/dashboard']);
+          }
+        })
+      ),
+    { dispatch: false }
+  );
 }

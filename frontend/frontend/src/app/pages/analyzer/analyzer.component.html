@@ -1,16 +1,16 @@
-<div class="row justify-content-center">
-  <div class="col-md-8 col-lg-6">
-    <div class="card shadow-lg border-0 rounded-4 mt-5">
-      <div class="card-body p-5">
-        <h2 class="card-title text-center mb-4 fw-bold text-primary">Phishing URL Analyzer</h2>
-        <p class="text-center text-muted mb-4">
+<div class="row justify-content-center mt-5">
+  <div class="col-md-8 col-lg-6 mt-4">
+    <div class="card border-0">
+      <div class="card-body p-2">
+        <h2 class="card-title text-center mb-3">Phishing URL Analyzer</h2>
+        <p class="text-center text-muted mb-5">
           Enter a website URL below to test if it's safe or a phishing attempt.
         </p>
 
         <div class="mb-4">
-          <label for="urlInput" class="form-label fw-semibold">Website URL</label>
-          <div class="input-group input-group-lg">
-            <span class="input-group-text bg-light border-end-0"><i class="bi bi-globe"></i></span>
+          <label for="urlInput" class="form-label fw-bold text-dark mb-3" style="font-size: 0.9rem;">Website URL</label>
+          <div class="input-group">
+            <span class="input-group-text bg-white border-end-0 text-muted px-3"><i class="bi bi-globe"></i></span>
             <input
               id="urlInput"
               type="url"
@@ -18,13 +18,14 @@
               [(ngModel)]="url"
               placeholder="https://example.com"
               (keyup.enter)="submit()"
+              [disabled]="loading"
             />
           </div>
         </div>
 
         <div class="d-grid gap-2">
           <button
-            class="btn btn-primary btn-lg rounded-pill shadow-sm"
+            class="btn btn-primary btn-lg d-flex justify-content-center align-items-center"
             (click)="submit()"
             [disabled]="loading || !url.trim()"
           >
@@ -34,14 +35,16 @@
                 role="status"
                 aria-hidden="true"
               ></span>
+              Analyzing...
+            } @else {
+              Analyze URL
             }
-            {{ loading ? 'Analyzing...' : 'Analyze URL' }}
           </button>
         </div>
 
         @if (error) {
-          <div class="alert alert-danger mt-4 d-flex align-items-center" role="alert">
-            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+          <div class="error-alert mt-4" role="alert">
+            <i class="bi bi-exclamation-triangle-fill fs-5"></i>
             <div>{{ error }}</div>
           </div>
         }

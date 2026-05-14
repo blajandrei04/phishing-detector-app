@@ -1,25 +1,74 @@
+/* Premium Analyzer Styling */
 .card {
-  background: #fff;
-  padding: 20px;
-  border-radius: 12px;
-  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
+  padding: 40px;
 }
 
-input {
-  width: 100%;
-  padding: 12px 14px;
+.card-title {
+  color: var(--text-primary);
+  font-weight: 700;
+  letter-spacing: -0.02em;
 }
 
-button {
-  background: #0ea5e9;
-  color: #fff;
-  border: 0;
-  padding: 10px 14px;
-  border-radius: 8px;
-  cursor: pointer;
+.input-group {
+  border-radius: var(--radius-sm);
+  overflow: hidden;
 }
 
-.error {
-  color: #dc2626;
+.input-group-text {
+  background-color: var(--input-bg) !important;
+  border-color: var(--input-border);
+}
+
+.form-control {
+  background-color: var(--input-bg);
+  border: 1px solid var(--input-border);
+  color: var(--text-primary);
+  padding: 16px;
+  font-size: 1rem;
+}
+
+.form-control:focus {
+  background-color: var(--input-bg);
+  border-color: var(--brand-primary);
+  box-shadow: none;
+}
+
+.input-group:focus-within {
+  box-shadow: 0 0 0 3px var(--input-focus-ring);
+  border-radius: var(--radius-sm);
+}
+
+.input-group:focus-within .input-group-text,
+.input-group:focus-within .form-control {
+  border-color: var(--brand-primary);
+}
+
+.btn-primary.btn-lg {
+  padding: 16px 24px;
+  font-weight: 600;
+  font-size: 1.1rem;
   margin-top: 10px;
+  border-radius: var(--radius-sm);
+}
+
+.error-alert {
+  background: var(--surface-hover);
+  border-left: 4px solid var(--semantic-danger);
+  color: var(--text-primary);
+  padding: 16px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  box-shadow: var(--shadow-sm);
+  animation: slideIn 0.3s ease-out;
+}
+
+.error-alert i {
+  color: var(--semantic-danger);
+}
+
+@keyframes slideIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
 }

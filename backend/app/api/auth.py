@@ -113,7 +113,9 @@ def reset_password(request: ResetPasswordRequest, db: Session = Depends(get_db))
 # ──────────────────────────────────────────────
 @router.post("/login", response_model=Token)
 def login(credentials: LoginRequest, db: Session = Depends(get_db)):
-    user = db.query(User).filter(User.username == credentials.username).first()
+    user = db.query(User).filter(
+        (User.username == credentials.username) | (User.email == credentials.username)
+    ).first()
     
     # Automatically seed the "admin" user for quick testing if it doesn't exist
     if not user and credentials.username == "admin" and credentials.password == "thesis":

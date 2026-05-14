@@ -66,7 +66,7 @@ fallback_data = [
 ]
 
 
-def load_data():
+def load_data() -> tuple[list[str], list[int]]:
     if os.path.exists(DATASET_PATH):
         print(f"  Loading dataset from {DATASET_PATH}...")
         df = pd.read_csv(DATASET_PATH)
@@ -80,7 +80,7 @@ def load_data():
         return [u[0] for u in fallback_data], [u[1] for u in fallback_data]
 
 
-def extract_all_features(urls):
+def extract_all_features(urls: list[str]) -> tuple[pd.DataFrame, list[str]]:
     print(f"  Extracting features for {len(urls):,} URLs...")
     feature_order = [
         "url_length", "hostname_length", "path_length", "query_length",
@@ -98,7 +98,7 @@ def extract_all_features(urls):
 # ──────────────────────────────────────────────
 # Model definitions
 # ──────────────────────────────────────────────
-def get_models():
+def get_models() -> dict:
     return {
         "XGBoost": XGBClassifier(
             n_estimators=300, max_depth=7, learning_rate=0.1,
@@ -117,7 +117,7 @@ def get_models():
 # ──────────────────────────────────────────────
 # Evaluation
 # ──────────────────────────────────────────────
-def evaluate_models(models, X_train, X_test, y_train, y_test):
+def evaluate_models(models: dict, X_train: np.ndarray | pd.DataFrame, X_test: np.ndarray | pd.DataFrame, y_train: np.ndarray, y_test: np.ndarray) -> dict:
     results = {}
     for name, model in models.items():
         print(f"\n  Training {name}...")
@@ -144,7 +144,7 @@ def evaluate_models(models, X_train, X_test, y_train, y_test):
 # ──────────────────────────────────────────────
 # Visualization Functions
 # ──────────────────────────────────────────────
-def plot_model_comparison(results):
+def plot_model_comparison(results: dict) -> None:
     """Bar chart comparing all models across key metrics."""
     metrics = ['accuracy', 'precision', 'recall', 'f1', 'auc_roc']
     labels = ['Accuracy', 'Precision', 'Recall', 'F1-Score', 'AUC-ROC']
@@ -178,7 +178,7 @@ def plot_model_comparison(results):
     print("  [OK] Saved model_comparison.png")
 
 
-def plot_confusion_matrices(results, y_test):
+def plot_confusion_matrices(results: dict, y_test: np.ndarray) -> None:
     """Side-by-side confusion matrices."""
     model_names = list(results.keys())
     fig, axes = plt.subplots(1, 3, figsize=(16, 5))
@@ -200,7 +200,7 @@ def plot_confusion_matrices(results, y_test):
     print("  [OK] Saved confusion_matrices.png")
 
 
-def plot_roc_curves(results, y_test):
+def plot_roc_curves(results: dict, y_test: np.ndarray) -> None:
     """Overlaid ROC curves."""
     fig, ax = plt.subplots(figsize=(8, 7))
     colors_list = [COLORS.get(n.lower().replace(" ", "_"), "#888") for n in results.keys()]
@@ -225,7 +225,7 @@ def plot_roc_curves(results, y_test):
     print("  [OK] Saved roc_curves.png")
 
 
-def plot_precision_recall_curves(results, y_test):
+def plot_precision_recall_curves(results: dict, y_test: np.ndarray) -> None:
     """Overlaid precision-recall curves."""
     fig, ax = plt.subplots(figsize=(8, 7))
     colors_list = [COLORS.get(n.lower().replace(" ", "_"), "#888") for n in results.keys()]
@@ -248,7 +248,7 @@ def plot_precision_recall_curves(results, y_test):
     print("  [OK] Saved precision_recall_curves.png")
 
 
-def plot_feature_importance(model, feature_names):
+def plot_feature_importance(model: XGBClassifier, feature_names: list[str]) -> None:
     """XGBoost feature importance horizontal bar chart."""
     importances = model.feature_importances_
     indices = np.argsort(importances)
@@ -291,7 +291,7 @@ def plot_feature_importance(model, feature_names):
     print("  [OK] Saved feature_importance.png")
 
 
-def generate_report(results, feature_names, xgb_model, dataset_size):
+def generate_report(results: dict, feature_names: list[str], xgb_model: XGBClassifier, dataset_size: int) -> None:
     """Generate a Markdown evaluation report for the thesis."""
     best_name = max(results.keys(), key=lambda k: results[k]['auc_roc'])
     best = results[best_name]
@@ -385,7 +385,7 @@ The following URL-derived features were engineered for the ML pipeline:
 # ──────────────────────────────────────────────
 # Main
 # ──────────────────────────────────────────────
-def main():
+def main() -> None:
     os.makedirs(ARTIFACTS_DIR, exist_ok=True)
 
     print("=" * 60)
