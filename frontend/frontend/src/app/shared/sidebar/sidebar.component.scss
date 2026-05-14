@@ -2,10 +2,12 @@
   width: 80px; /* Collapsed width */
   min-height: 100vh;
   padding: 20px 0;
-  background-color: #ffffff;
-  border-right: 1px solid rgba(226, 232, 240, 0.8);
-  box-shadow: 4px 0 15px -3px rgba(0, 0, 0, 0.02);
-  color: #64748b;
+  background-color: var(--sidebar-bg);
+  backdrop-filter: var(--glass-blur, none);
+  -webkit-backdrop-filter: var(--glass-blur, none);
+  border-right: 1px solid var(--border-color);
+  box-shadow: 4px 0 15px -3px var(--shadow-color-1);
+  color: var(--text-secondary);
   position: fixed;
   top: 0;
   left: 0;
@@ -29,7 +31,7 @@
   display: flex;
   align-items: center;
   gap: 12px;
-  color: #0f172a;
+  color: var(--text-primary);
   text-decoration: none;
   font-weight: 800;
   font-size: 1.05rem;
@@ -43,10 +45,10 @@
   min-width: 40px;
   height: 40px;
   font-size: 1.2rem;
-  border-radius: 12px;
-  background: linear-gradient(135deg, #2563eb 0%, #3b82f6 100%);
+  border-radius: var(--radius-sm);
+  background: var(--brand-primary);
   color: #ffffff;
-  box-shadow: 0 4px 10px rgba(37, 99, 235, 0.2);
+  box-shadow: var(--shadow-sm);
 }
 
 .logo-text {
@@ -79,8 +81,8 @@
   align-items: center;
   gap: 0;
   padding: 10px 14px;
-  border-radius: 10px;
-  color: #64748b;
+  border-radius: var(--radius-sm);
+  color: var(--text-secondary);
   text-decoration: none;
   font-weight: 600;
   font-size: 0.95rem;
@@ -107,13 +109,14 @@
 }
 
 .nav a:hover {
-  background-color: #f1f5f9;
-  color: #0f172a;
+  background-color: var(--surface-hover);
+  color: var(--text-primary);
 }
 
 .nav a.active {
-  background-color: #eff6ff;
-  color: #2563eb;
+  background-color: var(--surface-hover);
+  color: var(--brand-primary);
+  box-shadow: inset 3px 0 0 var(--brand-primary);
 }
 
 .user-profile-section {
@@ -122,7 +125,7 @@
   align-items: center;
   gap: 12px;
   padding: 16px 20px;
-  border-top: 1px solid rgba(226, 232, 240, 0.8);
+  border-top: 1px solid var(--border-color);
   margin-bottom: 8px;
   min-width: 240px;
 }
@@ -131,13 +134,13 @@
   width: 36px;
   height: 36px;
   border-radius: 10px;
-  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
-  border: 1px solid #cbd5e1;
+  background: var(--hover-bg);
+  border: 1px solid var(--border-color-solid);
   display: flex;
   align-items: center;
   justify-content: center;
   font-weight: 700;
-  color: #334155;
+  color: var(--text-primary);
   font-size: 0.95rem;
   flex-shrink: 0;
 }
@@ -151,7 +154,7 @@
 .user-name {
   font-weight: 600;
   font-size: 0.85rem;
-  color: #0f172a;
+  color: var(--text-primary);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -159,7 +162,7 @@
 
 .user-email {
   font-size: 0.7rem;
-  color: #64748b;
+  color: var(--text-secondary);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
