@@ -1,10 +1,10 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
 :root {
-  --bg-color: #f3f4f6; /* Light gray background from screenshot */
-  --text-primary: #111827;
-  --text-secondary: #6b7280;
-  --sidebar-bg: #2563eb; /* Bright blue for sidebar */
+  --bg-color: #f8fafc;
+  --text-primary: #0f172a;
+  --text-secondary: #64748b;
+  --sidebar-bg: #ffffff;
   --font-family: 'Inter', sans-serif;
 }
 
@@ -13,6 +13,8 @@ body {
   font-family: var(--font-family);
   background-color: var(--bg-color);
   color: var(--text-primary);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 .app-container {

@@ -4,8 +4,8 @@
 </div>
 
 <div class="summary-cards">
-  @for (card of summaryCards; track card) {
-    <div class="card summary-card card-{{ card.color }}">
+  @for (card of summaryCards; track card; let i = $index) {
+    <div class="card summary-card card-{{ card.color }} animate-slide-up delay-{{ i + 1 }}">
       <div class="card-body">
         <div class="card-top">
           <h5 class="card-title">{{ card.title }}</h5>
@@ -31,7 +31,7 @@
 
 <div class="row">
   <div class="col-lg-7">
-    <div class="scan-activity card">
+    <div class="scan-activity card animate-slide-up delay-4">
       <div class="card-body">
         <h5 class="card-title">Scan Activity</h5>
         <p class="card-subtitle">Daily scan volume over the past 7 days</p>
@@ -110,7 +110,7 @@
   </div>
 
   <div class="col-lg-5">
-    <div class="recent-scans card">
+    <div class="recent-scans card animate-slide-up delay-5">
       <div class="card-body">
         <h5 class="card-title">Recent Scans</h5>
         <p class="card-subtitle">Latest URL analysis results</p>

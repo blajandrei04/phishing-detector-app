@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { PhishingService } from '../../core/services/phishing.service';
@@ -12,6 +12,7 @@ import { PhishingService } from '../../core/services/phishing.service';
 })
 export class AdminReviewComponent implements OnInit {
   private phishingService = inject(PhishingService);
+  private cdr = inject(ChangeDetectorRef);
 
   feedbackList: any[] = [];
   isLoading = true;
@@ -22,13 +23,17 @@ export class AdminReviewComponent implements OnInit {
 
   loadFeedback() {
     this.isLoading = true;
+    this.cdr.detectChanges();
+    
     this.phishingService.getFeedback().subscribe({
       next: (data) => {
         this.feedbackList = data;
         this.isLoading = false;
+        this.cdr.detectChanges();
       },
       error: () => {
         this.isLoading = false;
+        this.cdr.detectChanges();
       }
     });
   }
@@ -37,6 +42,7 @@ export class AdminReviewComponent implements OnInit {
     this.phishingService.deleteFeedback(id).subscribe({
       next: () => {
         this.feedbackList = this.feedbackList.filter(f => f.id !== id);
+        this.cdr.detectChanges();
       }
     });
   }
