@@ -4,7 +4,7 @@
 </div>
 
 <div class="summary-cards">
-  @for (card of summaryCards; track card; let i = $index) {
+  @for (card of summaryCards(); track card; let i = $index) {
     <div class="card summary-card card-{{ card.color }} animate-slide-up delay-{{ i + 1 }}">
       <div class="card-body">
         <div class="card-top">
@@ -37,10 +37,10 @@
         <p class="card-subtitle">Daily scan volume over the past 7 days</p>
 
         <!-- Dynamic bar chart -->
-        @if (activityDays.length > 0) {
+        @if (activityDays().length > 0) {
           <div class="activity-chart">
             <div class="chart-bars">
-              @for (day of activityDays; track day) {
+              @for (day of activityDays(); track day) {
                 <div class="chart-bar-wrapper">
                   <div class="chart-bar-stack">
                     @if (day.total > 0) {
@@ -49,19 +49,19 @@
                     @if (day.phishing > 0) {
                       <div
                         class="chart-bar chart-bar-phishing"
-                        [style.height.%]="(day.phishing / activityMax) * 100"
+                        [style.height.%]="(day.phishing / activityMax()) * 100"
                       ></div>
                     }
                     @if (day.suspicious > 0) {
                       <div
                         class="chart-bar chart-bar-suspicious"
-                        [style.height.%]="(day.suspicious / activityMax) * 100"
+                        [style.height.%]="(day.suspicious / activityMax()) * 100"
                       ></div>
                     }
                     @if (day.legitimate > 0) {
                       <div
                         class="chart-bar chart-bar-legitimate"
-                        [style.height.%]="(day.legitimate / activityMax) * 100"
+                        [style.height.%]="(day.legitimate / activityMax()) * 100"
                       ></div>
                     }
                     <!-- Empty day placeholder bar -->
@@ -91,7 +91,7 @@
         }
 
         <!-- Empty state only when API hasn't returned data -->
-        @if (activityLoaded && activityDays.length === 0) {
+        @if (activityLoaded() && activityDays().length === 0) {
           <div class="empty-state">
             <i class="bi bi-bar-chart-line"></i>
             <p>No scan activity yet. Analyze some URLs to see your chart!</p>
@@ -99,7 +99,7 @@
         }
 
         <!-- Loading state -->
-        @if (!activityLoaded) {
+        @if (!activityLoaded()) {
           <div class="empty-state">
             <div class="spinner-border spinner-border-sm text-muted" role="status"></div>
             <p class="mt-2">Loading activity data...</p>
@@ -115,9 +115,9 @@
         <h5 class="card-title">Recent Scans</h5>
         <p class="card-subtitle">Latest URL analysis results</p>
 
-        @if (recentScans.length > 0) {
+        @if (recentScans().length > 0) {
           <ul class="list-group list-group-flush">
-            @for (scan of recentScans; track scan) {
+            @for (scan of recentScans(); track scan) {
               <li class="list-group-item">
                 <div class="scan-icon">
                   <i class="bi {{ scan.icon }}" [style.color]="scan.riskColor"></i>
@@ -140,7 +140,7 @@
         }
 
         <!-- Empty state -->
-        @if (recentScans.length === 0) {
+        @if (recentScans().length === 0) {
           <div class="empty-state">
             <i class="bi bi-clock-history"></i>
             <p>No scans yet. Use the Quick Analysis above to get started!</p>

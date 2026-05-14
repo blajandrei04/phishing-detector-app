@@ -9,9 +9,17 @@ export interface AuthState {
   error: string | null;
 }
 
+const isBrowser = typeof window !== 'undefined';
+const token = isBrowser ? localStorage.getItem('token') : null;
+const userStr = isBrowser ? localStorage.getItem('user') : null;
+let initialUser = null;
+if (userStr) {
+  try { initialUser = JSON.parse(userStr); } catch (e) {}
+}
+
 export const initialState: AuthState = {
-  user: null,
-  isAuthenticated: false,
+  user: initialUser,
+  isAuthenticated: !!token,
   isLoading: false,
   error: null
 };

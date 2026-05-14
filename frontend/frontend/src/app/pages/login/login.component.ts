@@ -26,9 +26,12 @@ export class LoginComponent {
   });
 
   registerForm: FormGroup = this.fb.group({
+    firstName: ['', Validators.required],
+    lastName: ['', Validators.required],
+    organization: [''],
     username: ['', [Validators.required, Validators.minLength(3)]],
     email: ['', [Validators.required, Validators.email]],
-    password: ['', [Validators.required, Validators.minLength(4)]]
+    password: ['', [Validators.required, Validators.minLength(6)]],
   });
 
   forgotForm: FormGroup = this.fb.group({

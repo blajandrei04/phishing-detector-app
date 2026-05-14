@@ -3,6 +3,7 @@ import { Component, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../core/services/auth.service';
 import { AuthFacade } from '../../core/facades/auth.facade';
+import { ThemeService } from '../../core/services/theme.service';
 import { User } from '../../models/auth.models';
 
 @Component({
@@ -15,6 +16,7 @@ import { User } from '../../models/auth.models';
 export class SettingsComponent implements OnInit {
   private authService = inject(AuthService);
   authFacade = inject(AuthFacade);
+  themeService = inject(ThemeService);
 
   // Profile
   user: User | null = null;

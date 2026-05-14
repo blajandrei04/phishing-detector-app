@@ -25,7 +25,7 @@
             </tr>
           </thead>
           <tbody>
-            @for (item of feedbackList; track item.id) {
+            @for (item of feedbackList(); track item.id) {
               <tr>
                 <td class="ps-4">
                   <span class="d-block text-truncate text-dark fw-medium" style="max-width: 300px;" title="{{item.url}}">
@@ -69,14 +69,14 @@
         </table>
       </div>
 
-      @if (isLoading) {
+      @if (isLoading()) {
         <div class="text-center py-5">
           <div class="spinner-border text-primary" role="status"></div>
           <p class="text-muted mt-2">Loading feedback reports...</p>
         </div>
       }
 
-      @if (!isLoading && feedbackList.length === 0) {
+      @if (!isLoading() && feedbackList().length === 0) {
         <div class="text-center py-5">
           <i class="bi bi-shield-check text-muted mb-3" style="font-size: 3rem;"></i>
           <h5 class="fw-bold text-dark">No Pending Reports</h5>

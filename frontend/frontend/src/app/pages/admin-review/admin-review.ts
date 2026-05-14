@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { PhishingService } from '../../core/services/phishing.service';
@@ -8,32 +8,29 @@ import { PhishingService } from '../../core/services/phishing.service';
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './admin-review.html',
-  styleUrl: './admin-review.scss'
+  styleUrl: './admin-review.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AdminReviewComponent implements OnInit {
   private phishingService = inject(PhishingService);
-  private cdr = inject(ChangeDetectorRef);
 
-  feedbackList: any[] = [];
-  isLoading = true;
+  feedbackList = signal<any[]>([]);
+  isLoading = signal<boolean>(true);
 
   ngOnInit() {
     this.loadFeedback();
   }
 
   loadFeedback() {
-    this.isLoading = true;
-    this.cdr.detectChanges();
+    this.isLoading.set(true);
     
     this.phishingService.getFeedback().subscribe({
       next: (data) => {
-        this.feedbackList = data;
-        this.isLoading = false;
-        this.cdr.detectChanges();
+        this.feedbackList.set(data);
+        this.isLoading.set(false);
       },
       error: () => {
-        this.isLoading = false;
-        this.cdr.detectChanges();
+        this.isLoading.set(false);
       }
     });
   }
@@ -41,8 +38,7 @@ export class AdminReviewComponent implements OnInit {
   dismissReport(id: number) {
     this.phishingService.deleteFeedback(id).subscribe({
       next: () => {
-        this.feedbackList = this.feedbackList.filter(f => f.id !== id);
-        this.cdr.detectChanges();
+        this.feedbackList.update(list => list.filter(f => f.id !== id));
       }
     });
   }

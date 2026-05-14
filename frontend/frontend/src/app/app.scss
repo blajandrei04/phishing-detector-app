@@ -2,10 +2,35 @@
 
 :root {
   --bg-color: #f8fafc;
+  --surface-color: #ffffff;
   --text-primary: #0f172a;
   --text-secondary: #64748b;
+  --text-muted: #94a3b8;
   --sidebar-bg: #ffffff;
+  --border-color: rgba(226, 232, 240, 0.8);
+  --border-color-solid: #e2e8f0;
+  --hover-bg: #f1f5f9;
+  --shadow-color-1: rgba(0, 0, 0, 0.05);
+  --shadow-color-2: rgba(0, 0, 0, 0.01);
   --font-family: 'Inter', sans-serif;
+  --input-bg: #f8fafc;
+  --input-border: #e2e8f0;
+}
+
+body.dark-theme {
+  --bg-color: #0f172a;
+  --surface-color: #1e293b;
+  --text-primary: #f8fafc;
+  --text-secondary: #cbd5e1;
+  --text-muted: #94a3b8;
+  --sidebar-bg: #1e293b;
+  --border-color: rgba(51, 65, 85, 0.8);
+  --border-color-solid: #334155;
+  --hover-bg: #334155;
+  --shadow-color-1: rgba(0, 0, 0, 0.3);
+  --shadow-color-2: rgba(0, 0, 0, 0.2);
+  --input-bg: #0f172a;
+  --input-border: #334155;
 }
 
 body {
@@ -15,6 +40,7 @@ body {
   color: var(--text-primary);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 .app-container {

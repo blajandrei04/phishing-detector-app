@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { SidebarComponent } from './shared/sidebar/sidebar.component';
 import { AuthFacade } from './core/facades/auth.facade';
-
+import { ThemeService } from './core/services/theme.service';
 @Component({
   selector: 'app-root',
   standalone: true,
@@ -13,6 +13,7 @@ import { AuthFacade } from './core/facades/auth.facade';
 })
 export class App implements OnInit {
   public authFacade = inject(AuthFacade);
+  private themeService = inject(ThemeService);
   protected readonly title = signal('frontend');
 
   ngOnInit() {

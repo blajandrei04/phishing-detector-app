@@ -42,6 +42,19 @@
       </a>
     </li>
   </ul>
+
+  @if (authFacade.user$ | async; as user) {
+    <div class="user-profile-section">
+      <div class="user-avatar">
+        {{ user.username.charAt(0).toUpperCase() }}
+      </div>
+      <div class="user-info nav-text">
+        <span class="user-name">{{ user.username }}</span>
+        <span class="user-email">{{ user.email }}</span>
+      </div>
+    </div>
+  }
+
   <ul class="nav logout-action">
     <li>
       <a href="#" (click)="$event.preventDefault(); onLogout()">
