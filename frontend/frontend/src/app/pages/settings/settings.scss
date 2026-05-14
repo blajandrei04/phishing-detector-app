@@ -67,6 +67,11 @@
     background: #dcfce7;
     color: #22c55e;
   }
+
+  &.purple {
+    background: #f3e8ff;
+    color: #9333ea;
+  }
 }
 
 .form-group {
@@ -224,6 +229,29 @@
         color: #22c55e;
       }
     }
+  }
+}
+
+// Theme Toggle
+.theme-toggle-container {
+  background: #f8fafc;
+  border-radius: 12px;
+  padding: 18px 20px;
+  border: 1px solid #e2e8f0;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: #f1f5f9;
+  }
+  
+  .form-switch .form-check-input {
+    width: 2.5em;
+    height: 1.25em;
+  }
+  
+  .form-switch .form-check-input:checked {
+    background-color: #0f172a;
+    border-color: #0f172a;
   }
 }
 
