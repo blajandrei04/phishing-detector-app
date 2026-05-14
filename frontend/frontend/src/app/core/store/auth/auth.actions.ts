@@ -18,3 +18,10 @@ export const loginFailure = createAction(
 
 export const logout = createAction('[Auth] Logout');
 export const logoutSuccess = createAction('[Auth] Logout Success');
+
+export const checkAuth = createAction('[Auth] Check Auth');
+export const checkAuthSuccess = createAction(
+  '[Auth] Check Auth Success',
+  props<{ user: User }>()
+);
+export const checkAuthFailure = createAction('[Auth] Check Auth Failure');
