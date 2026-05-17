@@ -42,6 +42,69 @@ def delete_feedback(feedback_id: int, db: Session = Depends(get_db), current_use
     db.commit()
     return {"message": "Feedback deleted successfully"}
 
+import csv
+import os
+import subprocess
+from fastapi import BackgroundTasks
+
+# Simple counter for demo purposes
+retrain_counter = 0
+RETRAIN_THRESHOLD = 3
+
+def trigger_retraining():
+    print("Triggering background MLOps retraining pipeline...")
+    # Run the training script in the background
+    # It will save the new model to artifacts/xgb_opt.pkl
+    subprocess.run(["python", "train_model.py"], check=False)
+    # Once it finishes, the model loader would need to reload it, 
+    # but for this demo, the file is overwritten on disk.
+    print("Background retraining complete.")
+
+@router.post("/feedback/{feedback_id}/acknowledge")
+def acknowledge_feedback(
+    feedback_id: int, 
+    background_tasks: BackgroundTasks,
+    db: Session = Depends(get_db), 
+    current_user: User = Depends(get_current_user)
+):
+    global retrain_counter
+    from fastapi import HTTPException
+    if current_user.username != "admin":
+        raise HTTPException(status_code=403, detail="Admin privileges required")
+        
+    fb = db.query(Feedback).filter(Feedback.id == feedback_id).first()
+    if not fb:
+        raise HTTPException(status_code=404, detail="Feedback not found")
+        
+    # Map verdict to CSV label ('bad' or 'good')
+    label = "bad" if fb.user_reported_verdict in ["phishing", "suspicious"] else "good"
+    
+    # Append to dataset
+    dataset_path = "datasets/phishing_site_urls.csv"
+    if os.path.exists(dataset_path):
+        with open(dataset_path, "a", newline="", encoding="utf-8") as f:
+            writer = csv.writer(f)
+            writer.writerow([fb.url, label])
+            
+    # Delete the feedback from the queue
+    db.delete(fb)
+    db.commit()
+    
+    retrain_counter += 1
+    triggered = False
+    
+    # Trigger MLOps pipeline if threshold met
+    if retrain_counter >= RETRAIN_THRESHOLD:
+        background_tasks.add_task(trigger_retraining)
+        retrain_counter = 0
+        triggered = True
+        
+    return {
+        "message": "Feedback acknowledged, added to dataset.", 
+        "retrain_triggered": triggered
+    }
+
+
 @router.post("/history")
 def create_history(payload: HistoryCreateRequest, db: Session = Depends(get_db)):
     return {"message": "handled by analyze endpoint mostly"}

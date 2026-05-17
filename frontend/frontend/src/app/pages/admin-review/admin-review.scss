@@ -1,0 +1,45 @@
+.text-adaptive {
+  color: var(--text-primary) !important;
+}
+
+.card {
+  background: var(--surface-color) !important;
+  border-color: var(--border-color) !important;
+  box-shadow: 0 4px 6px -1px var(--shadow-color-1), 0 2px 4px -2px var(--shadow-color-2) !important;
+  
+  .card-body {
+    background: transparent;
+  }
+}
+
+.table-responsive {
+  table {
+    margin: 0;
+    
+    th {
+      background-color: var(--hover-bg);
+      color: var(--text-secondary);
+      font-weight: 700;
+      text-transform: uppercase;
+      font-size: 0.75rem;
+      letter-spacing: 0.05em;
+      padding: 1rem 1.5rem;
+      border-bottom: 1px solid var(--border-color-solid);
+    }
+    
+    td {
+      padding: 1rem 1.5rem;
+      vertical-align: middle;
+      color: var(--text-primary);
+      border-bottom: 1px solid var(--border-color-solid);
+    }
+    
+    tbody tr {
+      transition: background-color 0.15s ease;
+    }
+    
+    tbody tr:hover {
+      background-color: var(--hover-bg);
+    }
+  }
+}

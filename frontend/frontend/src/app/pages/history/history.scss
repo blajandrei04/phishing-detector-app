@@ -65,6 +65,7 @@
       }
       
       .url-cell a {
+        color: var(--text-primary);
         transition: color 0.15s ease;
         &:hover {
           color: var(--neon-cyan, #2563eb) !important;
@@ -87,6 +88,10 @@
     .page-info {
       color: var(--text-secondary);
       font-size: 0.875rem;
+      
+      strong {
+        color: var(--text-primary) !important;
+      }
     }
     
     .btn-white {

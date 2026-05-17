@@ -153,6 +153,19 @@
   padding: 24px;
 }
 
+.scan-activity .card-title,
+.recent-scans .card-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.scan-activity .card-subtitle,
+.recent-scans .card-subtitle {
+  color: var(--text-secondary);
+  margin-bottom: 24px;
+}
+
 /* ─── Dynamic Activity Chart ─── */
 .activity-chart {
   margin-top: 20px;

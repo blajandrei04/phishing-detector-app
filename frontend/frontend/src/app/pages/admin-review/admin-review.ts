@@ -42,4 +42,15 @@ export class AdminReviewComponent implements OnInit {
       }
     });
   }
+
+  acknowledgeReport(id: number) {
+    this.phishingService.acknowledgeFeedback(id).subscribe({
+      next: (response) => {
+        this.feedbackList.update(list => list.filter(f => f.id !== id));
+        if (response.retrain_triggered) {
+          alert('MLOps Pipeline Triggered! The XGBoost model is currently retraining in the background with the newly validated data.');
+        }
+      }
+    });
+  }
 }

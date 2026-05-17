@@ -140,6 +140,19 @@ body {
   color: var(--text-primary);
 }
 
+::placeholder {
+  color: var(--text-muted) !important;
+  opacity: 1; /* Firefox */
+}
+
+:-ms-input-placeholder { /* Internet Explorer 10-11 */
+ color: var(--text-muted) !important;
+}
+
+::-ms-input-placeholder { /* Microsoft Edge */
+ color: var(--text-muted) !important;
+}
+
 /* Typography Utilities */
 .text-muted { color: var(--text-muted) !important; }
 .text-danger { color: var(--semantic-danger) !important; }
@@ -168,5 +181,9 @@ body {
     opacity: 1;
     transform: translateY(0);
   }
+}
+
+.text-adaptive {
+  color: var(--text-primary) !important;
 }
 

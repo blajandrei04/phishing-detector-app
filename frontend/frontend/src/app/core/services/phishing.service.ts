@@ -46,4 +46,8 @@ export class PhishingService {
   deleteFeedback(id: number): Observable<any> {
     return this.http.delete(`${this.apiUrl}/feedback/${id}`);
   }
+
+  acknowledgeFeedback(id: number): Observable<any> {
+    return this.http.post(`${this.apiUrl}/feedback/${id}/acknowledge`, {});
+  }
 }

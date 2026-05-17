@@ -11,7 +11,7 @@
       <div class="col-md-8">
         <label class="form-label text-muted small fw-bold">SEARCH URL</label>
         <div class="input-group border border-1 border-gray rounded-3 overflow-hidden">
-          <span class="input-group-text bg-white border-0 text-muted"
+          <span class="input-group-text border-0 text-secondary" style="background-color: var(--input-bg);"
             ><i class="bi bi-search"></i
           ></span>
           <input
@@ -21,7 +21,7 @@
             [(ngModel)]="searchQuery"
             (keyup.enter)="onSearch()"
           />
-          <button class="btn btn-light border-start" (click)="onSearch()">Search</button>
+          <button class="btn btn-primary border-start" style="border-top-left-radius: 0; border-bottom-left-radius: 0;" (click)="onSearch()">Search</button>
         </div>
       </div>
       <div class="col-md-4">
@@ -85,7 +85,7 @@
                   <a
                     [href]="scan.url.startsWith('http') ? scan.url : 'http://' + scan.url"
                     target="_blank"
-                    class="text-decoration-none text-dark d-inline-block text-truncate"
+                    class="text-decoration-none d-inline-block text-truncate"
                     style="max-width: 350px"
                     title="{{ scan.url }}"
                   >
@@ -141,14 +141,14 @@
       <div class="pagination-controls">
         <div class="page-info">
           Showing
-          <strong class="text-dark">{{
+          <strong>{{
             totalScans === 0 ? 0 : (currentPage - 1) * pageSize + 1
           }}</strong>
           to
-          <strong class="text-dark">{{
+          <strong>{{
             currentPage * pageSize > totalScans ? totalScans : currentPage * pageSize
           }}</strong>
-          of <strong class="text-dark">{{ totalScans }}</strong> results
+          of <strong>{{ totalScans }}</strong> results
         </div>
         <div class="btn-group shadow-sm">
           <button

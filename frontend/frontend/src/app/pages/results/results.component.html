@@ -2,7 +2,7 @@
   <div class="container py-4">
     <div class="d-flex justify-content-between align-items-center mb-4 no-print">
       <div>
-        <h2 class="fw-bold mb-0 text-dark">URL Threat Report</h2>
+        <h2 class="fw-bold mb-0 text-adaptive">URL Threat Report</h2>
         <p class="text-muted mb-0">Detailed analysis of the scanned web address.</p>
       </div>
       <div class="d-flex gap-2">
@@ -38,7 +38,7 @@
               SCANNED UNIFORM RESOURCE LOCATOR
             </p>
             <div class="d-flex align-items-center gap-2">
-              <h4 class="mb-0 fw-bold text-dark text-break">{{ result.url }}</h4>
+              <h4 class="mb-0 fw-bold text-adaptive text-break">{{ result.url }}</h4>
               <a
                 [href]="result.url.startsWith('http') ? result.url : 'http://' + result.url"
                 target="_blank"
@@ -57,13 +57,13 @@
               class="d-inline-block px-4 py-3 rounded-4"
               [ngClass]="{
                 'bg-danger text-white shadow-sm': result.verdict === 'phishing',
-                'bg-warning text-dark shadow-sm': result.verdict === 'suspicious',
+                'bg-warning text-adaptive shadow-sm': result.verdict === 'suspicious',
                 'bg-success text-white shadow-sm': result.verdict === 'legitimate',
               }"
             >
               <p
                 class="small fw-bold mb-1 text-uppercase opacity-75"
-                [ngClass]="{ 'text-dark': result.verdict === 'suspicious' }"
+                [ngClass]="{ 'text-adaptive': result.verdict === 'suspicious' }"
               >
                 FINAL THREAT VERDICT
               </p>
@@ -93,7 +93,7 @@
                 <i class="bi bi-speedometer2 me-2"></i> MODEL RISK SCORE
               </h6>
               <div class="d-flex align-items-end gap-2 mb-2">
-                <h1 class="display-5 fw-bold mb-0 text-dark lh-1">
+                <h1 class="display-5 fw-bold mb-0 text-adaptive lh-1">
                   {{ result.score * 100 | number: '1.0-1' }}
                 </h1>
                 <span class="fs-4 text-muted pb-1">/ 100</span>
@@ -121,7 +121,7 @@
                 <i class="bi bi-bar-chart-fill me-2"></i> PREDICTION CONFIDENCE
               </h6>
               <div class="d-flex align-items-end gap-2 mb-2">
-                <h1 class="display-5 fw-bold mb-0 text-dark lh-1">
+                <h1 class="display-5 fw-bold mb-0 text-adaptive lh-1">
                   {{ result.confidence * 100 | number: '1.0-1' }}
                 </h1>
                 <span class="fs-4 text-muted pb-1">%</span>
@@ -143,9 +143,9 @@
               @if (result.extracted_features) {
                 <ul class="list-unstyled mb-0 d-flex flex-column gap-2">
                   <li
-                    class="d-flex justify-content-between align-items-center p-2 bg-white rounded border"
+                    class="d-flex justify-content-between align-items-center p-2 rounded border"
                   >
-                    <span class="small fw-semibold text-dark">Has HTTPS</span>
+                    <span class="small fw-semibold text-adaptive">Has HTTPS</span>
                     @if (result.extracted_features['has_https']) {
                       <i class="bi bi-check-circle-fill text-success"></i>
                     }
@@ -154,9 +154,9 @@
                     }
                   </li>
                   <li
-                    class="d-flex justify-content-between align-items-center p-2 bg-white rounded border"
+                    class="d-flex justify-content-between align-items-center p-2 rounded border"
                   >
-                    <span class="small fw-semibold text-dark">URL Shortener Used</span>
+                    <span class="small fw-semibold text-adaptive">URL Shortener Used</span>
                     @if (result.extracted_features['is_shortener']) {
                       <i class="bi bi-exclamation-triangle-fill text-warning"></i>
                     }
@@ -165,9 +165,9 @@
                     }
                   </li>
                   <li
-                    class="d-flex justify-content-between align-items-center p-2 bg-white rounded border"
+                    class="d-flex justify-content-between align-items-center p-2 rounded border"
                   >
-                    <span class="small fw-semibold text-dark">Total Length</span>
+                    <span class="small fw-semibold text-adaptive">Total Length</span>
                     <span class="badge bg-secondary"
                       >{{ result.extracted_features['url_length'] }} chars</span
                     >
@@ -181,7 +181,7 @@
         @if (result.shap_explanation?.shap_values?.length) {
           <div class="mt-5">
             <div class="d-flex justify-content-between align-items-center mb-4">
-              <h4 class="fw-bold text-dark mb-0 d-flex align-items-center">
+              <h4 class="fw-bold text-adaptive mb-0 d-flex align-items-center">
                 <i class="bi bi-cpu-fill text-primary me-2"></i> Model Insight (Explainable AI)
               </h4>
               <div class="d-flex align-items-center gap-3">
@@ -260,7 +260,7 @@
               </button>
             }
             @if (result.verdict !== 'suspicious') {
-              <button class="btn btn-outline-warning text-dark btn-sm rounded-pill px-3 fw-medium" (click)="reportIncorrectVerdict('suspicious')" [disabled]="isReporting">
+              <button class="btn btn-outline-warning text-adaptive btn-sm rounded-pill px-3 fw-medium" (click)="reportIncorrectVerdict('suspicious')" [disabled]="isReporting">
                 <i class="bi bi-shield-exclamation me-1"></i> Report as Suspicious
               </button>
             }
