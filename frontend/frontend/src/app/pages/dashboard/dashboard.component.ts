@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, PLATFORM_ID, signal, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, inject, PLATFORM_ID, signal, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -18,6 +18,7 @@ export class DashboardComponent implements OnInit {
   private router = inject(Router);
   private platformId = inject(PLATFORM_ID);
   private urlValidator = inject(UrlValidatorService);
+  private cdr = inject(ChangeDetectorRef);
 
   urlToAnalyze = signal<string>('');
   isAnalyzing = signal<boolean>(false);
@@ -29,6 +30,16 @@ export class DashboardComponent implements OnInit {
   activityDays = signal<any[]>([]);
   activityMax = signal<number>(1);
   activityLoaded = signal<boolean>(false);
+
+  // Animated counter display values
+  displayTotalScans = 0;
+  displayThreats = 0;
+  displaySafe = 0;
+  displaySuspicious = 0;
+
+  // Donut chart
+  donutSegments: { offset: number; length: number; color: string; label: string }[] = [];
+  donutTotal = 0;
 
   summaryCards = signal<any[]>([
     {
@@ -104,6 +115,15 @@ export class DashboardComponent implements OnInit {
               : 'No scans yet'
           }
         ]);
+
+        // Animate counters
+        if (isPlatformBrowser(this.platformId)) {
+          this.animateCounter('displayTotalScans', data.total_scans);
+          this.animateCounter('displayThreats', data.phishing_count);
+          this.animateCounter('displaySafe', data.legitimate_count);
+          this.animateCounter('displaySuspicious', data.suspicious_count);
+          this.buildDonut(data.phishing_count, data.suspicious_count, data.legitimate_count);
+        }
       }
     });
 
@@ -138,6 +158,64 @@ export class DashboardComponent implements OnInit {
         this.activityLoaded.set(true);
       }
     });
+  }
+
+  private animateCounter(property: 'displayTotalScans' | 'displayThreats' | 'displaySafe' | 'displaySuspicious', target: number): void {
+    if (target === 0) {
+      this[property] = 0;
+      this.cdr.markForCheck();
+      return;
+    }
+    const duration = 1000;
+    const startTime = performance.now();
+
+    const animate = (now: number) => {
+      const elapsed = now - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 3);
+
+      this[property] = Math.round(eased * target);
+      this.cdr.markForCheck();
+
+      if (progress < 1) {
+        requestAnimationFrame(animate);
+      } else {
+        this[property] = target;
+        this.cdr.markForCheck();
+      }
+    };
+    requestAnimationFrame(animate);
+  }
+
+  private buildDonut(phishing: number, suspicious: number, legitimate: number): void {
+    const total = phishing + suspicious + legitimate;
+    this.donutTotal = total;
+    if (total === 0) {
+      this.donutSegments = [];
+      this.cdr.markForCheck();
+      return;
+    }
+
+    const circumference = 2 * Math.PI * 45; // radius = 45
+    let offset = 0;
+    this.donutSegments = [];
+
+    if (legitimate > 0) {
+      const length = (legitimate / total) * circumference;
+      this.donutSegments.push({ offset, length, color: '#22c55e', label: 'Legitimate' });
+      offset += length;
+    }
+    if (suspicious > 0) {
+      const length = (suspicious / total) * circumference;
+      this.donutSegments.push({ offset, length, color: '#f59e0b', label: 'Suspicious' });
+      offset += length;
+    }
+    if (phishing > 0) {
+      const length = (phishing / total) * circumference;
+      this.donutSegments.push({ offset, length, color: '#ef4444', label: 'Phishing' });
+      offset += length;
+    }
+    this.cdr.markForCheck();
   }
 
   submitUrl() {

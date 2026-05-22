@@ -17,6 +17,10 @@ export class LoginComponent {
   public authService = inject(AuthService);
 
   mode: 'login' | 'register' | 'forgot' | 'reset' = 'login';
+  showPassword = false;
+  showRegPassword = false;
+  showResetPassword = false;
+  showResetConfirmPassword = false;
   message: string = '';
   resetToken: string = '';
 

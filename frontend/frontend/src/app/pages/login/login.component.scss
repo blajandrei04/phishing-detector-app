@@ -185,6 +185,30 @@
       svg ~ .custom-input {
         padding-left: 40px;
       }
+
+      .eye-toggle {
+        position: absolute;
+        right: 12px;
+        background: none;
+        border: none;
+        color: #94a3b8;
+        cursor: pointer;
+        padding: 4px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: color 0.2s ease;
+        z-index: 2;
+
+        &:hover {
+          color: var(--neon-cyan, #2563eb);
+        }
+      }
+
+      .eye-toggle ~ .custom-input,
+      .custom-input {
+        padding-right: 42px;
+      }
     }
   }
 }
