@@ -66,12 +66,13 @@
               <th>Threat Verdict</th>
               <th>Risk Score</th>
               <th>Scan Date</th>
+              <th>Actions</th>
             </tr>
           </thead>
           <tbody>
             @if (scans.length === 0) {
               <tr>
-                <td colspan="4" class="text-center py-5">
+                <td colspan="5" class="text-center py-5">
                   <i class="bi bi-inboxes text-muted fs-1 d-block mb-2"></i>
                   <p class="text-muted mb-0 fw-medium">
                     No scan records found. Analyze some URLs to build your history!
@@ -129,6 +130,20 @@
                 </td>
                 <td class="text-muted small">
                   <i class="bi bi-clock me-1"></i> {{ scan.created_at | date: 'short' }}
+                </td>
+                <td>
+                  <button
+                    class="btn btn-sm btn-outline-primary shadow-sm rounded-pill px-3"
+                    (click)="viewReport(scan.url)"
+                    [disabled]="analyzingUrl === scan.url"
+                  >
+                    @if (analyzingUrl === scan.url) {
+                      <span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
+                      Loading...
+                    } @else {
+                      <i class="bi bi-file-earmark-text me-1"></i> View Report
+                    }
+                  </button>
                 </td>
               </tr>
             }
