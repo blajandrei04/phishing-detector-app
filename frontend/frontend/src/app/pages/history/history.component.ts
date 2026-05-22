@@ -1,6 +1,7 @@
 import { Component, OnInit, inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 import { PhishingService } from '../../core/services/phishing.service';
 
 @Component({
@@ -13,11 +14,13 @@ import { PhishingService } from '../../core/services/phishing.service';
 export class HistoryComponent implements OnInit {
   private phishingService = inject(PhishingService);
   private cdr = inject(ChangeDetectorRef);
+  private router = inject(Router);
 
   scans: any[] = [];
   totalScans: number = 0;
   isLoading: boolean = true;
   loadError: string | null = null;
+  analyzingUrl: string | null = null;
   
   // Pagination
   currentPage: number = 1;
@@ -79,5 +82,22 @@ export class HistoryComponent implements OnInit {
   
   get totalPages(): number {
     return Math.ceil(this.totalScans / this.pageSize);
+  }
+
+  viewReport(url: string) {
+    this.analyzingUrl = url;
+    this.phishingService.analyzeUrl({ url }).subscribe({
+      next: (response) => {
+        localStorage.setItem('lastResult', JSON.stringify(response));
+        this.analyzingUrl = null;
+        this.router.navigate(['/results']);
+      },
+      error: (err) => {
+        console.error("Failed to analyze url:", err);
+        this.loadError = 'Failed to load report. Please try again.';
+        this.analyzingUrl = null;
+        this.cdr.detectChanges();
+      }
+    });
   }
 }
