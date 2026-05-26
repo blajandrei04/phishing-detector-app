@@ -1,36 +1,139 @@
-.card {
-  background: #fff;
-  border-radius: 12px;
+/* ──────────────────────────────────────────────
+   Results Page — Premium Styling
+   ────────────────────────────────────────────── */
+
+.results-card {
+  border-radius: 16px;
+  overflow: hidden;
 }
 
-/* Print Styles */
-@media print {
-  body {
-    background-color: white !important;
-  }
-  .btn, .no-print, nav, header, footer {
-    display: none !important;
-  }
-  .card {
-    border: none !important;
-    box-shadow: none !important;
-    margin: 0 !important;
-    padding: 0 !important;
-  }
-  .container, .row, .col-md-10 {
-    width: 100% !important;
-    max-width: 100% !important;
-    margin: 0 !important;
-    padding: 0 !important;
-  }
-  .shadow-lg {
-    box-shadow: none !important;
-  }
+.metric-card {
+  background: var(--surface-hover);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.metric-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+/* ─── Verdict Badge ─── */
+.verdict-badge {
+  position: relative;
+  transition: transform 0.3s ease;
+}
+
+.verdict-badge:hover {
+  transform: scale(1.03);
+}
+
+.verdict-phishing {
+  background: linear-gradient(135deg, #ef4444, #dc2626);
+  color: #fff;
+  box-shadow: 0 4px 14px rgba(239, 68, 68, 0.3);
+}
+
+.verdict-suspicious {
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  color: var(--text-primary);
+  box-shadow: 0 4px 14px rgba(245, 158, 11, 0.3);
+}
+
+.verdict-legitimate {
+  background: linear-gradient(135deg, #22c55e, #16a34a);
+  color: #fff;
+  box-shadow: 0 4px 14px rgba(34, 197, 94, 0.3);
+}
+
+.verdict-help {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  color: inherit;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 0.85rem;
+  transition: background 0.2s ease;
+}
+
+.verdict-help:hover {
+  background: rgba(255, 255, 255, 0.35);
+}
+
+.verdict-tooltip {
+  background: var(--surface-hover);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 12px 16px;
+  color: var(--text-secondary);
+  box-shadow: var(--shadow-sm);
+}
+
+/* ─── Gauge Chart ─── */
+.gauge-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 8px 0;
+}
+
+.gauge-svg {
+  width: 180px;
+  height: 108px;
+}
+
+.gauge-needle {
+  transition: transform 0.1s linear;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.15));
+}
+
+.gauge-value {
+  margin-top: -12px;
+  text-align: center;
+}
+
+.gauge-number {
+  font-size: 2rem;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.gauge-unit {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  margin-left: 4px;
+}
+
+/* ─── Confidence Bar ─── */
+.confidence-bar {
+  background: linear-gradient(90deg, var(--brand-primary), #60a5fa);
+  border-radius: 6px;
+}
+
+.progress {
+  background: var(--surface-hover);
+}
+
+/* ─── Heuristic Items ─── */
+.heuristic-item {
+  background: var(--surface-color);
+  transition: background 0.15s ease;
+}
+
+.heuristic-item:hover {
+  background: var(--surface-hover);
 }
 
 /* ─── SHAP Explainability Chart ─── */
-.shap-explanation {
-  animation: fadeIn 0.4s ease-out;
+.shap-wrapper {
+  background: var(--surface-color);
 }
 
 .shap-chart {
@@ -46,12 +149,29 @@
   padding: 6px 0;
 }
 
+/* Staggered SHAP bar entrance animation */
+.shap-animate {
+  opacity: 0;
+  animation: shapSlideIn 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes shapSlideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
 .shap-label {
   width: 180px;
   min-width: 180px;
   font-size: 0.85rem;
   font-weight: 500;
-  color: #475569;
+  color: var(--text-secondary);
   text-align: right;
   white-space: nowrap;
   overflow: hidden;
@@ -65,7 +185,7 @@
 .shap-bar-track {
   position: relative;
   height: 24px;
-  background: #f1f5f9;
+  background: var(--surface-hover);
   border-radius: 4px;
   overflow: hidden;
   -webkit-print-color-adjust: exact;
@@ -78,7 +198,7 @@
   top: 0;
   bottom: 0;
   width: 2px;
-  background: #94a3b8;
+  background: var(--text-muted);
   z-index: 2;
   -webkit-print-color-adjust: exact;
   print-color-adjust: exact;
@@ -116,7 +236,37 @@
   font-family: 'JetBrains Mono', 'Fira Code', monospace;
 }
 
+/* ─── Animations ─── */
+.animate-fade-in {
+  animation: fadeIn 0.3s ease-out;
+}
+
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(8px); }
   to { opacity: 1; transform: translateY(0); }
+}
+
+/* ─── Print Styles ─── */
+@media print {
+  body {
+    background-color: white !important;
+  }
+  .btn, .no-print, nav, header, footer {
+    display: none !important;
+  }
+  .card, .results-card {
+    border: none !important;
+    box-shadow: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+  .container, .row, .col-md-10 {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+  .shadow-lg {
+    box-shadow: none !important;
+  }
 }

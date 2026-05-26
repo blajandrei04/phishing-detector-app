@@ -3,31 +3,51 @@
   <p>Monitor and analyze URLs for phishing threats</p>
 </div>
 
+<!-- Summary Cards with Animated Counters -->
 <div class="summary-cards">
-  @for (card of summaryCards(); track card; let i = $index) {
-    <div class="card summary-card card-{{ card.color }} animate-slide-up delay-{{ i + 1 }}">
-      <div class="card-body">
-        <div class="card-top">
-          <h5 class="card-title">{{ card.title }}</h5>
-          <div class="card-icon">
-            <i class="bi {{ card.icon }}"></i>
-          </div>
-        </div>
-        <div class="card-bottom">
-          <p class="card-value">{{ card.value }}</p>
-          <p class="card-change" [ngClass]="'text-' + card.changeType">
-            @if (card.changeType === 'increase' && card.title === 'Total Scans') {
-              <i class="bi bi-graph-up-arrow"></i>
-            }
-            {{ card.change }}
-          </p>
+  @if (isLoading()) {
+    <!-- Skeleton Loaders -->
+    @for (i of [1, 2, 3, 4]; track i) {
+      <div class="card summary-card skeleton-card">
+        <div class="card-body">
+          <div class="skeleton skeleton-title"></div>
+          <div class="skeleton skeleton-value"></div>
+          <div class="skeleton skeleton-change"></div>
         </div>
       </div>
-    </div>
+    }
+  } @else {
+    @for (card of summaryCards(); track card; let i = $index) {
+      <div class="card summary-card card-{{ card.color }} animate-slide-up delay-{{ i + 1 }}">
+        <div class="card-body">
+          <div class="card-top">
+            <h5 class="card-title">{{ card.title }}</h5>
+            <div class="card-icon">
+              <i class="bi {{ card.icon }}"></i>
+            </div>
+          </div>
+          <div class="card-bottom">
+            <p class="card-value">
+              @switch (card.title) {
+                @case ('Total Scans') { {{ displayTotalScans }} }
+                @case ('Threats Detected') { {{ displayThreats }} }
+                @case ('Safe URLs') { {{ displaySafe }} }
+                @case ('Suspicious') { {{ displaySuspicious }} }
+                @default { {{ card.value }} }
+              }
+            </p>
+            <p class="card-change" [ngClass]="'text-' + card.changeType">
+              @if (card.changeType === 'increase' && card.title === 'Total Scans') {
+                <i class="bi bi-graph-up-arrow"></i>
+              }
+              {{ card.change }}
+            </p>
+          </div>
+        </div>
+      </div>
+    }
   }
 </div>
-
-
 
 <div class="row">
   <div class="col-lg-7">
@@ -110,41 +130,94 @@
   </div>
 
   <div class="col-lg-5">
+    <!-- Donut Chart Card -->
+    @if (donutTotal > 0) {
+      <div class="card donut-card animate-slide-up delay-4">
+        <div class="card-body">
+          <h5 class="card-title">Verdict Distribution</h5>
+          <p class="card-subtitle">Overall scan results breakdown</p>
+
+          <div class="donut-container">
+            <svg viewBox="0 0 120 120" class="donut-svg">
+              @for (seg of donutSegments; track seg.label) {
+                <circle
+                  cx="60" cy="60" r="45"
+                  fill="none"
+                  [attr.stroke]="seg.color"
+                  stroke-width="14"
+                  [attr.stroke-dasharray]="seg.length + ' ' + (283 - seg.length)"
+                  [attr.stroke-dashoffset]="(-seg.offset)"
+                  stroke-linecap="round"
+                  class="donut-segment"
+                />
+              }
+            </svg>
+            <div class="donut-center">
+              <span class="donut-total">{{ donutTotal }}</span>
+              <span class="donut-label">Total</span>
+            </div>
+          </div>
+          <div class="donut-legend">
+            @for (seg of donutSegments; track seg.label) {
+              <span class="donut-legend-item">
+                <i class="bi bi-circle-fill" [style.color]="seg.color" style="font-size: 0.5rem"></i>
+                {{ seg.label }}
+              </span>
+            }
+          </div>
+        </div>
+      </div>
+    }
+
     <div class="recent-scans card animate-slide-up delay-5">
       <div class="card-body">
         <h5 class="card-title">Recent Scans</h5>
         <p class="card-subtitle">Latest URL analysis results</p>
 
-        @if (recentScans().length > 0) {
-          <ul class="list-group list-group-flush">
-            @for (scan of recentScans(); track scan) {
-              <li class="list-group-item">
-                <div class="scan-icon">
-                  <i class="bi {{ scan.icon }}" [style.color]="scan.riskColor"></i>
-                </div>
-                <div class="scan-details">
-                  <p class="scan-url">{{ scan.url }}</p>
-                  <p class="scan-time">
-                    {{ scan.time }}
-                    <span class="scan-score">{{ scan.score * 100 | number: '1.0-0' }}% risk</span>
-                  </p>
-                </div>
-                <div class="scan-risk">
-                  <span class="badge" [style.backgroundColor]="scan.riskColor">{{
-                    scan.risk
-                  }}</span>
-                </div>
-              </li>
-            }
-          </ul>
-        }
+        @if (isLoading()) {
+          <!-- Skeleton loaders for recent scans -->
+          @for (i of [1, 2, 3]; track i) {
+            <div class="skeleton-scan-item">
+              <div class="skeleton skeleton-circle"></div>
+              <div class="skeleton-scan-details">
+                <div class="skeleton skeleton-line-long"></div>
+                <div class="skeleton skeleton-line-short"></div>
+              </div>
+              <div class="skeleton skeleton-badge"></div>
+            </div>
+          }
+        } @else {
+          @if (recentScans().length > 0) {
+            <ul class="list-group list-group-flush">
+              @for (scan of recentScans(); track scan) {
+                <li class="list-group-item">
+                  <div class="scan-icon">
+                    <i class="bi {{ scan.icon }}" [style.color]="scan.riskColor"></i>
+                  </div>
+                  <div class="scan-details">
+                    <p class="scan-url">{{ scan.url }}</p>
+                    <p class="scan-time">
+                      {{ scan.time }}
+                      <span class="scan-score">{{ scan.score * 100 | number: '1.0-0' }}% risk</span>
+                    </p>
+                  </div>
+                  <div class="scan-risk">
+                    <span class="badge" [style.backgroundColor]="scan.riskColor">{{
+                      scan.risk
+                    }}</span>
+                  </div>
+                </li>
+              }
+            </ul>
+          }
 
-        <!-- Empty state -->
-        @if (recentScans().length === 0) {
-          <div class="empty-state">
-            <i class="bi bi-clock-history"></i>
-            <p>No scans yet. Use the Quick Analysis above to get started!</p>
-          </div>
+          <!-- Empty state -->
+          @if (recentScans().length === 0) {
+            <div class="empty-state">
+              <i class="bi bi-clock-history"></i>
+              <p>No scans yet. Use the Analyzer to get started!</p>
+            </div>
+          }
         }
       </div>
     </div>

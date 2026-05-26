@@ -1,5 +1,5 @@
 import { Component, PLATFORM_ID, Inject } from '@angular/core';
-import { isPlatformBrowser } from '@angular/common';
+import { isPlatformBrowser, CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { PhishingService } from '../../core/services/phishing.service';
@@ -9,7 +9,7 @@ import { AnalyzeResponse } from '../../models/analyze-response.model';
 @Component({
   selector: 'app-analyzer',
   standalone: true,
-  imports: [FormsModule],
+  imports: [FormsModule, CommonModule],
   templateUrl: './analyzer.component.html',
   styleUrl: './analyzer.component.scss',
 })
@@ -17,6 +17,15 @@ export class AnalyzerComponent {
   url = '';
   loading = false;
   error = '';
+  howExpanded = false;
+
+  demoUrls = [
+    { label: 'Safe — Google', url: 'https://www.google.com', type: 'safe' },
+    { label: 'Safe — GitHub', url: 'https://github.com', type: 'safe' },
+    { label: 'Phishing — Fake PayPal', url: 'http://login-update-account-paypal.com', type: 'phishing' },
+    { label: 'Phishing — IP Login', url: 'http://192.168.1.1/login.php', type: 'phishing' },
+    { label: 'Suspicious — Shortener', url: 'http://bit.ly/free-money', type: 'phishing' },
+  ];
 
   constructor(
     private phishingService: PhishingService,
@@ -24,6 +33,11 @@ export class AnalyzerComponent {
     @Inject(PLATFORM_ID) private platformId: Object,
     private urlValidator: UrlValidatorService
   ) {}
+
+  fillDemo(url: string): void {
+    this.url = url;
+    this.error = '';
+  }
 
   submit(): void {
     const validation = this.urlValidator.validate(this.url);

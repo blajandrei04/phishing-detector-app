@@ -2,6 +2,16 @@
   <div class="col-md-8 col-lg-6 mt-4">
     <div class="card border-0">
       <div class="card-body p-2">
+        <!-- Animated Shield Icon -->
+        <div class="shield-container" [class.scanning]="loading">
+          <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"
+            class="shield-icon">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+          </svg>
+          <div class="shield-pulse"></div>
+        </div>
+
         <h2 class="card-title text-center mb-3">Phishing URL Analyzer</h2>
         <p class="text-center text-muted mb-5">
           Enter a website URL below to test if it's safe or a phishing attempt.
@@ -37,6 +47,7 @@
               ></span>
               Analyzing...
             } @else {
+              <i class="bi bi-search me-2"></i>
               Analyze URL
             }
           </button>
@@ -48,6 +59,65 @@
             <div>{{ error }}</div>
           </div>
         }
+
+        <!-- Demo URL Buttons -->
+        <div class="demo-urls mt-4">
+          <p class="text-muted small mb-2 d-flex align-items-center gap-1">
+            <i class="bi bi-lightning-charge-fill" style="color: var(--brand-primary);"></i>
+            Quick Demo — try these examples:
+          </p>
+          <div class="d-flex flex-wrap gap-2">
+            @for (demo of demoUrls; track demo.url) {
+              <button
+                class="btn demo-chip"
+                [class.demo-safe]="demo.type === 'safe'"
+                [class.demo-phishing]="demo.type === 'phishing'"
+                (click)="fillDemo(demo.url)"
+                [disabled]="loading"
+              >
+                <i class="bi" [ngClass]="demo.type === 'safe' ? 'bi-check-circle-fill' : 'bi-exclamation-triangle-fill'"></i>
+                {{ demo.label }}
+              </button>
+            }
+          </div>
+        </div>
+
+        <!-- How It Works Section -->
+        <div class="how-it-works mt-5">
+          <button class="how-toggle" (click)="howExpanded = !howExpanded">
+            <span class="d-flex align-items-center gap-2">
+              <i class="bi bi-info-circle-fill" style="color: var(--brand-primary);"></i>
+              <span class="fw-semibold text-adaptive">How does it work?</span>
+            </span>
+            <i class="bi chevron-icon" [ngClass]="howExpanded ? 'bi-chevron-up' : 'bi-chevron-down'"></i>
+          </button>
+
+          @if (howExpanded) {
+            <div class="how-steps">
+              <div class="step-card step-enter">
+                <div class="step-number">1</div>
+                <div class="step-icon"><i class="bi bi-link-45deg"></i></div>
+                <h6>Enter URL</h6>
+                <p>Paste any suspicious URL you want to investigate</p>
+              </div>
+              <div class="step-connector"><i class="bi bi-arrow-right"></i></div>
+              <div class="step-card step-enter" style="animation-delay: 0.1s;">
+                <div class="step-number">2</div>
+                <div class="step-icon"><i class="bi bi-cpu"></i></div>
+                <h6>Feature Extraction</h6>
+                <p>16 lexical & heuristic features are extracted from the URL</p>
+              </div>
+              <div class="step-connector"><i class="bi bi-arrow-right"></i></div>
+              <div class="step-card step-enter" style="animation-delay: 0.2s;">
+                <div class="step-number">3</div>
+                <div class="step-icon"><i class="bi bi-shield-check"></i></div>
+                <h6>ML Verdict</h6>
+                <p>An XGBoost model predicts whether the URL is phishing</p>
+              </div>
+            </div>
+          }
+        </div>
+
       </div>
     </div>
   </div>

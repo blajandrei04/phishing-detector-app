@@ -20,18 +20,12 @@
         </a>
       </div>
     </div>
-    <div class="card border-0 shadow-lg" style="border-radius: 16px; overflow: hidden">
-      <!-- Top colored bar indicating verdict -->
-      <div
-        style="height: 12px; width: 100%"
-        [ngClass]="{
-          'bg-danger': result.verdict === 'phishing',
-          'bg-warning': result.verdict === 'suspicious',
-          'bg-success': result.verdict === 'legitimate',
-        }"
-      ></div>
+    <div class="card border-0 shadow-lg results-card">
+      <!-- Gradient top bar based on score -->
+      <div [ngStyle]="getGradientBarStyle()"></div>
+
       <!-- Header section -->
-      <div class="card-body p-4 p-md-5 bg-white">
+      <div class="card-body p-4 p-md-5">
         <div class="row align-items-center mb-5">
           <div class="col-md-8">
             <p class="text-muted small fw-bold mb-1 letter-spacing-1">
@@ -54,17 +48,14 @@
           </div>
           <div class="col-md-4 text-md-end mt-4 mt-md-0">
             <div
-              class="d-inline-block px-4 py-3 rounded-4"
+              class="verdict-badge d-inline-block px-4 py-3 rounded-4 position-relative"
               [ngClass]="{
-                'bg-danger text-white shadow-sm': result.verdict === 'phishing',
-                'bg-warning text-adaptive shadow-sm': result.verdict === 'suspicious',
-                'bg-success text-white shadow-sm': result.verdict === 'legitimate',
+                'verdict-phishing': result.verdict === 'phishing',
+                'verdict-suspicious': result.verdict === 'suspicious',
+                'verdict-legitimate': result.verdict === 'legitimate',
               }"
             >
-              <p
-                class="small fw-bold mb-1 text-uppercase opacity-75"
-                [ngClass]="{ 'text-adaptive': result.verdict === 'suspicious' }"
-              >
+              <p class="small fw-bold mb-1 text-uppercase opacity-75">
                 FINAL THREAT VERDICT
               </p>
               <h2
@@ -80,70 +71,90 @@
                 ></i>
                 {{ result.verdict }}
               </h2>
+              <!-- Verdict Tooltip -->
+              <button class="verdict-help no-print" (click)="showVerdictTooltip = !showVerdictTooltip" title="What does this mean?">
+                <i class="bi bi-question-circle"></i>
+              </button>
             </div>
+            @if (showVerdictTooltip) {
+              <div class="verdict-tooltip mt-2 animate-fade-in">
+                <p class="mb-0 small">{{ getVerdictExplanation() }}</p>
+              </div>
+            }
           </div>
         </div>
         <hr class="text-muted opacity-25" />
+
         <!-- Metrics Section -->
         <div class="row g-4 my-4">
-          <!-- Score Column -->
+          <!-- Gauge Chart Column -->
           <div class="col-md-4 border-end-md">
-            <div class="p-3 bg-light rounded-4 h-100 border border-1">
+            <div class="metric-card p-3 rounded-4 h-100 border border-1">
               <h6 class="text-muted fw-bold mb-3 d-flex align-items-center">
                 <i class="bi bi-speedometer2 me-2"></i> MODEL RISK SCORE
               </h6>
-              <div class="d-flex align-items-end gap-2 mb-2">
-                <h1 class="display-5 fw-bold mb-0 text-adaptive lh-1">
-                  {{ result.score * 100 | number: '1.0-1' }}
-                </h1>
-                <span class="fs-4 text-muted pb-1">/ 100</span>
+              <!-- SVG Gauge Chart -->
+              <div class="gauge-container">
+                <svg viewBox="0 0 200 120" class="gauge-svg">
+                  <!-- Background arc -->
+                  <path d="M 20 100 A 80 80 0 0 1 180 100" fill="none" stroke="var(--border-color)" stroke-width="12" stroke-linecap="round" />
+                  <!-- Colored arc segments -->
+                  <path d="M 20 100 A 80 80 0 0 1 73 32" fill="none" stroke="#22c55e" stroke-width="12" stroke-linecap="round" opacity="0.3" />
+                  <path d="M 73 32 A 80 80 0 0 1 127 32" fill="none" stroke="#f59e0b" stroke-width="12" stroke-linecap="round" opacity="0.3" />
+                  <path d="M 127 32 A 80 80 0 0 1 180 100" fill="none" stroke="#ef4444" stroke-width="12" stroke-linecap="round" opacity="0.3" />
+                  <!-- Needle -->
+                  <line x1="100" y1="100" x2="100" y2="30"
+                    [attr.stroke]="gaugeColor"
+                    stroke-width="3" stroke-linecap="round"
+                    [attr.transform]="'rotate(' + gaugeRotation + ' 100 100)'"
+                    class="gauge-needle" />
+                  <!-- Center circle -->
+                  <circle cx="100" cy="100" r="6" [attr.fill]="gaugeColor" />
+                  <circle cx="100" cy="100" r="3" fill="var(--surface-color)" />
+                </svg>
+                <div class="gauge-value">
+                  <span class="gauge-number" [style.color]="gaugeColor">{{ displayScore | number: '1.0-1' }}</span>
+                  <span class="gauge-unit">/ 100</span>
+                </div>
               </div>
-              <div class="progress mt-3 bg-white border" style="height: 12px; border-radius: 6px">
-                <div
-                  class="progress-bar"
-                  [ngClass]="{
-                    'bg-success': result.score < 0.4,
-                    'bg-warning': result.score >= 0.4 && result.score < 0.7,
-                    'bg-danger': result.score >= 0.7,
-                  }"
-                  [style.width.%]="result.score * 100"
-                ></div>
-              </div>
-              <p class="text-muted small mt-2 mb-0">
-                The probability calculated by the Machine Learning model.
+              <p class="text-muted small mt-2 mb-0 text-center">
+                Phishing probability from the ML model.
               </p>
             </div>
           </div>
+
           <!-- Confidence Column -->
           <div class="col-md-4 border-end-md">
-            <div class="p-3 bg-light rounded-4 h-100 border border-1">
+            <div class="metric-card p-3 rounded-4 h-100 border border-1">
               <h6 class="text-muted fw-bold mb-3 d-flex align-items-center">
                 <i class="bi bi-bar-chart-fill me-2"></i> PREDICTION CONFIDENCE
               </h6>
               <div class="d-flex align-items-end gap-2 mb-2">
                 <h1 class="display-5 fw-bold mb-0 text-adaptive lh-1">
-                  {{ result.confidence * 100 | number: '1.0-1' }}
+                  {{ displayConfidence | number: '1.0-1' }}
                 </h1>
                 <span class="fs-4 text-muted pb-1">%</span>
               </div>
-              <div class="progress mt-3 bg-white border" style="height: 12px; border-radius: 6px">
-                <div class="progress-bar bg-info" [style.width.%]="result.confidence * 100"></div>
+              <div class="progress mt-3 border" style="height: 12px; border-radius: 6px">
+                <div class="progress-bar confidence-bar" [style.width.%]="displayConfidence"
+                  style="transition: width 1.2s cubic-bezier(0.4, 0, 0.2, 1);"></div>
               </div>
               <p class="text-muted small mt-2 mb-0">
                 Model's certainty based on training data distance.
               </p>
             </div>
           </div>
+
           <!-- Features Quick Look -->
           <div class="col-md-4">
-            <div class="p-3 bg-light rounded-4 h-100 border border-1">
+            <div class="metric-card p-3 rounded-4 h-100 border border-1">
               <h6 class="text-muted fw-bold mb-3 d-flex align-items-center">
                 <i class="bi bi-puzzle-fill me-2"></i> KEY HEURISTICS
               </h6>
               @if (result.extracted_features) {
                 <ul class="list-unstyled mb-0 d-flex flex-column gap-2">
                   <li
-                    class="d-flex justify-content-between align-items-center p-2 rounded border"
+                    class="d-flex justify-content-between align-items-center p-2 rounded border heuristic-item"
                   >
                     <span class="small fw-semibold text-adaptive">Has HTTPS</span>
                     @if (result.extracted_features['has_https']) {
@@ -154,7 +165,7 @@
                     }
                   </li>
                   <li
-                    class="d-flex justify-content-between align-items-center p-2 rounded border"
+                    class="d-flex justify-content-between align-items-center p-2 rounded border heuristic-item"
                   >
                     <span class="small fw-semibold text-adaptive">URL Shortener Used</span>
                     @if (result.extracted_features['is_shortener']) {
@@ -165,7 +176,7 @@
                     }
                   </li>
                   <li
-                    class="d-flex justify-content-between align-items-center p-2 rounded border"
+                    class="d-flex justify-content-between align-items-center p-2 rounded border heuristic-item"
                   >
                     <span class="small fw-semibold text-adaptive">Total Length</span>
                     <span class="badge bg-secondary"
@@ -177,6 +188,7 @@
             </div>
           </div>
         </div>
+
         <!-- SHAP Explainability -->
         @if (result.shap_explanation?.shap_values?.length) {
           <div class="mt-5">
@@ -193,16 +205,16 @@
                 >
               </div>
             </div>
-            <div class="bg-white border rounded-4 p-4 shadow-sm">
+            <div class="shap-wrapper border rounded-4 p-4 shadow-sm">
               <p class="text-muted mb-4">
                 This chart uses SHAP (SHapley Additive exPlanations) values to explain exactly which
                 extracted URL features drove the model to its final verdict. Longer bars indicate a
                 stronger influence.
               </p>
               <div class="shap-chart">
-                <!-- Iterate over the top 10 impactful features -->
-                @for (item of result.shap_explanation?.shap_values?.slice(0, 10); track item) {
-                  <div class="shap-bar-row">
+                <!-- Iterate over the top 10 impactful features with staggered animation -->
+                @for (item of result.shap_explanation?.shap_values?.slice(0, 10); track item; let i = $index) {
+                  <div class="shap-bar-row shap-animate" [style.animation-delay]="(i * 60) + 'ms'">
                     <div class="shap-label" title="{{ item.label }}">{{ item.label }}</div>
                     <div class="shap-bar-container">
                       <div class="shap-bar-track">
@@ -276,7 +288,7 @@
   </div>
 } @else {
   <div class="container py-5 d-flex justify-content-center">
-    <div class="card border-0 shadow-sm rounded-4 text-center p-5 col-md-8 bg-light">
+    <div class="card border-0 shadow-sm rounded-4 text-center p-5 col-md-8">
       <i class="bi bi-clipboard-x text-muted mb-4" style="font-size: 3rem"></i>
       <h3 class="fw-bold">No Analysis Found</h3>
       <p class="text-muted mb-4">
