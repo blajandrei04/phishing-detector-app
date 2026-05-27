@@ -11,12 +11,13 @@ import shap
 
 logger = logging.getLogger(__name__)
 
-# Human-readable labels for each feature
+# Human-readable labels for each feature (22 total)
 FEATURE_LABELS = {
     "url_length": "URL Length",
     "hostname_length": "Hostname Length",
     "path_length": "Path Length",
     "query_length": "Query String Length",
+    "has_https": "HTTPS Protocol",
     "has_at_symbol": "Contains @ Symbol",
     "has_double_slash_redirect": "Double-Slash Redirect",
     "has_hyphen_in_domain": "Hyphen in Domain",
@@ -29,15 +30,24 @@ FEATURE_LABELS = {
     "num_parameters": "Query Parameters",
     "url_entropy": "URL Entropy (Randomness)",
     "has_suspicious_warning_words": "Suspicious Keywords",
+    # v2 features
+    "tld_type": "Exotic TLD Detected",
+    "vowel_consonant_ratio": "Vowel/Consonant Ratio",
+    "contains_brand_name": "Brand Name Impersonation",
+    "punycode_detected": "Punycode (IDN Homograph)",
+    "path_to_length_ratio": "Path-to-Length Ratio",
 }
 
 FEATURE_ORDER = [
     "url_length", "hostname_length", "path_length", "query_length",
-    "has_at_symbol", "has_double_slash_redirect",
+    "has_https", "has_at_symbol", "has_double_slash_redirect",
     "has_hyphen_in_domain", "subdomain_count", "digit_count",
     "special_char_count", "is_shortener", "uses_ip_as_host",
     "num_directories", "num_parameters", "url_entropy",
-    "has_suspicious_warning_words"
+    "has_suspicious_warning_words",
+    # v2 features
+    "tld_type", "vowel_consonant_ratio", "contains_brand_name",
+    "punycode_detected", "path_to_length_ratio",
 ]
 
 

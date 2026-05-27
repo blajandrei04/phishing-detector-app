@@ -132,3 +132,15 @@ def test_extract_handles_missing_schema():
     assert features["hostname_length"] == len("example.com")
     assert features["path_length"] == len("/login")
     assert features["has_https"] == 0
+
+
+def test_contains_brand_name():
+    # Official brand domains should NOT be flagged as containing brand bait (should return 0)
+    assert extract_features("https://google.com")["contains_brand_name"] == 0
+    assert extract_features("https://www.paypal.com/home")["contains_brand_name"] == 0
+    assert extract_features("https://apple.co.uk")["contains_brand_name"] == 0
+    
+    # Domains containing brand names as subdomains or paths or modified SLDs should be flagged (should return 1)
+    assert extract_features("http://google.login-security-update.com")["contains_brand_name"] == 1
+    assert extract_features("http://paypal-security-update.xyz")["contains_brand_name"] == 1
+    assert extract_features("https://myphishingsite.ru/google/login")["contains_brand_name"] == 1

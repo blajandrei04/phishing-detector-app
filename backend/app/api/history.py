@@ -56,8 +56,16 @@ def trigger_retraining():
     # Run the training script in the background
     # It will save the new model to artifacts/xgb_opt.pkl
     subprocess.run(["python", "train_model.py"], check=False)
-    # Once it finishes, the model loader would need to reload it, 
-    # but for this demo, the file is overwritten on disk.
+
+    # Hot-reload the model and SHAP explainer in-memory (no restart needed)
+    try:
+        from app.api.analyze import model_loader, shap_explainer
+        model_loader.load()
+        shap_explainer.initialize(model_loader.model)
+        print("Model and SHAP explainer hot-reloaded successfully.")
+    except Exception as e:
+        print(f"Warning: Hot-reload failed ({e}). Model will reload on next server restart.")
+
     print("Background retraining complete.")
 
 @router.post("/feedback/{feedback_id}/acknowledge")

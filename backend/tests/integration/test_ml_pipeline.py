@@ -35,7 +35,7 @@ def test_ml_pipeline_functions_end_to_end():
     
     assert isinstance(X_df, pd.DataFrame)
     assert len(X_df) == len(urls)
-    assert len(feature_names) == 16
+    assert len(feature_names) == 22
     assert "url_length" in feature_names
     assert "has_suspicious_warning_words" in feature_names
     

@@ -1,4 +1,4 @@
-import { Component, OnInit, PLATFORM_ID, Inject, inject, AfterViewInit } from '@angular/core';
+import { Component, OnInit, PLATFORM_ID, Inject, inject, AfterViewInit, ChangeDetectorRef, NgZone } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { AnalyzeResponse } from '../../models/analyze-response.model';
@@ -13,8 +13,13 @@ import { PhishingService } from '../../core/services/phishing.service';
 })
 export class ResultsComponent implements OnInit, AfterViewInit {
   result: AnalyzeResponse | null = null;
+  isBrowser = false;
 
-  constructor(@Inject(PLATFORM_ID) private platformId: Object) {}
+  constructor(
+    @Inject(PLATFORM_ID) private platformId: Object,
+    private cdr: ChangeDetectorRef,
+    private ngZone: NgZone
+  ) {}
 
   private phishingService = inject(PhishingService);
 
@@ -26,6 +31,7 @@ export class ResultsComponent implements OnInit, AfterViewInit {
   displayScore = 0;
   displayConfidence = 0;
   scoreAnimationDone = false;
+  barConfidence = 0; // to animate the progress bar width smoothly
 
   // Gauge chart
   gaugeRotation = -90; // starts at left (empty)
@@ -36,8 +42,10 @@ export class ResultsComponent implements OnInit, AfterViewInit {
 
   ngOnInit(): void {
     if (isPlatformBrowser(this.platformId)) {
+      this.isBrowser = true;
       const raw = localStorage.getItem('lastResult');
       this.result = raw ? JSON.parse(raw) : null;
+      this.cdr.detectChanges();
     }
   }
 
@@ -55,24 +63,35 @@ export class ResultsComponent implements OnInit, AfterViewInit {
     const duration = 1200;
     const startTime = performance.now();
 
-    const animate = (now: number) => {
-      const elapsed = now - startTime;
-      const progress = Math.min(elapsed / duration, 1);
-      // Ease-out cubic
-      const eased = 1 - Math.pow(1 - progress, 3);
+    // Trigger the progress bar transition
+    setTimeout(() => {
+      this.barConfidence = targetConfidence;
+      this.cdr.detectChanges();
+    }, 50);
 
-      this.displayScore = Math.round(eased * targetScore * 10) / 10;
-      this.displayConfidence = Math.round(eased * targetConfidence * 10) / 10;
+    // Run text counter animation outside Angular zone for high performance
+    this.ngZone.runOutsideAngular(() => {
+      const animate = (now: number) => {
+        const elapsed = now - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        // Ease-out cubic
+        const eased = 1 - Math.pow(1 - progress, 3);
 
-      if (progress < 1) {
-        requestAnimationFrame(animate);
-      } else {
-        this.displayScore = targetScore;
-        this.displayConfidence = targetConfidence;
-        this.scoreAnimationDone = true;
-      }
-    };
-    requestAnimationFrame(animate);
+        this.displayScore = Math.round(eased * targetScore * 10) / 10;
+        this.displayConfidence = Math.round(eased * targetConfidence * 10) / 10;
+        this.cdr.detectChanges();
+
+        if (progress < 1) {
+          requestAnimationFrame(animate);
+        } else {
+          this.displayScore = targetScore;
+          this.displayConfidence = targetConfidence;
+          this.scoreAnimationDone = true;
+          this.cdr.detectChanges();
+        }
+      };
+      requestAnimationFrame(animate);
+    });
   }
 
   private animateGauge(): void {
@@ -90,23 +109,12 @@ export class ResultsComponent implements OnInit, AfterViewInit {
       this.gaugeColor = '#22c55e';
     }
 
-    const duration = 1400;
-    const startTime = performance.now();
-
-    const animate = (now: number) => {
-      const elapsed = now - startTime;
-      const progress = Math.min(elapsed / duration, 1);
-      const eased = 1 - Math.pow(1 - progress, 3);
-
-      this.gaugeRotation = -90 + (eased * (targetRotation + 90));
-
-      if (progress < 1) {
-        requestAnimationFrame(animate);
-      } else {
-        this.gaugeRotation = targetRotation;
-      }
-    };
-    requestAnimationFrame(animate);
+    // Delay setting the rotation slightly so that the browser registers the initial rotation state (-90deg)
+    // and triggers a smooth CSS transition.
+    setTimeout(() => {
+      this.gaugeRotation = targetRotation;
+      this.cdr.detectChanges();
+    }, 50);
   }
 
   getGradientBarStyle(): { [key: string]: string } {
