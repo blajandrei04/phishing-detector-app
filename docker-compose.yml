@@ -11,6 +11,8 @@ services:
     volumes:
       # Mount the database file so that historical data and feedback persist across container restarts
       - ./backend/phishing_detector.db:/app/phishing_detector.db
+      # Mount the artifacts directory so that trained models and reports are preserved on the host
+      - ./backend/artifacts:/app/artifacts
     environment:
       # Explicitly allow CORS from the frontend container (port 4000) and localhost
       - CORS_ORIGINS=["http://localhost:4000", "http://localhost:4200", "http://127.0.0.1:4000", "http://127.0.0.1:4200"]

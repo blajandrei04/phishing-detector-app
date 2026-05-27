@@ -1,4 +1,4 @@
-@if (result) {
+@if (isBrowser && result) {
   <div class="container py-4">
     <div class="d-flex justify-content-between align-items-center mb-4 no-print">
       <div>
@@ -106,7 +106,7 @@
                   <line x1="100" y1="100" x2="100" y2="30"
                     [attr.stroke]="gaugeColor"
                     stroke-width="3" stroke-linecap="round"
-                    [attr.transform]="'rotate(' + gaugeRotation + ' 100 100)'"
+                    [style.transform]="'rotate(' + gaugeRotation + 'deg)'"
                     class="gauge-needle" />
                   <!-- Center circle -->
                   <circle cx="100" cy="100" r="6" [attr.fill]="gaugeColor" />
@@ -135,9 +135,8 @@
                 </h1>
                 <span class="fs-4 text-muted pb-1">%</span>
               </div>
-              <div class="progress mt-3 border" style="height: 12px; border-radius: 6px">
-                <div class="progress-bar confidence-bar" [style.width.%]="displayConfidence"
-                  style="transition: width 1.2s cubic-bezier(0.4, 0, 0.2, 1);"></div>
+              <div class="progress mt-3 border" style="height: 12px; border-radius: 6px; overflow: hidden;">
+                <div class="progress-bar confidence-bar" [style.width.%]="barConfidence"></div>
               </div>
               <p class="text-muted small mt-2 mb-0">
                 Model's certainty based on training data distance.

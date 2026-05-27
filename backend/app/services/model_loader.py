@@ -30,12 +30,13 @@ class ModelLoader:
         if self.model is None:
             return 0.42
 
-        # Convert feature dict to stable ordered vector
+        # Convert feature dict to stable ordered vector (22 features)
         feature_order = [
             "url_length",
             "hostname_length",
             "path_length",
             "query_length",
+            "has_https",
             "has_at_symbol",
             "has_double_slash_redirect",
             "has_hyphen_in_domain",
@@ -47,7 +48,13 @@ class ModelLoader:
             "num_directories",
             "num_parameters",
             "url_entropy",
-            "has_suspicious_warning_words"
+            "has_suspicious_warning_words",
+            # v2 features
+            "tld_type",
+            "vowel_consonant_ratio",
+            "contains_brand_name",
+            "punycode_detected",
+            "path_to_length_ratio",
         ]
         x = [[features.get(name, 0) for name in feature_order]]
 
