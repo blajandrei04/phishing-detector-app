@@ -141,6 +141,7 @@ class AnalyzeResponse(BaseModel):
     confidence: float = Field(ge=0.0, le=1.0)
     extracted_features: Optional[Dict[str, Any]] = None
     shap_explanation: Optional[Dict[str, Any]] = None
+    dynamic_checks: Optional[Dict[str, Any]] = None
     timestamp: datetime
 
 class HealthResponse(BaseModel):

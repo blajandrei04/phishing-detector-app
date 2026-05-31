@@ -188,6 +188,127 @@
           </div>
         </div>
 
+        <!-- Live Active Inspection Details -->
+        @if (result.dynamic_checks) {
+          <div class="mt-5">
+            <h4 class="fw-bold text-adaptive mb-4 d-flex align-items-center">
+              <i class="bi bi-broadcast-pin text-primary me-2"></i> Live Active Inspection (Real-Time Signals)
+            </h4>
+            <div class="row g-4">
+              <!-- DNS Resolution Card -->
+              <div class="col-md-4">
+                <div class="card h-100 border border-1 rounded-4 shadow-sm p-3 bg-card-adaptive">
+                  <div class="d-flex align-items-center justify-content-between mb-3">
+                    <span class="text-muted fw-bold small text-uppercase" style="font-size: 0.75rem;">DNS Resolution</span>
+                    @if (result.dynamic_checks.dns.resolved) {
+                      <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-2.5 py-1 small">
+                        <i class="bi bi-check-circle-fill me-1"></i> Active
+                      </span>
+                    } @else {
+                      <span class="badge bg-danger-subtle text-danger border border-danger-subtle rounded-pill px-2.5 py-1 small">
+                        <i class="bi bi-x-circle-fill me-1"></i> Unresolved
+                      </span>
+                    }
+                  </div>
+                  <div class="d-flex align-items-center gap-3">
+                    <div class="rounded-circle bg-primary-subtle text-primary p-2.5 d-flex align-items-center justify-content-center" style="width: 48px; height: 48px;">
+                      <i class="bi bi-globe2 fs-4"></i>
+                    </div>
+                    <div>
+                      <h6 class="fw-bold mb-1 text-adaptive">Host Lookup</h6>
+                      @if (result.dynamic_checks.dns.resolved) {
+                        <code class="small text-muted text-break">{{ result.dynamic_checks.dns.ip }}</code>
+                      } @else {
+                        <p class="small text-muted mb-0">No IP resolved.</p>
+                      }
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- SSL Certificate Card -->
+              <div class="col-md-4">
+                <div class="card h-100 border border-1 rounded-4 shadow-sm p-3 bg-card-adaptive">
+                  <div class="d-flex align-items-center justify-content-between mb-3">
+                    <span class="text-muted fw-bold small text-uppercase" style="font-size: 0.75rem;">SSL Certificate</span>
+                    @if (result.dynamic_checks.ssl.valid) {
+                      <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-2.5 py-1 small">
+                        <i class="bi bi-shield-fill-check me-1"></i> Valid
+                      </span>
+                    } @else {
+                      <span class="badge bg-danger-subtle text-danger border border-danger-subtle rounded-pill px-2.5 py-1 small">
+                        <i class="bi bi-shield-fill-x me-1"></i> Invalid / None
+                      </span>
+                    }
+                  </div>
+                  <div class="d-flex align-items-center gap-3">
+                    <div class="rounded-circle p-2.5 d-flex align-items-center justify-content-center"
+                         [ngClass]="result.dynamic_checks.ssl.valid ? 'bg-success-subtle text-success' : 'bg-danger-subtle text-danger'"
+                         style="width: 48px; height: 48px;">
+                      <i class="bi" [ngClass]="result.dynamic_checks.ssl.valid ? 'bi-lock-fill' : 'bi-unlock-fill'" style="font-size: 1.3rem;"></i>
+                    </div>
+                    <div>
+                      <h6 class="fw-bold mb-1 text-adaptive">Encryption</h6>
+                      @if (result.dynamic_checks.ssl.valid) {
+                        <p class="small text-muted mb-0" style="font-size: 0.8rem; line-height: 1.2;">
+                          {{ result.dynamic_checks.ssl.issuer_organization || result.dynamic_checks.ssl.issuer_common_name }}. 
+                          Expires in {{ result.dynamic_checks.ssl.days_until_expiry }} days.
+                        </p>
+                      } @else {
+                        <p class="small text-muted mb-0" style="font-size: 0.8rem; line-height: 1.2;">
+                          No valid SSL.
+                        </p>
+                      }
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Domain Age Card -->
+              <div class="col-md-4">
+                <div class="card h-100 border border-1 rounded-4 shadow-sm p-3 bg-card-adaptive">
+                  <div class="d-flex align-items-center justify-content-between mb-3">
+                    <span class="text-muted fw-bold small text-uppercase" style="font-size: 0.75rem;">Domain Age</span>
+                    @if (isYoungDomain()) {
+                      <span class="badge bg-warning-subtle text-warning border border-warning-subtle rounded-pill px-2.5 py-1 small text-dark">
+                        <i class="bi bi-exclamation-triangle-fill me-1"></i> &lt; 30 Days
+                      </span>
+                    } @else if (result.dynamic_checks.domain_age.domain_age_days) {
+                      <span class="badge bg-info-subtle text-info border border-info-subtle rounded-pill px-2.5 py-1 small">
+                        <i class="bi bi-calendar-check-fill me-1"></i> Established
+                      </span>
+                    } @else {
+                      <span class="badge bg-secondary-subtle text-secondary border border-secondary-subtle rounded-pill px-2.5 py-1 small">
+                        <i class="bi bi-question-circle-fill me-1"></i> Unknown
+                      </span>
+                    }
+                  </div>
+                  <div class="d-flex align-items-center gap-3">
+                    <div class="rounded-circle p-2.5 d-flex align-items-center justify-content-center"
+                         [ngClass]="isYoungDomain() ? 'bg-warning-subtle text-warning' : 'bg-info-subtle text-info'"
+                         style="width: 48px; height: 48px;">
+                      <i class="bi bi-hourglass-split fs-4"></i>
+                    </div>
+                    <div>
+                      <h6 class="fw-bold mb-1 text-adaptive">WHOIS Age</h6>
+                      @if (result.dynamic_checks.domain_age.domain_age_days !== null) {
+                        <p class="small text-muted mb-0" style="font-size: 0.8rem; line-height: 1.2;">
+                          {{ result.dynamic_checks.domain_age.domain_age_days | number }} days old
+                          (Registered: {{ result.dynamic_checks.domain_age.creation_date }}).
+                        </p>
+                      } @else {
+                        <p class="small text-muted mb-0" style="font-size: 0.8rem; line-height: 1.2;">
+                          No WHOIS data.
+                        </p>
+                      }
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        }
+
         <!-- SHAP Explainability -->
         @if (result.shap_explanation?.shap_values?.length) {
           <div class="mt-5">

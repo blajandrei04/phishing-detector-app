@@ -5,6 +5,7 @@ from app.models.schemas import AnalyzeRequest, AnalyzeResponse
 from app.services.feature_extractor import extract_features
 from app.services.model_loader import ModelLoader
 from app.services.shap_explainer import ShapExplainer
+from app.services.dynamic_analyzer import perform_dynamic_checks
 from app.core.config import settings
 from app.db.database import get_db
 from app.db.models import ScanHistory
@@ -40,6 +41,9 @@ def analyze_url(payload: AnalyzeRequest, db: Session = Depends(get_db), current_
     # Generate SHAP explanation for this prediction
     shap_explanation = shap_explainer.explain(features)
 
+    # Perform real-time dynamic intelligence checks
+    dynamic_checks = perform_dynamic_checks(str(payload.url))
+
     # Save to database
     db_scan = ScanHistory(
         url=str(payload.url),
@@ -57,5 +61,6 @@ def analyze_url(payload: AnalyzeRequest, db: Session = Depends(get_db), current_
         confidence=confidence,
         extracted_features=features,
         shap_explanation=shap_explanation,
+        dynamic_checks=dynamic_checks,
         timestamp=datetime.now(timezone.utc),
     )
