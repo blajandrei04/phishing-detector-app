@@ -193,4 +193,9 @@ export class ResultsComponent implements OnInit, AfterViewInit {
     if (maxAbs === 0) return 0;
     return (Math.abs(shapValue) / maxAbs) * 45;
   }
+
+  isYoungDomain(): boolean {
+    const age = this.result?.dynamic_checks?.domain_age?.domain_age_days;
+    return age !== null && age !== undefined && age < 30;
+  }
 }
