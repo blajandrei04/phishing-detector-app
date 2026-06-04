@@ -1,5 +1,6 @@
-import { Component, OnInit, inject } from '@angular/core';
-
+import { Component, OnInit, inject, DestroyRef, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../core/services/auth.service';
 import { AuthFacade } from '../../core/facades/auth.facade';
@@ -9,12 +10,13 @@ import { User } from '../../models/auth.models';
 @Component({
   selector: 'app-settings',
   standalone: true,
-  imports: [FormsModule],
+  imports: [FormsModule, CommonModule],
   templateUrl: './settings.html',
   styleUrl: './settings.scss',
 })
 export class SettingsComponent implements OnInit {
   private authService = inject(AuthService);
+  private destroyRef = inject(DestroyRef);
   authFacade = inject(AuthFacade);
   themeService = inject(ThemeService);
 
@@ -34,17 +36,24 @@ export class SettingsComponent implements OnInit {
   passwordMessage = '';
   passwordError = '';
 
+  // Password visibility toggles
+  showCurrentPassword = signal(false);
+  showNewPassword = signal(false);
+  showConfirmPassword = signal(false);
+
   // Account info
   memberSince = '';
 
   ngOnInit(): void {
-    this.authFacade.user$.subscribe((user) => {
-      if (user) {
-        this.user = user;
-        this.profileUsername = user.username;
-        this.profileEmail = user.email;
-      }
-    });
+    this.authFacade.user$
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((user) => {
+        if (user) {
+          this.user = user;
+          this.profileUsername = user.username;
+          this.profileEmail = user.email;
+        }
+      });
   }
 
   saveProfile(): void {

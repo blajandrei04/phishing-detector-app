@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -13,90 +13,85 @@ import { PhishingService } from '../../core/services/phishing.service';
 })
 export class HistoryComponent implements OnInit {
   private phishingService = inject(PhishingService);
-  private cdr = inject(ChangeDetectorRef);
   private router = inject(Router);
 
-  scans: any[] = [];
-  totalScans: number = 0;
-  isLoading: boolean = true;
-  loadError: string | null = null;
-  analyzingUrl: string | null = null;
+  scans = signal<any[]>([]);
+  totalScans = signal(0);
+  isLoading = signal(true);
+  loadError = signal<string | null>(null);
+  analyzingUrl = signal<string | null>(null);
   
   // Pagination
-  currentPage: number = 1;
-  pageSize: number = 10;
+  currentPage = signal(1);
+  pageSize = 10;
   
   // Filters
-  searchQuery: string = '';
-  selectedVerdict: string = 'all';
+  searchQuery = signal('');
+  selectedVerdict = signal('all');
+
+  // Derived state
+  totalPages = computed(() => Math.ceil(this.totalScans() / this.pageSize));
 
   ngOnInit() {
     this.loadHistory();
   }
 
   loadHistory() {
-    this.isLoading = true;
-    this.loadError = null;
-    const skip = (this.currentPage - 1) * this.pageSize;
+    this.isLoading.set(true);
+    this.loadError.set(null);
+    const skip = (this.currentPage() - 1) * this.pageSize;
     
-    this.phishingService.getHistory(skip, this.pageSize, this.selectedVerdict, this.searchQuery)
+    this.phishingService.getHistory(skip, this.pageSize, this.selectedVerdict(), this.searchQuery())
       .subscribe({
         next: (response) => {
-          this.scans = response.items;
-          this.totalScans = response.total;
-          this.isLoading = false;
-          this.cdr.detectChanges();
+          this.scans.set(response.items);
+          this.totalScans.set(response.total);
+          this.isLoading.set(false);
         },
         error: (err) => {
           console.error("Failed to fetch history:", err);
-          this.loadError = 'Failed to load scan history. Please try again.';
-          this.isLoading = false;
-          this.cdr.detectChanges();
+          this.loadError.set('Failed to load scan history. Please try again.');
+          this.isLoading.set(false);
         }
       });
   }
 
   onSearch() {
-    this.currentPage = 1; // Reset to first page
+    this.currentPage.set(1); // Reset to first page
     this.loadHistory();
   }
 
   onFilterChange() {
-    this.currentPage = 1;
+    this.currentPage.set(1);
     this.loadHistory();
   }
 
   nextPage() {
-    if (this.currentPage * this.pageSize < this.totalScans) {
-      this.currentPage++;
+    if (this.currentPage() * this.pageSize < this.totalScans()) {
+      this.currentPage.update(p => p + 1);
       this.loadHistory();
     }
   }
 
   prevPage() {
-    if (this.currentPage > 1) {
-      this.currentPage--;
+    if (this.currentPage() > 1) {
+      this.currentPage.update(p => p - 1);
       this.loadHistory();
     }
   }
-  
-  get totalPages(): number {
-    return Math.ceil(this.totalScans / this.pageSize);
-  }
 
   viewReport(url: string) {
-    this.analyzingUrl = url;
+    this.analyzingUrl.set(url);
     this.phishingService.analyzeUrl({ url }).subscribe({
       next: (response) => {
         localStorage.setItem('lastResult', JSON.stringify(response));
-        this.analyzingUrl = null;
+        this.analyzingUrl.set(null);
         this.router.navigate(['/results']);
       },
       error: (err) => {
         console.error("Failed to analyze url:", err);
-        this.loadError = 'Failed to load report. Please try again.';
-        this.analyzingUrl = null;
-        this.cdr.detectChanges();
+        this.loadError.set('Failed to load report. Please try again.');
+        this.analyzingUrl.set(null);
       }
     });
   }

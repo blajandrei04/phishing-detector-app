@@ -18,7 +18,8 @@
             type="text"
             class="form-control border-0 shadow-none ps-0"
             placeholder="Search for google.com, paypal, etc..."
-            [(ngModel)]="searchQuery"
+            [ngModel]="searchQuery()"
+            (ngModelChange)="searchQuery.set($event)"
             (keyup.enter)="onSearch()"
           />
           <button class="btn btn-primary border-start" style="border-top-left-radius: 0; border-bottom-left-radius: 0;" (click)="onSearch()">Search</button>
@@ -28,8 +29,8 @@
         <label class="form-label text-muted small fw-bold">FILTER BY THREAT</label>
         <select
           class="form-select shadow-none border border-1 border-gray py-2"
-          [(ngModel)]="selectedVerdict"
-          (change)="onFilterChange()"
+          [ngModel]="selectedVerdict()"
+          (ngModelChange)="selectedVerdict.set($event); onFilterChange()"
         >
           <option value="all">All Results</option>
           <option value="phishing">Phishing (High Threat)</option>
@@ -42,14 +43,14 @@
 
   <div class="table-card">
     <!-- Error state -->
-    @if (loadError) {
+    @if (loadError()) {
       <div class="alert alert-danger m-3">
-        <i class="bi bi-exclamation-triangle-fill me-2"></i>{{ loadError }}
+        <i class="bi bi-exclamation-triangle-fill me-2"></i>{{ loadError() }}
       </div>
     }
 
     <!-- Loading state -->
-    @if (isLoading) {
+    @if (isLoading()) {
       <div class="text-center py-5">
         <div class="spinner-border text-primary" role="status"></div>
         <p class="text-muted mt-3 mb-0">Loading scan history...</p>
@@ -57,7 +58,7 @@
     }
 
     <!-- Table -->
-    @if (!isLoading && !loadError) {
+    @if (!isLoading() && !loadError()) {
       <div class="table-responsive">
         <table class="table table-hover border-0 align-middle mb-0">
           <thead>
@@ -70,7 +71,7 @@
             </tr>
           </thead>
           <tbody>
-            @if (scans.length === 0) {
+            @if (scans().length === 0) {
               <tr>
                 <td colspan="5" class="text-center py-5">
                   <i class="bi bi-inboxes text-muted fs-1 d-block mb-2"></i>
@@ -80,7 +81,7 @@
                 </td>
               </tr>
             }
-            @for (scan of scans; track scan) {
+            @for (scan of scans(); track scan) {
               <tr>
                 <td class="url-cell ps-4">
                   <a
@@ -135,9 +136,9 @@
                   <button
                     class="btn btn-sm btn-outline-primary shadow-sm rounded-pill px-3"
                     (click)="viewReport(scan.url)"
-                    [disabled]="analyzingUrl === scan.url"
+                    [disabled]="analyzingUrl() === scan.url"
                   >
-                    @if (analyzingUrl === scan.url) {
+                    @if (analyzingUrl() === scan.url) {
                       <span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
                       Loading...
                     } @else {
@@ -152,33 +153,33 @@
       </div>
     }
 
-    @if (!isLoading && !loadError) {
+    @if (!isLoading() && !loadError()) {
       <div class="pagination-controls">
         <div class="page-info">
           Showing
           <strong>{{
-            totalScans === 0 ? 0 : (currentPage - 1) * pageSize + 1
+            totalScans() === 0 ? 0 : (currentPage() - 1) * pageSize + 1
           }}</strong>
           to
           <strong>{{
-            currentPage * pageSize > totalScans ? totalScans : currentPage * pageSize
+            currentPage() * pageSize > totalScans() ? totalScans() : currentPage() * pageSize
           }}</strong>
-          of <strong>{{ totalScans }}</strong> results
+          of <strong>{{ totalScans() }}</strong> results
         </div>
         <div class="btn-group shadow-sm">
           <button
             class="btn btn-white border px-3"
-            [disabled]="currentPage === 1"
+            [disabled]="currentPage() === 1"
             (click)="prevPage()"
           >
             <i class="bi bi-chevron-left fs-6"></i>
           </button>
           <button class="btn btn-white border px-3" disabled>
-            Page {{ currentPage }} of {{ totalPages === 0 ? 1 : totalPages }}
+            Page {{ currentPage() }} of {{ totalPages() === 0 ? 1 : totalPages() }}
           </button>
           <button
             class="btn btn-white border px-3"
-            [disabled]="currentPage === totalPages || totalPages === 0"
+            [disabled]="currentPage() === totalPages() || totalPages() === 0"
             (click)="nextPage()"
           >
             <i class="bi bi-chevron-right fs-6"></i>
