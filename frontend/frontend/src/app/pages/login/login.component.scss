@@ -91,9 +91,15 @@
     font-weight: 500;
 
     &.alert-danger {
-      background: #fef2f2;
-      border: 1px solid #fecaca;
+      background: rgba(239, 68, 68, 0.1);
+      border: 1px solid rgba(239, 68, 68, 0.25);
       color: #ef4444;
+    }
+
+    &.alert-success {
+      background: rgba(34, 197, 94, 0.1);
+      border: 1px solid rgba(34, 197, 94, 0.25);
+      color: #22c55e;
     }
   }
 
@@ -135,13 +141,13 @@
       align-items: center;
       width: 100%;
 
-      svg {
+      > svg:first-child {
         position: absolute;
         left: 14px;
         color: #94a3b8;
         transition: color 0.3s ease;
         pointer-events: none;
-        /* Prevent icon from eating clicks */
+        /* Only the leading icon should not eat clicks */
       }
 
       .custom-input {
@@ -150,7 +156,7 @@
         background: var(--input-bg);
         border: 1px solid var(--input-border);
         border-radius: 10px;
-        padding: 12px 14px;
+        padding: 12px 42px 12px 14px;
         color: var(--text-primary);
         font-size: 14px;
         transition: all 0.3s ease;
@@ -161,11 +167,6 @@
           background: var(--surface-color);
           border-color: var(--neon-cyan, #2563eb);
           box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
-
-          & + svg,
-          ~ svg {
-            color: var(--neon-cyan, #2563eb);
-          }
         }
 
         &::placeholder {
@@ -182,13 +183,15 @@
         }
       }
 
-      svg ~ .custom-input {
+      > svg:first-child ~ .custom-input {
         padding-left: 40px;
       }
 
       .eye-toggle {
         position: absolute;
         right: 12px;
+        top: 50%;
+        transform: translateY(-50%);
         background: none;
         border: none;
         color: #94a3b8;
@@ -197,17 +200,23 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        transition: color 0.2s ease;
+        border-radius: 6px;
+        transition: color 0.2s ease, background-color 0.2s ease;
         z-index: 2;
+
+        svg {
+          pointer-events: none;
+        }
 
         &:hover {
           color: var(--neon-cyan, #2563eb);
+          background-color: rgba(37, 99, 235, 0.08);
         }
-      }
 
-      .eye-toggle ~ .custom-input,
-      .custom-input {
-        padding-right: 42px;
+        &:focus-visible {
+          outline: 2px solid var(--neon-cyan, #2563eb);
+          outline-offset: 2px;
+        }
       }
     }
   }
@@ -261,7 +270,7 @@
 .auth-footer {
   margin-top: 28px;
   text-align: center;
-  border-top: 1px solid #e2e8f0;
+  border-top: 1px solid var(--border-color);
   padding-top: 24px;
 
   p {

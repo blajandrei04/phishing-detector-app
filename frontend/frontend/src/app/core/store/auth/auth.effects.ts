@@ -18,7 +18,10 @@ export class AuthEffects {
       mergeMap(action =>
         this.authService.login(action.credentials).pipe(
           map(user => AuthActions.loginSuccess({ user })),
-          catchError(error => of(AuthActions.loginFailure({ error: error.message })))
+          catchError(error => {
+            const friendlyMessage = this.getHumanizedError(error);
+            return of(AuthActions.loginFailure({ error: friendlyMessage }));
+          })
         )
       )
     )
@@ -76,4 +79,36 @@ export class AuthEffects {
       ),
     { dispatch: false }
   );
+
+  /**
+   * Converts raw HTTP errors into user-friendly messages.
+   */
+  private getHumanizedError(error: any): string {
+    // Try to extract backend detail message first
+    const detail = error?.error?.detail;
+    if (detail && typeof detail === 'string') {
+      return detail;
+    }
+
+    // Map common HTTP status codes to friendly messages
+    const status = error?.status;
+    switch (status) {
+      case 401:
+        return 'Invalid username or password. Please try again.';
+      case 403:
+        return 'You do not have permission to perform this action.';
+      case 404:
+        return 'Account not found. Please check your credentials.';
+      case 422:
+        return 'Please check your credentials and try again.';
+      case 429:
+        return 'Too many attempts. Please wait a moment and try again.';
+      case 500:
+        return 'Our servers are having trouble right now. Please try again later.';
+      case 0:
+        return 'Unable to reach the server. Please check your internet connection.';
+      default:
+        return 'Something went wrong. Please try again later.';
+    }
+  }
 }

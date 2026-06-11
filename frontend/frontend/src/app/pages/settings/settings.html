@@ -2,6 +2,7 @@
   <div class="settings-header">
     <h2 class="display-6 fs-3">Settings</h2>
     <p class="text-muted mb-0">Manage your account and security preferences</p>
+    <p class="text-muted small mb-0 mt-1"><i class="bi bi-shield-check me-1"></i>Signed in as <strong class="text-adaptive">{{ user?.username }}</strong></p>
   </div>
 
   <div class="settings-grid">
@@ -87,7 +88,7 @@
         <label class="form-label">Role</label>
         <div class="input-icon-wrapper">
           <i class="bi bi-shield-check"></i>
-          <input type="text" class="form-control" value="User" disabled />
+          <input type="text" class="form-control role-display" [value]="(user?.role || 'user') | titlecase" disabled />
         </div>
       </div>
 
@@ -128,40 +129,49 @@
 
       <div class="form-group">
         <label class="form-label">Current Password</label>
-        <div class="input-icon-wrapper">
+        <div class="input-icon-wrapper has-eye-toggle">
           <i class="bi bi-key"></i>
           <input
-            type="password"
+            [type]="showCurrentPassword() ? 'text' : 'password'"
             class="form-control"
             [(ngModel)]="currentPassword"
             placeholder="Enter current password"
           />
+          <button type="button" class="eye-toggle" (click)="showCurrentPassword.set(!showCurrentPassword())" tabindex="-1" aria-label="Toggle password visibility">
+            <i class="bi" [ngClass]="showCurrentPassword() ? 'bi-eye-slash' : 'bi-eye'"></i>
+          </button>
         </div>
       </div>
 
       <div class="form-group">
         <label class="form-label">New Password</label>
-        <div class="input-icon-wrapper">
+        <div class="input-icon-wrapper has-eye-toggle">
           <i class="bi bi-lock"></i>
           <input
-            type="password"
+            [type]="showNewPassword() ? 'text' : 'password'"
             class="form-control"
             [(ngModel)]="newPassword"
             placeholder="Enter new password"
           />
+          <button type="button" class="eye-toggle" (click)="showNewPassword.set(!showNewPassword())" tabindex="-1" aria-label="Toggle password visibility">
+            <i class="bi" [ngClass]="showNewPassword() ? 'bi-eye-slash' : 'bi-eye'"></i>
+          </button>
         </div>
       </div>
 
       <div class="form-group">
         <label class="form-label">Confirm New Password</label>
-        <div class="input-icon-wrapper">
+        <div class="input-icon-wrapper has-eye-toggle">
           <i class="bi bi-lock-fill"></i>
           <input
-            type="password"
+            [type]="showConfirmPassword() ? 'text' : 'password'"
             class="form-control"
             [(ngModel)]="confirmPassword"
             placeholder="Re-enter new password"
           />
+          <button type="button" class="eye-toggle" (click)="showConfirmPassword.set(!showConfirmPassword())" tabindex="-1" aria-label="Toggle password visibility">
+            <i class="bi" [ngClass]="showConfirmPassword() ? 'bi-eye-slash' : 'bi-eye'"></i>
+          </button>
         </div>
       </div>
 
@@ -204,7 +214,7 @@
       <div class="theme-toggle-container">
         <div class="d-flex align-items-center justify-content-between">
           <div>
-            <h6 class="mb-1 fw-semibold text-adaptive" [style.color]="'var(--text-primary)'">Dark Theme</h6>
+            <h6 class="mb-1 fw-semibold text-adaptive">Dark Theme</h6>
             <p class="text-muted small mb-0">Switch to a darker interface</p>
           </div>
           <div class="form-check form-switch fs-4 m-0">
