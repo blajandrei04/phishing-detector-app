@@ -36,7 +36,7 @@
                   <span class="badge" 
                     [ngClass]="{
                       'bg-danger': item.original_verdict === 'phishing',
-                      'bg-warning text-dark': item.original_verdict === 'suspicious',
+                      'bg-warning': item.original_verdict === 'suspicious',
                       'bg-success': item.original_verdict === 'legitimate'
                     }">
                     {{ item.original_verdict | uppercase }}

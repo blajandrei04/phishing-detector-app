@@ -43,6 +43,10 @@
   --font-family: 'Inter', system-ui, sans-serif;
   --transition-fast: 0.15s ease-in-out;
   --transition-normal: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* Shadows - composite */
+  --shadow-color-1: rgba(0, 0, 0, 0.07);
+  --shadow-color-2: rgba(0, 0, 0, 0.04);
 }
 
 body.dark-theme {
@@ -79,6 +83,10 @@ body.dark-theme {
   --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
   --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.5), 0 4px 6px -2px rgba(0, 0, 0, 0.3);
 
+  /* Shadows - composite */
+  --shadow-color-1: rgba(0, 0, 0, 0.25);
+  --shadow-color-2: rgba(0, 0, 0, 0.15);
+
   /* Bootstrap Table Overrides */
   .table {
     --bs-table-bg: var(--surface-color);
@@ -87,6 +95,34 @@ body.dark-theme {
     --bs-table-hover-bg: var(--surface-hover);
     --bs-table-hover-color: var(--text-primary);
     color: var(--text-primary);
+  }
+
+  /* Dark mode button overrides */
+  .btn-outline-warning {
+    color: #fbbf24;
+    border-color: #fbbf24;
+
+    &:hover {
+      color: #0f172a;
+      background-color: #fbbf24;
+      border-color: #fbbf24;
+    }
+  }
+
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  ::-webkit-scrollbar-track {
+    background: var(--bg-color);
+  }
+  ::-webkit-scrollbar-thumb {
+    background: var(--border-color-solid);
+    border-radius: 4px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--text-muted);
   }
 }
 
@@ -189,5 +225,18 @@ body {
 
 .text-adaptive {
   color: var(--text-primary) !important;
+}
+
+/* Card background that adapts to theme */
+.bg-card-adaptive {
+  background-color: var(--surface-color) !important;
+}
+
+/* Responsive sidebar adjustment */
+@media (max-width: 768px) {
+  .main-content {
+    margin-left: 0 !important;
+    padding: 16px !important;
+  }
 }
 

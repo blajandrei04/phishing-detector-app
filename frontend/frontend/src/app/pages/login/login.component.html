@@ -39,27 +39,33 @@
       </p>
     </div>
 
-    <!-- Error Message Alert -->
-    @if (authFacade.error$ | async; as error) {
-      <div class="alert alert-danger">
-        {{ error }}
-      </div>
+    <!-- Error Message Alert - Login mode only -->
+    @if (mode() === 'login') {
+      @if (authFacade.error$ | async; as error) {
+        <div class="alert alert-danger">
+          <i class="bi bi-exclamation-circle me-2" style="font-size: 1rem;"></i>{{ error }}
+        </div>
+      }
     }
 
     @if (message()) {
       <div
-        class="alert alert-info"
+        class="alert"
+        [class.alert-success]="message().includes('successful') || message().includes('verified')"
+        [class.alert-danger]="!message().includes('successful') && !message().includes('verified')"
         style="
           margin-bottom: 20px;
           text-align: center;
-          color: var(--text-primary);
           font-size: 0.9rem;
-          padding: 10px;
+          padding: 10px 16px;
           border-radius: 8px;
-          background: rgba(255, 255, 255, 0.05);
-          border: 1px solid rgba(255, 255, 255, 0.1);
         "
       >
+        @if (message().includes('successful') || message().includes('verified')) {
+          <i class="bi bi-check-circle me-2"></i>
+        } @else {
+          <i class="bi bi-exclamation-circle me-2"></i>
+        }
         {{ message() }}
       </div>
     }

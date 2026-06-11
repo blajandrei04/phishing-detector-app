@@ -10,7 +10,7 @@ import { User } from '../../models/auth.models';
 @Component({
   selector: 'app-settings',
   standalone: true,
-  imports: [FormsModule, CommonModule],
+  imports: [FormsModule, CommonModule],  // CommonModule includes TitleCasePipe
   templateUrl: './settings.html',
   styleUrl: './settings.scss',
 })

@@ -3,6 +3,8 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AuthFacade } from '../../core/facades/auth.facade';
 import { AuthService } from '../../core/services/auth.service';
+import { Store } from '@ngrx/store';
+import * as AuthActions from '../../core/store/auth/auth.actions';
 
 @Component({
   selector: 'app-login',
@@ -15,6 +17,7 @@ export class LoginComponent {
   private fb = inject(FormBuilder);
   public authFacade = inject(AuthFacade);
   public authService = inject(AuthService);
+  private store = inject(Store);
 
   mode = signal<'login' | 'register' | 'forgot' | 'reset'>('login');
   showPassword = signal(false);
@@ -50,6 +53,8 @@ export class LoginComponent {
   setMode(newMode: 'login' | 'register' | 'forgot' | 'reset'): void {
     this.mode.set(newMode);
     this.message.set('');
+    // Clear stale auth store errors when switching modes
+    this.store.dispatch(AuthActions.loginFailure({ error: '' }));
   }
 
   togglePassword(field: 'login' | 'register' | 'reset' | 'resetConfirm'): void {
@@ -82,7 +87,7 @@ export class LoginComponent {
           this.setMode('login');
         },
         error: (err) => {
-          this.message.set(err.error?.detail || 'Registration failed');
+          this.message.set(this.humanizeError(err, 'Registration failed. Please try again.'));
         }
       });
     }
@@ -127,5 +132,40 @@ export class LoginComponent {
       if (currentMode === 'forgot') this.forgotForm.markAllAsTouched();
       if (currentMode === 'reset') this.resetForm.markAllAsTouched();
     }
+  }
+
+  /**
+   * Extracts a human-readable error message from various backend response formats.
+   */
+  private humanizeError(err: any, fallback: string): string {
+    const detail = err?.error?.detail;
+
+    // String detail from backend (e.g., "Username already taken")
+    if (detail && typeof detail === 'string') {
+      return detail;
+    }
+
+    // FastAPI validation error array [{msg, loc, type}]
+    if (Array.isArray(detail)) {
+      return detail.map((d: any) => d.msg || d.message || JSON.stringify(d)).join('. ');
+    }
+
+    // Object with a message property
+    if (detail && typeof detail === 'object' && detail.message) {
+      return detail.message;
+    }
+
+    // Generic error message from Error object
+    if (err?.error?.message && typeof err.error.message === 'string') {
+      return err.error.message;
+    }
+
+    // HTTP status-based fallbacks
+    const status = err?.status;
+    if (status === 409) return 'An account with these credentials already exists.';
+    if (status === 422) return 'Please check your input and try again.';
+    if (status === 0) return 'Unable to reach the server. Please check your connection.';
+
+    return fallback;
   }
 }

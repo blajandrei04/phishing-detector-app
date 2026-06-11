@@ -270,7 +270,7 @@
                   <div class="d-flex align-items-center justify-content-between mb-3">
                     <span class="text-muted fw-bold small text-uppercase" style="font-size: 0.75rem;">Domain Age</span>
                     @if (isYoungDomain()) {
-                      <span class="badge bg-warning-subtle text-warning border border-warning-subtle rounded-pill px-2.5 py-1 small text-dark">
+                      <span class="badge bg-warning-subtle text-warning border border-warning-subtle rounded-pill px-2.5 py-1 small">
                         <i class="bi bi-exclamation-triangle-fill me-1"></i> &lt; 30 Days
                       </span>
                     } @else if (result.dynamic_checks.domain_age.domain_age_days) {
@@ -371,7 +371,7 @@
         }
         <!-- Feedback Section -->
         <div class="mt-5 pt-4 border-top no-print">
-          <h5 class="fw-bold mb-2">Is this verdict incorrect?</h5>
+          <h5 class="fw-bold mb-2 text-adaptive">Is this verdict incorrect?</h5>
           <p class="text-muted small mb-3">Help improve our machine learning model by reporting false positives or missed threats. Your feedback is recorded for future dataset retraining.</p>
           
           @if (reportSuccess) {
