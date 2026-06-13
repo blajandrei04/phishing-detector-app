@@ -18,7 +18,7 @@ The project is split into two primary components:
 
 1. **Python/FastAPI Backend (`/backend`)**
    - High-performance asynchronous API for URL analysis.
-   - 16 custom engineered lexical and heuristic features.
+   - 22 custom engineered lexical, structural, and heuristic features.
    - Uses an XGBoost classifier trained on a large-scale dataset.
    - Incorporates a secure SQLite database for storing analysis history and administrative feedback.
 

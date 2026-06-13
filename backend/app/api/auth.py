@@ -39,9 +39,7 @@ def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(
         raise credentials_exception
     return user
 
-# ──────────────────────────────────────────────
 # Registration
-# ──────────────────────────────────────────────
 @router.post("/register", response_model=UserResponse)
 def register(request: RegisterRequest, db: Session = Depends(get_db)):
     user = db.query(User).filter((User.username == request.username) | (User.email == request.email)).first()
@@ -58,9 +56,7 @@ def register(request: RegisterRequest, db: Session = Depends(get_db)):
     db.refresh(new_user)
     return new_user
 
-# ──────────────────────────────────────────────
 # Forgot Password — issues a short-lived reset token
-# ──────────────────────────────────────────────
 @router.post("/forgot-password")
 def forgot_password(request: ForgotPasswordRequest, db: Session = Depends(get_db)):
     user = db.query(User).filter(User.email == request.email).first()
@@ -84,9 +80,7 @@ def forgot_password(request: ForgotPasswordRequest, db: Session = Depends(get_db
         "reset_token": None
     }
 
-# ──────────────────────────────────────────────
 # Reset Password — validates token and sets new password
-# ──────────────────────────────────────────────
 @router.post("/reset-password")
 def reset_password(request: ResetPasswordRequest, db: Session = Depends(get_db)):
     try:
@@ -108,9 +102,7 @@ def reset_password(request: ResetPasswordRequest, db: Session = Depends(get_db))
     db.commit()
     return {"message": "Password has been reset successfully"}
 
-# ──────────────────────────────────────────────
 # Login
-# ──────────────────────────────────────────────
 @router.post("/login", response_model=Token)
 def login(credentials: LoginRequest, db: Session = Depends(get_db)):
     user = db.query(User).filter(
@@ -141,16 +133,12 @@ def login(credentials: LoginRequest, db: Session = Depends(get_db)):
     )
     return {"access_token": access_token, "token_type": "bearer"}
 
-# ──────────────────────────────────────────────
 # Get Current User Profile
-# ──────────────────────────────────────────────
 @router.get("/me", response_model=UserResponse)
 def get_current_user_profile(current_user: User = Depends(get_current_user)):
     return current_user
 
-# ──────────────────────────────────────────────
 # Update Profile (email / username)
-# ──────────────────────────────────────────────
 @router.put("/me", response_model=UserResponse)
 def update_profile(
     request: UpdateProfileRequest,
@@ -173,9 +161,7 @@ def update_profile(
     db.refresh(current_user)
     return current_user
 
-# ──────────────────────────────────────────────
 # Change Password (requires current password)
-# ──────────────────────────────────────────────
 @router.put("/change-password")
 def change_password(
     request: ChangePasswordRequest,

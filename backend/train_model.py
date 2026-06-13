@@ -52,9 +52,7 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.pipeline import Pipeline
 from app.services.feature_extractor import extract_features
 
-# ──────────────────────────────────────────────
 # Configuration
-# ──────────────────────────────────────────────
 ARTIFACTS_DIR = "artifacts"
 DATASET_PATH = "datasets/phishing_site_urls.csv"
 RANDOM_STATE = 42
@@ -131,9 +129,7 @@ def extract_all_features(urls: list[str]) -> tuple[pd.DataFrame, list[str]]:
     return df[FEATURE_ORDER], FEATURE_ORDER
 
 
-# ──────────────────────────────────────────────
 # Model definitions
-# ──────────────────────────────────────────────
 def get_models(scale_pos_weight: float = 1.0) -> dict:
     """Return baseline models. XGBoost uses scale_pos_weight for class imbalance."""
     return {
@@ -212,9 +208,7 @@ def tune_xgboost(X_train, y_train, scale_pos_weight: float = 1.0) -> tuple:
     return best_model, best_params, cv_results
 
 
-# ──────────────────────────────────────────────
 # Evaluation
-# ──────────────────────────────────────────────
 def evaluate_models(models: dict, X_train: np.ndarray | pd.DataFrame, X_test: np.ndarray | pd.DataFrame, y_train: np.ndarray, y_test: np.ndarray) -> dict:
     results = {}
     for name, model in models.items():
@@ -239,9 +233,7 @@ def evaluate_models(models: dict, X_train: np.ndarray | pd.DataFrame, X_test: np
     return results
 
 
-# ──────────────────────────────────────────────
 # Visualization Functions
-# ──────────────────────────────────────────────
 def plot_model_comparison(results: dict) -> None:
     """Bar chart comparing all models across key metrics."""
     if not HAS_PLOTTING:
@@ -608,9 +600,7 @@ The following URL-derived features were engineered for the ML pipeline:
     print("  [OK] Saved evaluation_report.md")
 
 
-# ──────────────────────────────────────────────
 # Main
-# ──────────────────────────────────────────────
 def main() -> None:
     os.makedirs(ARTIFACTS_DIR, exist_ok=True)
 
@@ -618,12 +608,12 @@ def main() -> None:
     print("  PHISHING DETECTOR — MODEL TRAINING & EVALUATION (v2)")
     print("=" * 60)
 
-    # Step 1: Load data
+    # Load data
     print("\n[1/8] Loading Data...")
     urls, labels = load_data()
     dataset_size = len(urls)
 
-    # Step 2: Extract features (22 features)
+    # Extract features
     print("\n[2/8] Feature Extraction (22 features)...")
     X, feature_names = extract_all_features(urls)
     y = np.array(labels)
@@ -641,18 +631,18 @@ def main() -> None:
     )
     print(f"  Train: {len(X_train):,} | Test: {len(X_test):,}")
 
-    # Step 3: Hyperparameter tuning via Cross-Validation
+    # Hyperparameter tuning via Cross-Validation
     print("\n[3/8] Hyperparameter Tuning (Stratified 5-Fold CV)...")
     tuned_xgb, best_params, cv_results = tune_xgboost(X_train, y_train, scale_pos_weight)
 
-    # Step 4: Train all models (using the tuned XGBoost)
+    # Train all models for comparison
     print("\n[4/8] Training All Models for Comparison...")
     models = get_models(scale_pos_weight)
     # Replace the default XGBoost with the tuned version
     models["XGBoost"] = tuned_xgb
     results = evaluate_models(models, X_train, X_test, y_train, y_test)
 
-    # Step 5: Save best model + metadata
+    # Save best model + metadata
     print("\n[5/8] Saving Best Model & Metadata...")
     best_name = max(results.keys(), key=lambda k: results[k]['auc_roc'])
     best_model = results[best_name]['model']
@@ -672,7 +662,7 @@ def main() -> None:
         scale_pos_weight=scale_pos_weight,
     )
 
-    # Step 6: Generate visualizations
+    # Generate visualizations
     print("\n[6/8] Generating Visualizations...")
     plot_model_comparison(results)
     plot_confusion_matrices(results, y_test)
@@ -681,7 +671,7 @@ def main() -> None:
     plot_feature_importance(results["XGBoost"]["model"], feature_names)
     plot_cv_scores(cv_results)
 
-    # Step 7: Generate report
+    # Generate report
     print("\n[7/8] Generating Evaluation Report...")
     generate_report(
         results, feature_names, results["XGBoost"]["model"], dataset_size,
@@ -689,7 +679,7 @@ def main() -> None:
         class_dist=class_dist, scale_pos_weight=scale_pos_weight
     )
 
-    # Step 8: Final summary
+    # Final summary
     print("\n[8/8] Done!")
     print("\n" + "=" * 60)
     print("  TRAINING COMPLETE! (v2)")

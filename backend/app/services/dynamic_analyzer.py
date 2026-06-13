@@ -91,7 +91,7 @@ def check_ssl(hostname: str) -> dict:
 def query_whois_raw(domain: str) -> str:
     """Queries port 43 of WHOIS servers to retrieve raw registration text."""
     try:
-        # Step 1: Query IANA to identify the authoritative registry server
+        # Query IANA to identify the authoritative registry server
         iana_server = "whois.iana.org"
         with socket.create_connection((iana_server, 43), timeout=2.0) as sock:
             sock.sendall(f"{domain}\r\n".encode("utf-8"))
@@ -120,7 +120,7 @@ def query_whois_raw(domain: str) -> str:
             else:
                 referral_server = f"whois.nic.{tld}"
         
-        # Step 2: Query the referral WHOIS server
+        # Query the referral WHOIS server
         with socket.create_connection((referral_server, 43), timeout=2.0) as sock:
             sock.sendall(f"{domain}\r\n".encode("utf-8"))
             response = b""

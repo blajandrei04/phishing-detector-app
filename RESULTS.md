@@ -8,9 +8,9 @@ We evaluated XGBoost, Random Forest, and Logistic Regression to determine the op
 
 | Model | Accuracy | Precision | Recall | F1-Score | AUC-ROC |
 |-------|----------|-----------|--------|----------|---------|
-| **XGBoost** ✅ | **~96.5%** | **High** | **High** | **High** | **Highest** |
-| Random Forest | ~95.8% | High | High | High | High |
-| Logistic Regression | ~88.2% | Moderate | Moderate | Moderate | Moderate |
+| **XGBoost** ✅ | **91.65%** | **83.44%** | **88.19%** | **85.75%** | **0.9691** |
+| Random Forest | 89.39% | 90.85% | 69.76% | 78.92% | 0.9427 |
+| Logistic Regression | 83.36% | 84.06% | 51.27% | 63.69% | 0.8311 |
 
 > **Note:** Exact percentages depend on the specific training seed and split. For the exact, reproducible numbers generated during your last run, please refer to the detailed `backend/artifacts/evaluation_report.md`.
 
@@ -28,16 +28,16 @@ XGBoost provides a native measurement of feature importance (Gain), which indica
 
 | Rank | Feature | Description |
 |------|---------|-------------|
-| 1 | **Directory Depth** (`num_directories`) | Deeper directory structures often indicate complex paths hiding payloads. |
-| 2 | **URL Length** (`url_length`) | Phishing URLs are statistically longer on average. |
-| 3 | **Hostname Length** (`hostname_length`) | Abnormally long or short hostnames can be indicators of evasion. |
-| 4 | **Suspicious Keywords** (`has_suspicious_warning_words`) | Words like 'login', 'update', or 'secure' in the URL. |
-| 5 | **IP as Host** (`uses_ip_as_host`) | Direct IP addresses instead of domains are highly suspicious. |
-| 6 | **Special Chars** (`special_char_count`) | Excessive use of special characters in the URL string. |
-| 7 | **URL Entropy** (`url_entropy`) | High randomness (entropy) often implies DGA (Domain Generation Algorithms). |
-| 8 | **Path Length** (`path_length`) | Length of the URL path structure. |
-| 9 | **Query Params** (`num_parameters`) | Anomalies in the number of URL query parameters. |
-| 10 | **Subdomain Count** (`subdomain_count`) | Excessive subdomains (e.g., `login.paypal.com.secure-update.xyz`). |
+| 1 | **Exotic TLD** (`tld_type`) | Domains registered under cheap/exotic TLDs (e.g., `.xyz`, `.club`) are highly correlated with phishing. |
+| 2 | **Suspicious Keywords** (`has_suspicious_warning_words`) | Trigger words such as 'login', 'verify', or 'bank' appearing in the URL. |
+| 3 | **Brand Name Detected** (`contains_brand_name`) | Cybersquatting indicator when a trusted brand name is used as bait in the path or subdomain. |
+| 4 | **@ Symbol** (`has_at_symbol`) | Obfuscation technique where browsers ignore everything before the `@` character. |
+| 5 | **IP as Host** (`uses_ip_as_host`) | Direct IP address hostnames that bypass regular domain name systems. |
+| 6 | **Query Length** (`query_length`) | Unusually long query strings containing tracking tokens or redirect payloads. |
+| 7 | **Directory Depth** (`num_directories`) | Deeper directory structures used to hide files or replicate target paths. |
+| 8 | **Digit Count** (`digit_count`) | Numbers embedded in the domain to bypass filters or represent random strings. |
+| 9 | **Query Params** (`num_parameters`) | Dynamic tracking variables or credentials forwarding payloads. |
+| 10 | **Subdomain Count** (`subdomain_count`) | Nesting subdomains to masquerade as legitimate sub-areas of brands. |
 
 ## 4. Visual Artifacts
 

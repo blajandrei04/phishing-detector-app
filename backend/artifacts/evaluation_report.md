@@ -1,5 +1,5 @@
 # Model Evaluation Report
-**Generated:** 2026-05-26 15:25:03
+**Generated:** 2026-06-12 13:19:14
 **Dataset:** 549,346 URLs (phishing_site_urls.csv)
 **Train/Test Split:** 70% / 30%
 **Random State:** 42
@@ -11,9 +11,9 @@
 
 | Model | Accuracy | Precision | Recall | F1-Score | AUC-ROC |
 |-------|----------|-----------|--------|----------|---------|
-| XGBoost ✅ | 0.9165 | 0.8344 | 0.8819 | 0.8575 | 0.9691 |
+| XGBoost ✅ | 0.9142 | 0.8297 | 0.8790 | 0.8536 | 0.9682 |
 | Random Forest | 0.8939 | 0.9085 | 0.6976 | 0.7892 | 0.9427 |
-| Logistic Regression | 0.8336 | 0.8406 | 0.5127 | 0.6369 | 0.8311 |
+| Logistic Regression | 0.8336 | 0.8407 | 0.5128 | 0.6370 | 0.8311 |
 
 **Best Model: XGBoost** (selected based on highest AUC-ROC score)
 
@@ -24,31 +24,31 @@ across a stratified 5-fold cross-validation scheme.
 
 | Metric | Value |
 |--------|-------|
-| Mean AUC-ROC | 0.9678 |
-| Std AUC-ROC | ± 0.0005 |
-| Mean Train AUC | 0.9898355425440013 |
+| Mean AUC-ROC | 0.9676 |
+| Std AUC-ROC | ± 0.0003 |
+| Mean Train AUC | 0.9881062969277246 |
 
 ### Per-Fold Scores
 
 | Fold | AUC-ROC |
 |------|---------|
-| Fold 1 | 0.9670 |
-| Fold 2 | 0.9673 |
+| Fold 1 | 0.9669 |
+| Fold 2 | 0.9671 |
 | Fold 3 | 0.9679 |
-| Fold 4 | 0.9685 |
-| Fold 5 | 0.9680 |
+| Fold 4 | 0.9678 |
+| Fold 5 | 0.9676 |
 
 ### Tuned Hyperparameters
 
 | Parameter | Value |
 |-----------|-------|
-| colsample_bytree | 0.8 |
-| gamma | 0.3 |
-| learning_rate | 0.2 |
-| max_depth | 11 |
-| min_child_weight | 3 |
-| n_estimators | 200 |
-| subsample | 0.9 |
+| colsample_bytree | 0.9 |
+| gamma | 0 |
+| learning_rate | 0.1 |
+| max_depth | 9 |
+| min_child_weight | 1 |
+| n_estimators | 500 |
+| subsample | 0.7 |
 
 ## 3. Class Distribution & Imbalance Handling
 
@@ -62,26 +62,26 @@ across a stratified 5-fold cross-validation scheme.
 ## 4. Why XGBoost?
 
 XGBoost was selected as the production model because:
-- **Highest AUC-ROC (0.9691)** — demonstrates superior discrimination between phishing and legitimate URLs across all threshold values.
-- **Strong F1-Score (0.8575)** — indicates an excellent balance between precision (minimizing false alarms) and recall (catching actual threats).
+- **Highest AUC-ROC (0.9682)** — demonstrates superior discrimination between phishing and legitimate URLs across all threshold values.
+- **Strong F1-Score (0.8536)** — indicates an excellent balance between precision (minimizing false alarms) and recall (catching actual threats).
 - **Tree-based architecture** — naturally handles non-linear feature interactions (e.g., the combination of IP-as-host + suspicious keywords is more indicative than either alone).
 - **SHAP compatibility** — TreeExplainer provides exact, polynomial-time SHAP values for explainability.
-- **Cross-validated** — 5-fold stratified CV confirms the model generalizes well (AUC: 0.9678 ± 0.0005).
+- **Cross-validated** — 5-fold stratified CV confirms the model generalizes well (AUC: 0.9676 ± 0.0003).
 
 ## 5. Feature Importance (Top 10)
 
 | Rank | Feature | Importance |
 |------|---------|------------|
-| 1 | Exotic TLD | 0.3471 |
-| 2 | Suspicious Keywords | 0.2639 |
-| 3 | Brand Name Detected | 0.1245 |
-| 4 | @ Symbol | 0.0497 |
-| 5 | IP as Host | 0.0313 |
-| 6 | Query Length | 0.0250 |
-| 7 | Directory Depth | 0.0198 |
-| 8 | Digit Count | 0.0193 |
-| 9 | Query Params | 0.0179 |
-| 10 | Subdomain Count | 0.0145 |
+| 1 | Suspicious Keywords | 0.2485 |
+| 2 | Exotic TLD | 0.2249 |
+| 3 | Brand Name Detected | 0.1473 |
+| 4 | @ Symbol | 0.0808 |
+| 5 | Query Length | 0.0322 |
+| 6 | Digit Count | 0.0298 |
+| 7 | Directory Depth | 0.0283 |
+| 8 | IP as Host | 0.0255 |
+| 9 | Subdomain Count | 0.0226 |
+| 10 | URL Shortener | 0.0220 |
 
 ## 6. Extracted Features (22 total)
 
